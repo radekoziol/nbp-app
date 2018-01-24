@@ -1,0 +1,9 @@
+the jar-archive file is
+ 
+NBPApp-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+it's in target catalog
+
+please run via maven
+> mvn clean compile assembly:single
+then NBPApp-1.0-SNAPSHOT-jar-with-dependencies.jar is compiled jar
