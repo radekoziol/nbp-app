@@ -28,7 +28,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException {
 
-        ProcessInput processInput = new ProcessInput(args);
+        ProcessInput processInput = new ProcessInput(new String[]{""});
 
         processInput.process();
 

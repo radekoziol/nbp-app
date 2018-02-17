@@ -45,6 +45,7 @@ public class ProcessInput {
             System.err.println( "Parsing failed.  Reason: " + exp.getMessage() );
         }
 
+        assert cmd != null;
         if( (cmd.hasOption("help")) )  {
             formatter.printHelp(" ", options);
             System.exit(1);

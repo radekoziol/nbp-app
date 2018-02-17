@@ -1,20 +1,59 @@
 package date;
 
+import date.Date;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Tests for Date class
+ */
 class DateTest {
 
-
+    /**
+     * Tests wrong input cases
+     */
     @Test
-    void dayIsWithinMonth(){
+    void wrongInput() {
 
-        assertFalse(new Date().dayIsWithinMonth(112,1));
-        assertTrue(new Date().dayIsWithinMonth(1,1));
-        assertTrue(new Date().dayIsWithinMonth(31,12));
-        assertTrue(new Date().dayIsWithinMonth(30,6));
-        assertTrue(new Date().dayIsWithinMonth(29,2));
+        //Illegal input
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("");
+                });
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("test");
+                });
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("2012-2-xd");
+                });
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("2012-12-'2");
+                });
+
+        //Invalid date
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("-2012-2-2");
+                });
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("2012-13-2");
+                });
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("2012-2-244");
+                });
+
+        // Leap year case
+        assertThrows(IllegalArgumentException.class,
+                ()->{
+                    new Date("2013-2-29");
+                });
 
     }
 
@@ -22,38 +61,49 @@ class DateTest {
     @Test
     void isLaterThan() {
 
-        assertTrue(new Date
-                ("1998","2","1")
-                .isLaterThan(new Date
-                        ("1995", "2","1")));
+        assertTrue(new Date("2002-12-11").isLaterThan(new Date("2001-12-11")));
+        assertTrue(new Date("2001-12-14").isLaterThan(new Date("2001-12-11")));
+        assertTrue(new Date("2001-12-13").isLaterThan(new Date("2001-11-11")));
 
-        assertFalse(new Date
-                ("1998","2","1")
-                .isLaterThan(new Date
-                        ("1998", "2","1")));
+        //Leap Year cases
+        assertTrue(new Date("2012-02-29").isLaterThan(new Date("2012-02-28")));
 
-        assertFalse(new Date
-                ("1998","12","31")
-                .isLaterThan(new Date
-                        ("1999", "1","1")));
+    }
+
+    @Test
+    void shiftDate() {
+
+        assertTrue(new Date("2001-12-11").equals(new Date("2001-11-11").shiftDate(30)));
+        assertTrue(new Date("2001-03-10").equals(new Date("2001-02-07").shiftDate(31)));
+        assertTrue(new Date("2002-03-10").equals(new Date("2001-02-07").shiftDate(31 + 365)));
+        assertTrue(new Date("2001-04-11").equals(new Date("2001-01-01").shiftDate(100)));
+
+        // Leap Years cases
+        assertTrue(new Date("2012-02-29").equals(new Date("2012-02-01").shiftDate(28    )));
+        assertTrue(new Date("2013-02-11").equals(new Date("2012-02-11").shiftDate(366)));
+        assertTrue(new Date("2013-03-01").equals(new Date("2012-03-1").shiftDate(365)));
+        assertTrue(new Date("2014-03-10").equals(new Date("2012-02-07").shiftDate(31 + 366 + 365)));
+
     }
 
     @Test
     void dayDifference() {
 
-        assertTrue( 1 == new Date("1997","12","31").dayDifference(new Date("1998","1","1")));
-        assertTrue( 12 == new Date("1997","12","1").dayDifference(new Date("1998","1","13")));
-        assertTrue( 93 == new Date("1997","12","31").dayDifference(new Date("1998","3","1")));
-        assertTrue( 62 == new Date("1997","12","1").dayDifference(new Date("1998","2","1")));
-    }
 
+        assertTrue(Date.dayDifference
+                (new Date("2001-12-11"),(new Date("2001-11-11"))) == -30);
+        assertTrue(Date.dayDifference
+                (new Date("2002-03-10"),(new Date("2001-02-07"))) == -31 - 365);
+        assertTrue(Date.dayDifference
+                (new Date("2001-04-11"),(new Date("2001-01-01"))) == -100);
 
-    @Test
-    void shiftDate() {
-
-        assertTrue(new Date("1998", "2", "1").equals(new Date("1997","12","1").shiftDate(62)));
-        assertTrue(new Date("1998", "2", "1").equals(new Date("1999","2","1").shiftDate(365)));
-        assertTrue(new Date("1998", "9", "1").equals(new Date("1998","10","2").shiftDate(31)));
+//        // Leap Years cases
+        assertTrue(Date.dayDifference
+                (new Date("2012-02-29"),(new Date("2012-02-01"))) == -28);
+        assertTrue(Date.dayDifference
+                (new Date("2013-02-11"),(new Date("2012-02-11"))) == -366);
+        assertTrue(Date.dayDifference
+                (new Date("2014-03-10"),(new Date("2012-02-07"))) == -31 - 366 - 365);
 
 
     }

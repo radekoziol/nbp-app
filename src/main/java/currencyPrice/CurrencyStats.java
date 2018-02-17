@@ -11,7 +11,7 @@ import java.util.*;
 public class CurrencyStats {
 
 
-    public static final String base = "http://api.nbp.pl/api/";
+    private static final String base = "http://api.nbp.pl/api/";
 
     /*
         Odszukuje walutę (tabela A), której kurs, począwszy od podanego dnia,
@@ -43,7 +43,7 @@ public class CurrencyStats {
 
     }
 
-    public Map<Float, String> getMinAndMaxOf(String currency) throws IOException {
+    public void getMinAndMaxOf(String currency) throws IOException {
 
         CurrencyParser currencyParser =  new CurrencyParser();
         Date startDate = new Date("2002", "1","2");
@@ -76,7 +76,6 @@ public class CurrencyStats {
         System.out.println("most expensive mid price: " + maxValue.getKey() + ", " + maxValue.getValue());
 
 
-        return null;
     }
 
 

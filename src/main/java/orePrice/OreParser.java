@@ -30,7 +30,7 @@ public class OreParser {
         //dla cen złota – od 2 stycznia 2013 r.
         //limit 93 dni
         if( (startDate.getYear() < 2013) || (startDate.isLaterThan(endDate))
-                || (endDate.isLaterThan(new Date().getCurrentDate()))) {
+                || (endDate.isLaterThan(Date.getCurrentDate()))) {
             System.err.println("There is problem with dates!");
             System.exit(1);
         }
@@ -83,7 +83,7 @@ public class OreParser {
 
         //dla cen złota – od 2 stycznia 2013 r.
         if( (date.getYear() < 2013)
-                || (date.isLaterThan(new Date().getCurrentDate()))) {
+                || (date.isLaterThan(Date.getCurrentDate()))) {
             System.err.println("There is problem with dates!");
             System.exit(1);
         }

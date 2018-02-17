@@ -2,82 +2,249 @@ package date;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.lang.Math.abs;
-
-
-/*
-    This class cares for dates
+/**
+ * Supports yyyy-mm-dd date (without time)
  */
-
-public class Date{
+public class Date {
 
     private String year;
     private String month;
     private String day;
 
-    public Date() {
-    }
-
+    /**
+     * @param date String in format "yyyy-mm-dd"
+     */
     public Date(String date){
+        checkDate(date);
         String [] temp = date.split("-",3);
-        checkDate(temp[0],temp[1],temp[2]);
         this.year = temp[0];
         this.month = temp[1];
         this.day = temp[2];
     }
 
+    /**
+     * @param year String in format "yyyy"
+     * @param month String in format "mm"
+     * @param day String in format "dd"
+     */
     public Date(String year, String month, String day) {
-        checkDate(year,month,day);
+        checkDate(year + "-" + month  + "-" +  day);
         this.year = year;
         this.month = month;
         this.day = day;
     }
 
 
-    private void checkDate(String year, String month, String day) throws IllegalArgumentException {
+    /**
+     * This method checks if data is in valid format (yyyy-mm-dd)
+     * Note that it is assumed that year must be > 1582
+     * @param input input
+     * @throws IllegalArgumentException if date is invalid or impossible
+     * @// TODO: 08.02.18 assumption that year > 1582 may have troubles
+     *
+     */
+    private void checkDate(String input) throws IllegalArgumentException {
 
-        if(!( (Integer.parseInt(year) > 0 ) ||
-            ((Integer.parseInt(month) > 0) && (Integer.parseInt(month) <= 12)) ||
-                ((Integer.parseInt(day) > 0) && (Integer.parseInt(day) <= 31)) ||
-                (dayIsWithinMonth(Integer.parseInt(day),Integer.parseInt(month))) ))
-            throw new IllegalArgumentException("This date is impossible!");
+        //Firstly we check if number of chars is correct
+        if(!input.matches("\\d{4}-\\d{1,2}-\\d{1,2}"))
+            throw new IllegalArgumentException("This date: " + input + " is impossible!");
+
+        String [] temp = input.split("-",3);
+        int year = Integer.parseInt(temp[0]);
+        int month = Integer.parseInt(temp[1]);
+        int day = Integer.parseInt(temp[2]);
+
+        //Finally we check if this date is even possible
+        if(!( ((year > 1582 ) && ((month > 0))
+                && (month<= 12)) && ((day > 0)
+                && (day <= 31)) && (Month.dayIsWithinMonth(day,month,year)) ))
+            throw new IllegalArgumentException("This date: " + input + " is impossible!");
 
     }
 
-    //TODO leap year are not considered
 
-    public boolean dayIsWithinMonth(int day, int month) throws IllegalArgumentException{
+    /**
+     * @param endDate
+     * @return true if current date is later than given one
+     * @// TODO: 08.02.18 can this function be simplified?
+     */
+    //        ISO 4217
+    public boolean isLaterThan(Date endDate) {
 
-        switch (month){
-            case 1: case 3: case 5: case 7: case 8: case 10: case 12:{
-                return (day >= 0) && (day <= 31);
+        if(this.getYear() - endDate.getYear() > 0)
+            return true;
+        else if (this.getYear() - endDate.getYear() < 0)
+            return false;
+        else if (this.getMonth() - endDate.getMonth() > 0)
+            return true;
+        else if (this.getMonth() - endDate.getMonth() < 0)
+            return false;
+        else return this.getDay() - endDate.getDay() > 0;
+    }
+
+
+    /**
+     * This method shift given date for given day number
+     * @param dayNumber
+     * @return shifted date
+     * @// TODO: 08.02.18 Can this function be simplified? Surely..
+     */
+    public Date shiftDate(int dayNumber) {
+
+        //Firstly let's introduce later useful variables
+        int yearAdd = 0;
+        Month month = Month.getMonth(getMonth(), getYear() + yearAdd);
+
+        //Next let's count years
+        while (dayNumber >= 365) {
+
+            //If next year is leap year and we need to consider february
+            if (Year.isLeapYear(getYear() + yearAdd + 1)
+                    && month.ordinal() > 2) {
+                if(dayNumber >= 366) {
+                    yearAdd++;
+                    dayNumber -= 366;
+                }
+                else break;
             }
-            case 4: case 6: case 9: case 11:{
-                return (day >= 0) && (day <= 30);
+            //Else if we want to jump leap year we should consider if we are before february
+            else if (Year.isLeapYear(getYear() + yearAdd )
+                    && month.ordinal() <= 2) {
+                if(dayNumber >= 366) {
+                    yearAdd++;
+                    dayNumber -= 366;
+                }
+                else break;
             }
-            default:
-                return (day >= 0) && (day <= 29);
+            //Standard case
+            else {
+                yearAdd++;
+                dayNumber -= 365;
+            }
+
         }
 
+        //Next months
+        //Updating month
+        month = Month.getMonth(getMonth(), getYear() + yearAdd);
+        while (dayNumber >= month.getDayAsInt()) {
+            dayNumber -= month.getDayAsInt();
+            month = month.getNextMonth(getYear() + yearAdd);
+            //Adding year if we pass December
+            if (month.equals(Month.January))
+                yearAdd++;
+        }
+
+
+
+        /*
+         * Finally days, which are now < 31
+         * Men.. I'm tired already - me too :<
+         * Firstly, we check if we don't have to switch month
+         */
+        if (getDay() + dayNumber <= month.getDayAsInt()){
+            dayNumber += getDay();
+        }
+        else{
+            dayNumber = abs(month.getDayAsInt() - getDay() - dayNumber);
+            month = month.getNextMonth(getYear() + yearAdd);
+            if (month.equals(Month.January))
+                yearAdd++;
+        }
+
+        return new Date(
+                String.valueOf(getYear() + yearAdd),
+                String.valueOf(month.getMonthAsInt()),
+                String.valueOf(dayNumber));
+
+    }
+
+    /**
+     * This method implements binary search with shiftDate method.
+     * Note that day difference may be also negative
+     * @param startDate
+     * @param endDate
+     * @return Day difference between startDate and endDate
+     *
+     */
+    public static int dayDifference(Date startDate, Date endDate) {
+
+        // Firstly let's calculate year difference, which will be useful for binary search
+        int yearDifference = abs(startDate.getYear() - endDate.getYear());
+
+        // If startDate is later than endDate we need to swap and multiply by -1
+        if(startDate.isLaterThan(endDate))
+            return -1 * searchBinaryDayDifference
+                (0,((yearDifference + 1) * 365), endDate, startDate);
+
+        return searchBinaryDayDifference
+                (0,((yearDifference + 1) * 365), startDate, endDate);
+
+    }
+
+    /**
+     * @param l search from l
+     * @param r search to r
+     * @param startDate
+     * @param endDate
+     * @return Day difference between startDate and endDate
+     */
+    private static int searchBinaryDayDifference(int l, int r, Date startDate, Date endDate) {
+
+        while(l != r) {
+            int mid = (l + r) / 2;
+
+            if (startDate.shiftDate(mid).equals(endDate))
+                return mid;
+
+            if (startDate.shiftDate(mid).isLaterThan(endDate))
+                r = mid;
+            else
+                l = mid;
+        }
+
+        return l;
+    }
+
+    /**
+     * @return current date - thanks to DataTimeFormatter
+     */
+    public static Date getCurrentDate(){
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String[] date = dtf.format(now).split("-",3);
+        return new Date(date[0], date[1], "14");
     }
 
 
+    /**
+     * @return year as int
+     */
     public int getYear() {
         return Integer.parseInt(year);
     }
 
+    /**
+     * @return month as int
+     */
     public int getMonth() {
         return Integer.parseInt(month);
     }
 
+    /**
+     * @return day as int
+     */
     public int getDay() {
         return Integer.parseInt(day);
     }
 
-    //        ISO 4217
+
+    /**
+     * @return date representation in yyyy-mm-dd
+     */
     @Override
     public String toString() {
 
@@ -94,118 +261,13 @@ public class Date{
         return output;
     }
 
-    public boolean isLaterThan(Date endDate) {
-        if(getYear() - endDate.getYear() > 0)
-            return true;
-        return dayDifference(endDate) > 0;
+    /**
+     * @param obj
+     * @return true if other object toString method returns the same
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this.toString().equals(obj.toString());
     }
-
-    //TODO  it may also work
-    // TODO It may consider also length of months..
-    public Integer dayDifference(Date date) {
-
-//        2018-01-12
-//        2018-04-11
-
-        int sum = getDay() - date.getDay();
-
-        if((getYear() - date.getYear()) >= 0 )
-            if(getMonth() - date.getMonth() > 0) {
-                for (int i = getMonth(); i< date.getMonth(); i++) {
-                    switch (i) {
-                        case 1:
-                        case 3:
-                        case 5:
-                        case 7:
-                        case 8:
-                        case 10:
-                        case 12:
-                            sum += 31;
-                            break;
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11:
-                            sum += 30;
-                            break;
-
-                        default:
-                            sum += 29;
-                    }
-                }
-             }
-             else{
-                for (int i = date.getMonth(); i > getMonth(); i--) {
-                    switch (i) {
-                        case 1:
-                        case 3:
-                        case 5:
-                        case 7:
-                        case 8:
-                        case 10:
-                        case 12:
-                            sum -= 31;
-                            break;
-                        case 4:
-                        case 6:
-                        case 9:
-                        case 11:
-                            sum -= 30;
-                            break;
-
-                        default:
-                            sum -= 29;
-                    }
-                }
-            }
-
-
-        if((getYear() - date.getYear()) == 1)
-            for (int i = 1; i< date.getMonth(); i++) {
-                switch (i) {
-                    case 1:
-                    case 3:
-                    case 5:
-                    case 7:
-                    case 8:
-                    case 10:
-                    case 12:
-                        sum += 31;
-                        break;
-                    case 4:
-                    case 6:
-                    case 9:
-                    case 11:
-                        sum += 30;
-                        break;
-
-                    default:
-                        sum += 29;
-                }
-            }
-
-
-        return sum;
-    }
-
-    public Date getCurrentDate(){
-
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        String[] date = dtf.format(now).split("-",3);
-        return new Date(date[0], date[1], "14");
-    }
-
-    public Date shiftDate(Integer dayNumber){
-
-        int month = this.getMonth() + (int) dayNumber/31;
-
-        if(12 - month >= 0)
-            return new Date(year, String.valueOf(month),day );
-        return new Date (String.valueOf(getYear() + 1), String.valueOf(month - 12), day);
-
-    }
-
-
 
 }

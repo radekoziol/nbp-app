@@ -22,7 +22,7 @@ public class CurrencyParser {
     public Currency[] getDataFrom(Date date, String address) throws IOException {
 
         if( (date.getYear() < 2002)
-                || (date.isLaterThan(new Date().getCurrentDate()))) {
+                || (date.isLaterThan(Date.getCurrentDate()))) {
             System.err.println("There is problem with dates!");
             System.exit(1);
         }
@@ -51,13 +51,13 @@ public class CurrencyParser {
     public List<Currency> getAllDataFrom(Date startDate, String address) throws IOException {
 
         if( (startDate.getYear() < 2002)
-                || (startDate.isLaterThan(new Date().getCurrentDate()))) {
+                || (startDate.isLaterThan(Date.getCurrentDate()))) {
             System.err.println("There is problem with dates!");
             System.exit(1);
         }
 
         List<Currency> allData = new ArrayList<>();
-        Date currentDate = new Date().getCurrentDate();
+        Date currentDate = Date.getCurrentDate();
         currentDate = new Date("2018-01-12");
 
         try {
