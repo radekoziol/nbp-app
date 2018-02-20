@@ -8,7 +8,7 @@ public class Currency {
     private transient String table;
     //Table number
     private transient String no;
-    //Publication date
+    //Publication api.date
     private String effectiveDate;
     private List<Rates> rates;
 

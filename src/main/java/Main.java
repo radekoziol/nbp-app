@@ -1,13 +1,7 @@
-import currencyPrice.Currency;
-import currencyPrice.CurrencyParser;
-import currencyPrice.CurrencyStats;
-import date.Date;
 import input.ProcessInput;
-import orePrice.GoldPrice;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
-import java.util.*;
 
 /*
 

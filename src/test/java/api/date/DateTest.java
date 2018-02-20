@@ -1,6 +1,5 @@
-package date;
+package api.date;
 
-import date.Date;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -35,7 +34,7 @@ class DateTest {
                     new Date("2012-12-'2");
                 });
 
-        //Invalid date
+        //Invalid api.date
         assertThrows(IllegalArgumentException.class,
                 ()->{
                     new Date("-2012-2-2");

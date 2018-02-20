@@ -2,8 +2,8 @@ package input;
 
 import currencyPrice.Currency;
 import currencyPrice.CurrencyParser;
-import currencyPrice.CurrencyStats;
-import date.Date;
+import statistics.CurrencyStats;
+import api.date.Date;
 import orePrice.GoldPrice;
 import org.apache.commons.cli.*;
 
@@ -206,7 +206,7 @@ public class ProcessInput {
                 .hasArgs()
                 .numberOfArgs(1)
                 .argName("currency")
-                .desc("for a currency return 2 date when currency was " +
+                .desc("for a currency return 2 api.date when currency was " +
                         "the cheapest and the most expensive - if currency contains 2 words they must be divded with '_'  ")
                 .build());
 

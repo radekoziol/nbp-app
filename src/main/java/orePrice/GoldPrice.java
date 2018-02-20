@@ -1,7 +1,7 @@
 package orePrice;
 
 import com.google.gson.JsonSyntaxException;
-import date.Date;
+import api.date.Date;
 
 import java.io.IOException;
 import java.util.List;

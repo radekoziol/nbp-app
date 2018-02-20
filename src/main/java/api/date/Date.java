@@ -1,11 +1,11 @@
-package date;
+package api.date;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.lang.Math.abs;
 /**
- * Supports yyyy-mm-dd date (without time)
+ * Supports yyyy-mm-dd api.date (without time)
  */
 public class Date {
 
@@ -41,7 +41,7 @@ public class Date {
      * This method checks if data is in valid format (yyyy-mm-dd)
      * Note that it is assumed that year must be > 1582
      * @param input input
-     * @throws IllegalArgumentException if date is invalid or impossible
+     * @throws IllegalArgumentException if api.date is invalid or impossible
      * @// TODO: 08.02.18 assumption that year > 1582 may have troubles
      *
      */
@@ -49,25 +49,25 @@ public class Date {
 
         //Firstly we check if number of chars is correct
         if(!input.matches("\\d{4}-\\d{1,2}-\\d{1,2}"))
-            throw new IllegalArgumentException("This date: " + input + " is impossible!");
+            throw new IllegalArgumentException("This api.date: " + input + " is impossible!");
 
         String [] temp = input.split("-",3);
         int year = Integer.parseInt(temp[0]);
         int month = Integer.parseInt(temp[1]);
         int day = Integer.parseInt(temp[2]);
 
-        //Finally we check if this date is even possible
+        //Finally we check if this api.date is even possible
         if(!( ((year > 1582 ) && ((month > 0))
                 && (month<= 12)) && ((day > 0)
                 && (day <= 31)) && (Month.dayIsWithinMonth(day,month,year)) ))
-            throw new IllegalArgumentException("This date: " + input + " is impossible!");
+            throw new IllegalArgumentException("This api.date: " + input + " is impossible!");
 
     }
 
 
     /**
      * @param endDate
-     * @return true if current date is later than given one
+     * @return true if current api.date is later than given one
      * @// TODO: 08.02.18 can this function be simplified?
      */
     //        ISO 4217
@@ -86,9 +86,9 @@ public class Date {
 
 
     /**
-     * This method shift given date for given day number
+     * This method shift given api.date for given day number
      * @param dayNumber
-     * @return shifted date
+     * @return shifted api.date
      * @// TODO: 08.02.18 Can this function be simplified? Surely..
      */
     public Date shiftDate(int dayNumber) {
@@ -209,7 +209,7 @@ public class Date {
     }
 
     /**
-     * @return current date - thanks to DataTimeFormatter
+     * @return current api.date - thanks to DataTimeFormatter
      */
     public static Date getCurrentDate(){
 
@@ -243,7 +243,7 @@ public class Date {
 
 
     /**
-     * @return date representation in yyyy-mm-dd
+     * @return api.date representation in yyyy-mm-dd
      */
     @Override
     public String toString() {
