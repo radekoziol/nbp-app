@@ -1,22 +1,20 @@
 package api;
 
-import currencyPrice.CurrencyParser;
 import api.date.Date;
+import com.sun.javaws.exceptions.InvalidArgumentException;
+import currency.Ore;
 
+import java.io.IOException;
 import java.util.List;
 
-public class Query {
+public interface Query {
 
-    public List<Object> getAllDatafrom(Date startDate){
-
-        CurrencyParser currencyParser =  new CurrencyParser();
-        String base;
-        List<currencyPrice.Currency> currencies = currencyParser
-                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
+    default List<?> getAllDataFrom(Date startDate, String address) throws IOException {
+        return getAllDataFrom(startDate, Date.getCurrentDate(), address);
     }
 
+    Ore getDataFrom(Date date, String address) throws InvalidArgumentException;
 
-
-
+    List<?> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException;
 
 }

@@ -1,58 +1,37 @@
-package currencyPrice;
+package api;
 
+import api.date.Date;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import api.date.Date;
+import com.sun.javaws.exceptions.InvalidArgumentException;
+import currency.Currency;
+import currency.Ore;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * This class is processing all gold asks
- */
+public class CurrencyQuery implements Query{
 
 
-public class CurrencyParser {
-
-    public Currency[] getDataFrom(Date date, String address) throws IOException {
-
-        if( (date.getYear() < 2002)
-                || (date.isLaterThan(Date.getCurrentDate()))) {
-            System.err.println("There is problem with dates!");
-            System.exit(1);
-        }
-
-        try{
-            StringBuilder out = new StringBuilder();
-            out.append(new Scanner
-                    (new URL(address + date.toString() + "/\n\n")
-                            .openStream(), "UTF-8")
-                    .useDelimiter("\\A")
-                    .next());
-
-            GsonBuilder builder = new GsonBuilder();
-            builder.setPrettyPrinting();
-            Gson gson = builder.create();
-
-
-            return gson.fromJson(out.toString(), Currency[].class);
-        }catch (JsonSyntaxException ex){
-            System.err.println("Something went wrong" + ex.getMessage());
-        }
+    @Override
+    public Ore getDataFrom(Date date, String address) throws InvalidArgumentException {
         return null;
-
     }
 
-    public List<Currency> getAllDataFrom(Date startDate, String address) throws IOException {
+    public List<Object> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
 
-        if( (startDate.getYear() < 2002)
-                || (startDate.isLaterThan(Date.getCurrentDate()))) {
-            System.err.println("There is problem with dates!");
+        if (startDate.getYear() < 2002){
+            System.err.println("Date can not be earlier than 01-01-2002!");
+            System.exit(1);
+        }
+        else if (startDate.isLaterThan(Date.getCurrentDate())){
+            System.err.println("Start date is later than end date!");
             System.exit(1);
         }
 
@@ -97,11 +76,12 @@ public class CurrencyParser {
                             (out, new TypeToken<List<Currency>>() {
                             }.getType()));
         }catch (JsonSyntaxException ex){
-        System.err.println("Something went wrong" + ex.getMessage());
+            System.err.println("Something went wrong" + ex.getMessage());
         }
 
-        return allData;
+        return Collections.singletonList((Object) allData);
 
     }
+
 
 }

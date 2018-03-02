@@ -1,4 +1,4 @@
-package currencyPrice;
+package currency;
 
 import java.util.*;
 
@@ -33,7 +33,7 @@ public class Currency {
     }
 
 
-    public static class Rates{
+    public static class Rates {
 
         private transient String country;
         private transient String symbol;
@@ -41,18 +41,18 @@ public class Currency {
         //Currency code
         private transient String code;
         //
-        private Float bid;
+        private Double bid;
         // Exchange rate
-        private Float ask;
+        private Double ask;
         // Average rate
-        private Float mid;
+        private Double mid;
 
 
         public void setCurrency(String currency) {
             this.currency = currency;
         }
 
-        public void setMid(Float mid) {
+        public void setMid(Double mid) {
             this.mid = mid;
         }
 
@@ -72,23 +72,23 @@ public class Currency {
             return code;
         }
 
-        public Float getBid() {
+        public Double getBid() {
             return bid;
         }
 
-        public Float getAsk() {
+        public Double getAsk() {
             return ask;
         }
 
-        public Float getMid() {
+        public Double getMid() {
             return mid;
         }
 
-        public void setBid(Float bid) {
+        public void setBid(Double bid) {
             this.bid = bid;
         }
 
-        public void setAsk(Float ask) {
+        public void setAsk(Double ask) {
             this.ask = ask;
         }
     }
