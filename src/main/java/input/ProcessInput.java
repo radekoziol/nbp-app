@@ -1,12 +1,15 @@
 package input;
 
+import api.CurrencyQuery;
 import api.date.Date;
 import com.sun.javaws.exceptions.InvalidArgumentException;
+import currency.Currency;
+import currency.statistics.CurrencyStats;
 import currency.statistics.OreStats;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.*;
 
 
 /**
@@ -39,8 +42,6 @@ public class ProcessInput {
 
         CommandLine cmd = parser.parse(options, args);
 
-        System.out.println(Arrays.toString(cmd.getOptions()));
-
         if( (cmd.hasOption("help")) )  {
             formatter.printHelp(" ", options);
             System.exit(1);
@@ -67,92 +68,76 @@ public class ProcessInput {
                             new Date(dates[0]),new Date(dates[1])));
         }
 
-//        if(cmd.hasOption("getMostVolatileCurrency")) {
-//
-//            String date = cmd.getOptionValue("getMostVolatileCurrency");
-//
-//            CurrencyStats currencyStats = new CurrencyStats();
-//                    System.out.println( "Most volatile currency from " +  date + ": " +
-//                            currencyStats.getMostVolatileCurrency(
-//                                    new Date(date)));
-//
-//        }
-//
-//        if(cmd.hasOption("getCurrencyPrize")) {
-//
-//            String [] curr;
-//
-//            curr = cmd.getOptionValue("getCurrencyPrize").split("_", 3);
-//            String currency = curr[0] + " " + curr[1];
-//
-//
-//            CurrencyParser currencyParser = new CurrencyParser();
-//
-//            System.out.println( currency + " price for: " + curr[2]);
-//            Arrays.asList(currencyParser.getDataFrom
-//                                    (new Date(curr[2]), base + "exchangerates/tables/a/"))
-//                    .get(0)
-//                    .getRates()
-//                    .stream()
-//                    .filter(x -> x.getCurrency().equals(currency))
-//                    .forEach( r -> System.out.println(r.getMid()));
-//        }
-//
-//        if(cmd.hasOption("getMinBidPrice")) {
-//
-//            String date = cmd.getOptionValue("getMinBidPrice");
-//            CurrencyParser currencyParser = new CurrencyParser();
-//
-//            List <Currency.Rates> temp = (
-//                            Arrays.asList
-//                                    (currencyParser.getDataFrom
-//                                            (new Date(date), base + "exchangerates/tables/c/"))
-//                                    .get(0)
-//                                    .getRates()
-//                    );
-//            Currency.Rates rate = temp.stream()
-//                    .min(Comparator.comparing(Currency.Rates::getBid))
-//                    .orElseThrow(NoSuchElementException::new);
-//
-//            System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " +  rate.getBid());
-//
-//            }
-//
-//        if(cmd.hasOption("b")) {
-//
-//            String [] curr;
-//            String currency;
-//            if(cmd.getOptionValue("b").contains("_")) {
-//                curr = cmd.getOptionValue("b").split("_", 2);
-//                currency = curr[0] + " " + curr[1];
-//            }
-//            else
-//                currency = cmd.getOptionValue("b");
-//
-//            CurrencyStats currencyStats = new CurrencyStats();
-//            currencyStats.getMinAndMaxOf(currency);
-//
-//        }
-//
-//        if(cmd.hasOption("a")) {
-//
-//            String date = cmd.getOptionValue("a");
-//            CurrencyParser currencyParser = new CurrencyParser();
-//
-//            List<Currency> list = Arrays.asList
-//                    (currencyParser
-//                            .getDataFrom(new Date(date), base + "exchangerates/tables/c/"));
-//
-//            list.get(0)
-//                    .getRates()
-//                    .sort(Comparator.comparing(e -> e.getAsk() - e.getBid()));
-//
-//
-//            list.get(0)
-//                    .getRates()
-//                    .forEach(r ->
-//                            System.out.println(r.getCurrency() + " " + (r.getAsk() - r.getBid()) ));
-//        }
+        if(cmd.hasOption("getMostVolatileCurrency")) {
+
+            String [] dates = cmd.getOptionValues("getMostVolatileCurrency");
+
+            CurrencyStats currencyStats = new CurrencyStats();
+
+            System.out.println( "Most volatile currency from " +
+                    dates[0] + "to " + dates[1] + ": " +
+                    currencyStats
+                            .getMostVolatileCurrency(new Date(dates[0]), new Date(dates[1])));
+
+        }
+
+        if(cmd.hasOption("getCurrencyPrize")) {
+
+            // First argument should be currency, second date
+            String [] args = cmd.getOptionValues("getCurrencyPrize");
+
+            CurrencyQuery currencyQuery = new CurrencyQuery();
+
+            currencyQuery.getDataFrom (new Date(args[1]), base + "exchangerates/tables/a/")
+                    .getRates()
+                    .stream()
+                    .filter(x -> x.getCurrency().equals(args[0]))
+                    .forEach(r ->
+                            System.out.println(args[0] + " price for " + args[1] + ": " + r.getMid()));
+        }
+
+        if(cmd.hasOption("getMinBidPrice")) {
+
+            String date = cmd.getOptionValue("getMinBidPrice");
+            CurrencyQuery currencyQuery = new CurrencyQuery();
+
+            List<Currency> rates = (
+                    Collections.singletonList(currencyQuery.getDataFrom
+                            (new Date(date), base + "exchangerates/tables/c/")));
+
+            CurrencyStats currencyStats = new CurrencyStats();
+
+            Currency.Rates rate = currencyStats.getMinRateOf(rates, "getBid");
+
+            System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " +  rate.getBid());
+
+            }
+
+        if(cmd.hasOption("b")) {
+
+            System.out.println("This is not working yet");
+
+        }
+
+        if(cmd.hasOption("a")) {
+
+            String date = cmd.getOptionValue("a");
+            CurrencyQuery currencyQuery = new CurrencyQuery();
+
+            List<Currency> list = Arrays.asList
+                    (currencyQuery
+                            .getDataFrom(new Date(date), base + "exchangerates/tables/c/"));
+
+            list.get(0)
+                    .getRates()
+                    .sort(Comparator.comparing(e -> e.getAsk() - e.getBid()));
+
+
+            list.get(0)
+                    .getRates()
+                    .forEach(r ->
+                            System.out.println(r.getCurrency() + " " + (r.getAsk() - r.getBid()) ));
+        }
 
 
     }

@@ -24,10 +24,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, ParseException, java.text.ParseException, InvalidArgumentException {
 
-
-        System.out.println("XD");
-//
-        ProcessInput processInput = new ProcessInput(new String[]{"-help"});
+        ProcessInput processInput = new ProcessInput(new String[]
+                {"-help" , "2015-03-06"});
 
         try {
             processInput.process();

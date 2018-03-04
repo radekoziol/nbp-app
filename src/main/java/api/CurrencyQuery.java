@@ -10,6 +10,7 @@ import currency.Currency;
 import currency.Ore;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,13 +19,7 @@ import java.util.Scanner;
 
 public class CurrencyQuery implements Query{
 
-
-    @Override
-    public Ore getDataFrom(Date date, String address) throws InvalidArgumentException {
-        return null;
-    }
-
-    public List<Object> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
+    private void checkDate(Date startDate, Date endDate){
 
         if (startDate.getYear() < 2002){
             System.err.println("Date can not be earlier than 01-01-2002!");
@@ -34,10 +29,37 @@ public class CurrencyQuery implements Query{
             System.err.println("Start date is later than end date!");
             System.exit(1);
         }
+    }
+
+    public Currency getDataFrom(Date date, String address) throws IOException {
+
+        checkDate(date,Date.getCurrentDate());
+
+
+        String out = (new Scanner
+                (new URL(address + date.toString() )
+                        .openStream(), "UTF-8")
+                .useDelimiter("\\A")
+                .next());
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+
+        List<Currency> allData = new ArrayList<>(gson.fromJson
+                (out, new TypeToken<List<Currency>>() {
+                }.getType()));
+
+
+        return (allData).get(0);
+    }
+
+    public List<Object> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
+
+        checkDate(startDate,endDate);
 
         List<Currency> allData = new ArrayList<>();
         Date currentDate = Date.getCurrentDate();
-        currentDate = new Date("2018-01-12");
 
         try {
             GsonBuilder builder = new GsonBuilder();
@@ -79,7 +101,7 @@ public class CurrencyQuery implements Query{
             System.err.println("Something went wrong" + ex.getMessage());
         }
 
-        return Collections.singletonList((Object) allData);
+        return Collections.singletonList(allData);
 
     }
 

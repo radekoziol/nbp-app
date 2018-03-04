@@ -36,6 +36,10 @@ public class Date {
         this.day = day;
     }
 
+    public Date() {
+
+    }
+
 
     /**
      * This method checks if data is in valid format (yyyy-mm-dd)

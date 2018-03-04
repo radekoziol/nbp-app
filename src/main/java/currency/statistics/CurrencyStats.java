@@ -1,17 +1,15 @@
 package currency.statistics;
 
-import api.CurrencyQuery;
 import currency.Currency;
 import api.date.Date;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
 /*
     This class is has all analytical methods
  */
-public class CurrencyStats {
+public class CurrencyStats extends ListStats {
 
 
     private static final String base = "http://api.nbp.pl/api/";
@@ -22,72 +20,82 @@ public class CurrencyStats {
         TODO póki co daje odpowiedz na konkretne przedziały czasu
     */
 
-//    public Currency getMin(Currency currency) throws IOException {
-//
-//        CurrencyQuery currencyQuery = new CurrencyQuery();
-//
-//        Date startDate = new Date("2002", "1","2");
-//
-//        List<Currency> currencies = (List<Currency>) currencyQuery
-//                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
-//
-//        Comparator<Currency.Rates> byMid = Comparator.comparing(Currency.Rates::getMid);
-//
-//        Map<Float,String> rates = new HashMap<>();
-//
-//        currencies.forEach(c ->
-//                c.getRates()
-//                        .forEach(r ->{
-//                            if( (r.getCurrency() != null) && (r.getCurrency().equals(currency)) ) {
-//                                rates.put(r.getMid(), c.getEffectiveDate());
-//                            }
-//                        }));
-//
-//
-//        Comparator<? super Map.Entry<Float, String>> keyComparator = Comparator.comparing(Map.Entry::getKey);
-//
-//        return (Currency) rates.entrySet().stream().min(keyComparator).get();
-//
-//
-//    }
-//
-//
-//    public void getMinAndMaxOf(String currency) throws IOException {
-//
-//        CurrencyQuery currencyQuery = new CurrencyQuery();
-//
-//        Date startDate = new Date("2002", "1","2");
-//
-//        List<currency.Currency> currencies = (List<Currency>) currencyQuery
-//                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
-//
-//        Comparator<Currency.Rates> byMid = Comparator.comparing(Currency.Rates::getMid);
-//
-//        Map<Float,String> rates = new HashMap<>();
-//
-//        currencies.forEach(c ->
-//                c.getRates()
-//                        .forEach(r ->{
-//                            if( (r.getCurrency() != null) && (r.getCurrency().equals(currency)) ) {
-//                                rates.put(r.getMid(), c.getEffectiveDate());
-//                            }
-//                        }));
-//
-//
-//        Comparator<? super Map.Entry<Float, String>> keyComparator = Comparator.comparing(Map.Entry::getKey);
-//
-//        Map.Entry<Float, String> minValue = rates.entrySet()
-//                .stream().min(keyComparator).get();
-//
-//        Map.Entry<Float, String> maxValue = rates.entrySet()
-//                .stream().max(keyComparator).get();
-//
-//        System.out.println("For " + currency + ":");
-//        System.out.println("cheapest mid price: " + minValue.getKey() + ", " + minValue.getValue());
-//        System.out.println("most expensive mid price: " + maxValue.getKey() + ", " + maxValue.getValue());
-//
-//
-//    }
+    /*
+    public Currency getMin(Currency currency) throws IOException {
+
+        CurrencyQuery currencyQuery = new CurrencyQuery();
+
+        Date startDate = new Date("2002", "1","2");
+
+        List<Currency> currencies = (List<Currency>) currencyQuery
+                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
+
+        Comparator<Currency.Rates> byMid = Comparator.comparing(Currency.Rates::getMid);
+
+        Map<Float,String> rates = new HashMap<>();
+
+        currencies.forEach(c ->
+                c.getRates()
+                        .forEach(r ->{
+                            if( (r.getCurrency() != null) && (r.getCurrency().equals(currency)) ) {
+                                rates.put(r.getMid(), c.getEffectiveDate());
+                            }
+                        }));
+
+
+        Comparator<? super Map.Entry<Float, String>> keyComparator = Comparator.comparing(Map.Entry::getKey);
+
+        return (Currency) rates.entrySet().stream().min(keyComparator).get();
+
+
+    }
+    */
+
+    /*
+    public void getMinAndMaxOf(String currency) throws IOException {
+
+        CurrencyQuery currencyQuery = new CurrencyQuery();
+
+        Date startDate = new Date("2002", "1","2");
+
+        List<currency.Currency> currencies = (List<Currency>) currencyQuery
+                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
+
+        Comparator<Currency.Rates> byMid = Comparator.comparing(Currency.Rates::getMid);
+
+        Map<Float,String> rates = new HashMap<>();
+
+        currencies.forEach(c ->
+                c.getRates()
+                        .forEach(r ->{
+                            if( (r.getCurrency() != null) && (r.getCurrency().equals(currency)) ) {
+                                rates.put(r.getMid(), c.getEffectiveDate());
+                            }
+                        }));
+
+
+        Comparator<? super Map.Entry<Float, String>> keyComparator = Comparator.comparing(Map.Entry::getKey);
+
+        Map.Entry<Float, String> minValue = rates.entrySet()
+                .stream().min(keyComparator).get();
+
+        Map.Entry<Float, String> maxValue = rates.entrySet()
+                .stream().max(keyComparator).get();
+
+        System.out.println("For " + currency + ":");
+        System.out.println("cheapest mid price: " + minValue.getKey() + ", " + minValue.getValue());
+        System.out.println("most expensive mid price: " + maxValue.getKey() + ", " + maxValue.getValue());
+
+
+    }
+    */
+
+    public Currency getMostVolatileCurrency(Date startDate, Date endDate){
+
+        //TODO
+        System.out.println("This is not working yet!");
+        return null;
+    }
 
     public Map<String, Double> getAverageRateOf(List<currency.Currency> currencies, Function<Currency.Rates, Double> getter) {
 
@@ -119,38 +127,16 @@ public class CurrencyStats {
         return map;
     }
 
-    public List<Double> getMinRateOf(List<Currency> currencies, Function<Currency.Rates, Double> getter) {
-        return getRateOf(currencies, getter, Comparator.<Double>naturalOrder().reversed());
+    public Currency.Rates getMinRateOf(List<Currency> currencies, String getter) {
+        return (Currency.Rates) super.getMinOf(getRateOf(currencies), getter);
     }
 
-    public List<Double> getMaxRateOf(List<Currency> currencies, Function<Currency.Rates, Double> getter) {
-        return getRateOf(currencies, getter, Comparator.<Double>naturalOrder());
+    public Currency.Rates getMaxRateOf(List<Currency> currencies, String getter) {
+        return (Currency.Rates) super.getMaxOf(getRateOf(currencies), getter);
     }
 
-    public List<Double> getRateOf(List<Currency> currencies, Function<Currency.Rates, Double> getter, Comparator<Double> comparator) {
-
-        Double[] maxRate = new Double
-                [currencies.get(0).getRates().size()];
-        Arrays.fill(maxRate, 0d);
-
-        for (Currency currency : currencies) {
-            int counter = 0;
-
-            for (currency.Currency.Rates rate0 : currency.getRates()) {
-                if (comparator
-                        .compare
-                                (maxRate[counter], getter.apply(rate0)) < 0) {
-                    maxRate[counter] = getter.apply(rate0);
-
-                    counter++;
-                }
-            }
-
-        }
-        return Arrays.asList(maxRate);
-
-
-
+    private List<Currency.Rates> getRateOf(List<Currency> currencies) {
+        return currencies.get(0).getRates();
     }
 }
 

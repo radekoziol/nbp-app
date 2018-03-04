@@ -30,9 +30,10 @@ public class OptionFactory {
                 .build());
 
         options.addOption(Option.builder("getMostVolatileCurrency")
-                .desc("returns most volatile currency")
+                .desc("returns most volatile currency from a period")
                 .hasArgs()
-                .numberOfArgs(1)
+                .numberOfArgs(2)
+                .argName("YYYY-MM-DD")
                 .argName("YYYY-MM-DD")
                 .build());
 

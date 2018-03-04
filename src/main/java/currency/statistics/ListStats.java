@@ -29,7 +29,7 @@ public class ListStats {
 
     }
 
-    public Double getStandardDeviation(List<Object> records, String method ) throws NoSuchMethodException,IOException,IllegalArgumentException {
+    protected Double getStandardDeviation(List<Object> records, String method ) throws NoSuchMethodException,IOException,IllegalArgumentException {
 
         double average = getAverageOf(records,method);
 
@@ -51,11 +51,11 @@ public class ListStats {
 
     }
 
-    public double getAverageOf(List<?> records, String method) {
+    protected double getAverageOf(List<?> records, String method) {
         return getSummaryStatistics(records,method).getAverage();
     }
 
-    public Object getMinOf(List<Object> records, String method){
+    protected Object getMinOf(List<?> records, String method){
 
         return records.stream()
                 .filter(r ->
@@ -64,7 +64,7 @@ public class ListStats {
 
     }
 
-    public Object getMaxOf(List<Object> records, String method){
+    protected Object getMaxOf(List<?> records, String method){
 
         return records.stream()
                 .filter(r ->
