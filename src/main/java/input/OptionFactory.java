@@ -3,12 +3,16 @@ package input;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
+/**
+ * This class takes care of creating program options
+ */
 public class OptionFactory {
 
-    public OptionFactory() {
 
-    }
-
+    /**
+     * Generates options
+     * @return
+     */
     public Options generateOptions() {
 
         Options options = new Options();

@@ -6,19 +6,12 @@ import api.date.Date;
 import java.util.*;
 import java.util.function.Function;
 
-/*
-    This class is has all analytical methods
+/**
+ * This class is has in details currency statistical methods
  */
+
 public class CurrencyStats extends ListStats {
 
-
-    private static final String base = "http://api.nbp.pl/api/";
-
-    /*
-        Odszukuje walutę (tabela A), której kurs, począwszy od podanego dnia,
-        uległ największym wahaniom (waluta, której amplituda zmian kursu jest największa)
-        TODO póki co daje odpowiedz na konkretne przedziały czasu
-    */
 
     /*
     public Currency getMin(Currency currency) throws IOException {
@@ -90,6 +83,12 @@ public class CurrencyStats extends ListStats {
     }
     */
 
+    /**
+     * Returns most volatile currency from given period
+     * @param startDate
+     * @param endDate
+     * @return
+     */
     public Currency getMostVolatileCurrency(Date startDate, Date endDate){
 
         //TODO
@@ -97,6 +96,12 @@ public class CurrencyStats extends ListStats {
         return null;
     }
 
+    /**
+     * Returns average rate of given list of currencies
+     * @param currencies
+     * @param getter method returning Double
+     * @return
+     */
     public Map<String, Double> getAverageRateOf(List<currency.Currency> currencies, Function<Currency.Rates, Double> getter) {
 
         Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
@@ -127,14 +132,33 @@ public class CurrencyStats extends ListStats {
         return map;
     }
 
+    /**
+     * Returns minimum rate of given currencies
+     * @param currencies
+     * @param getter
+     * @return
+     */
     public Currency.Rates getMinRateOf(List<Currency> currencies, Function<Currency.Rates,Double> getter) {
         return super.getMinOf(getRateOf(currencies), getter);
     }
 
+    /**
+     * Returns maximum rate of given currencies
+     * @param currencies
+     * @param getter
+     * @return
+     */
     public Currency.Rates getMaxRateOf(List<Currency> currencies, Function<Currency.Rates,Double> getter) {
         return super.getMaxOf(getRateOf(currencies), getter);
     }
 
+    /**
+     * Returns list of rates for a given currency
+     * @param currencies
+     * @return
+     * @TODO this is terrible done, since there is needed only single
+     * @TODO currency object
+     */
     private List<Currency.Rates> getRateOf(List<Currency> currencies) {
         return currencies.get(0).getRates();
     }

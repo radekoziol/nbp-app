@@ -5,22 +5,30 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import currency.Currency;
-import currency.Ore;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ *
+ */
 public class CurrencyQuery implements Query{
 
+    /**
+     * Base URL for sending requests to api
+     */
     private static final String base = "http://api.nbp.pl/api/";
 
+    /**
+     * Checks if date is earlier than 2002-01-01 (limited by api)
+     * @param startDate
+     * @param endDate
+     */
     private void checkDates(Date startDate, Date endDate){
 
         if (startDate.getYear() < 2002){
@@ -35,10 +43,16 @@ public class CurrencyQuery implements Query{
 
     }
 
+    /**
+     * Returns data from given data as Currency
+     * @param date
+     * @param address
+     * @return
+     * @throws IOException
+     */
     public Currency getDataFrom(Date date, String address) throws IOException {
 
         checkDates(date,Date.getCurrentDate());
-
 
         String out = (new Scanner
                 (new URL(base + address + date.toString() )
@@ -58,7 +72,15 @@ public class CurrencyQuery implements Query{
         return (allData).get(0);
     }
 
-    public List<Object> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
+    /**
+     * Returns all data from given period as list of list of currencies
+     * @param startDate
+     * @param endDate
+     * @param address
+     * @return
+     * @throws IOException
+     */
+    public List<Currency> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
 
         checkDates(startDate,endDate);
 
@@ -105,7 +127,7 @@ public class CurrencyQuery implements Query{
             System.err.println("Something went wrong" + ex.getMessage());
         }
 
-        return Collections.singletonList(allData);
+        return allData;
 
     }
 

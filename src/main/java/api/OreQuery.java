@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sun.javaws.exceptions.InvalidArgumentException;
+import currency.Currency;
 import currency.Ore;
 
 import java.io.IOException;
@@ -14,10 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * Queries connected with ores
+ */
 public class OreQuery implements Query{
 
+    /**
+     * Base URL for sending requests to api
+     */
     private static final String base = "http://api.nbp.pl/api/";
 
+
+    /**
+     * Checks if date is earlier than 2013-01-02 (limited by api)
+     * @param startDate
+     * @param endDate
+     */
     private void checkDates(Date startDate, Date endDate){
 
         if (startDate.getYear() < 2013){
@@ -32,16 +45,17 @@ public class OreQuery implements Query{
 
     }
 
-    @Override
+
+    /**
+     * Returns data from given date as Ore object
+     * @param date
+     * @param address
+     * @return
+     * @throws InvalidArgumentException
+     */
     public Ore getDataFrom(Date date, String address) throws InvalidArgumentException {
 
         checkDates(date,Date.getCurrentDate());
-
-
-        if(date.isLaterThan(Date.getCurrentDate())) {
-            throw new InvalidArgumentException(new String[]{"Given date: " + date.toString()
-                    + "is later than current one!"});
-        }
 
         try {
             String out = new Scanner(new URL(base + address + date.toString())
@@ -63,10 +77,19 @@ public class OreQuery implements Query{
 
     }
 
-    public List<Ore> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
+    /**
+     * Returns data from given period
+     * @param startDate
+     * @param endDate
+     * @param address
+     * @return
+     * @throws IOException
+     */
+    public List<List<Currency>> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
 
         checkDates(startDate,endDate);
 
+        // Returning data
         List<Ore> allData = new ArrayList<>();
 
         try {
@@ -75,12 +98,12 @@ public class OreQuery implements Query{
             builder.setPrettyPrinting();
             Gson gson = builder.create();
 
+            // Since we can only send request of 93 days..
             Date iterator = startDate.shiftDate(93);
             String out;
 
             while (endDate.isLaterThan(iterator)) {
 
-                // TODO may be changed with address
                 out = new Scanner(new URL(base + address + startDate + "/" + iterator)
                         .openStream(), "UTF-8")
                         .useDelimiter("\\A").next();
@@ -94,6 +117,7 @@ public class OreQuery implements Query{
                 iterator = iterator.shiftDate(93);
             }
 
+            // Rest of data
             out = new Scanner(new URL(base + address + startDate + "/" + endDate)
                     .openStream(), "UTF-8")
                     .useDelimiter("\\A").next();
@@ -102,6 +126,7 @@ public class OreQuery implements Query{
                     (gson.fromJson
                             (out, new TypeToken<List<Ore>>() {
                             }.getType()));
+
         } catch (JsonSyntaxException ex) {
             System.err.println("Something went wrong" + ex.getMessage());
         }

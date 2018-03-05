@@ -2,13 +2,16 @@ package currency;
 
 import java.util.*;
 
+/**
+ * This class describes currency
+ */
 public class Currency {
 
     //Table type
     private transient String table;
     //Table number
     private transient String no;
-    //Publication api.date
+    //Publication
     private String effectiveDate;
     private List<Rates> rates;
 
@@ -16,31 +19,21 @@ public class Currency {
         this.rates = Arrays.asList(rates);
     }
 
-    public String getTable() {
-        return table;
-    }
-
-    public String getNo() {
-        return no;
-    }
-
-    public String getEffectiveDate() {
-        return effectiveDate;
-    }
-
     public List<Rates> getRates() {
         return rates;
     }
 
-
+    /**
+     * Describes properties of rate
+     */
     public static class Rates {
 
         private transient String country;
         private transient String symbol;
         private String currency;
-        //Currency code
+        // Currency code
         private transient String code;
-        //
+        // Bid rate
         private Double bid;
         // Exchange rate
         private Double ask;
@@ -56,20 +49,8 @@ public class Currency {
             this.mid = mid;
         }
 
-        public String getCountry() {
-            return country;
-        }
-
-        public String getSymbol() {
-            return symbol;
-        }
-
         public String getCurrency() {
             return currency;
-        }
-
-        public String getCode() {
-            return code;
         }
 
         public Double getBid() {

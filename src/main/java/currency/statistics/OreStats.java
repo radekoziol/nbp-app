@@ -11,16 +11,21 @@ import java.util.List;
 
 
 /**
- *
+ * This class is has in details ore(gold) statistical methods
  */
-
 public class OreStats extends ListStats{
 
-    private static final String base = "http://api.nbp.pl/api/";
 
+    /**
+     * Returns average gold price for given period
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws IOException
+     */
     public double getAverageGoldPrize(Date startDate, Date endDate) throws IOException {
 
-        String address = base + "cenyzlota" + "/" ;
+        String address = "cenyzlota" + "/" ;
 
         OreQuery oreQuery = new OreQuery();
         List<Ore> orePrizes = oreQuery.getAllDataFrom(startDate,endDate,address);
@@ -29,11 +34,17 @@ public class OreStats extends ListStats{
 
     }
 
+    /**
+     * Returns gold price for given date
+     * @param date
+     * @return
+     * @throws IOException
+     */
     public double getGoldPrize(Date date) throws IOException, InvalidArgumentException {
 
         OreQuery oreQuery = new OreQuery();
 
-        return oreQuery.getDataFrom(date,base + "cenyzlota" + "/").getCena();
+        return oreQuery.getDataFrom(date,"cenyzlota" + "/").getCena();
 
     }
 
