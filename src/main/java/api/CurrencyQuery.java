@@ -19,25 +19,29 @@ import java.util.Scanner;
 
 public class CurrencyQuery implements Query{
 
-    private void checkDate(Date startDate, Date endDate){
+    private static final String base = "http://api.nbp.pl/api/";
+
+    private void checkDates(Date startDate, Date endDate){
 
         if (startDate.getYear() < 2002){
-            System.err.println("Date can not be earlier than 01-01-2002!");
-            System.exit(1);
+            throw new IllegalArgumentException("Date can not be earlier than 01-01-2002!");
         }
         else if (startDate.isLaterThan(Date.getCurrentDate())){
-            System.err.println("Start date is later than end date!");
-            System.exit(1);
+            throw new IllegalArgumentException(startDate + " is later than current date " + Date.getCurrentDate());
         }
+        else if (startDate.isLaterThan(endDate)){
+            throw new IllegalArgumentException(startDate + " is later than " + endDate);
+        }
+
     }
 
     public Currency getDataFrom(Date date, String address) throws IOException {
 
-        checkDate(date,Date.getCurrentDate());
+        checkDates(date,Date.getCurrentDate());
 
 
         String out = (new Scanner
-                (new URL(address + date.toString() )
+                (new URL(base + address + date.toString() )
                         .openStream(), "UTF-8")
                 .useDelimiter("\\A")
                 .next());
@@ -56,7 +60,7 @@ public class CurrencyQuery implements Query{
 
     public List<Object> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
 
-        checkDate(startDate,endDate);
+        checkDates(startDate,endDate);
 
         List<Currency> allData = new ArrayList<>();
         Date currentDate = Date.getCurrentDate();
@@ -73,7 +77,7 @@ public class CurrencyQuery implements Query{
             while (currentDate.isLaterThan(iterator)) {
 
                 out = (new Scanner
-                        (new URL(address + startDate.toString() + "/" + iterator.toString() + "/\n\n")
+                        (new URL(base + address + startDate.toString() + "/" + iterator.toString() + "/\n\n")
                                 .openStream(), "UTF-8")
                         .useDelimiter("\\A")
                         .next());
@@ -87,7 +91,7 @@ public class CurrencyQuery implements Query{
             }
 
             out = (new Scanner
-                    (new URL(address + startDate.toString() + "/" +
+                    (new URL(base + address + startDate.toString() + "/" +
                             currentDate.shiftDate(-2).toString() + "/\n\n")
                             .openStream(), "UTF-8")
                     .useDelimiter("\\A")

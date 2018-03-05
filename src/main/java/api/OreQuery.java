@@ -16,8 +16,27 @@ import java.util.Scanner;
 
 public class OreQuery implements Query{
 
+    private static final String base = "http://api.nbp.pl/api/";
+
+    private void checkDates(Date startDate, Date endDate){
+
+        if (startDate.getYear() < 2013){
+            throw new IllegalArgumentException("Date can not be earlier than 2013-01-02!");
+        }
+        else if (startDate.isLaterThan(Date.getCurrentDate())){
+            throw new IllegalArgumentException(startDate + " is later than current date " + Date.getCurrentDate());
+        }
+        else if (startDate.isLaterThan(endDate)){
+            throw new IllegalArgumentException(startDate + " is later than " + endDate);
+        }
+
+    }
+
     @Override
     public Ore getDataFrom(Date date, String address) throws InvalidArgumentException {
+
+        checkDates(date,Date.getCurrentDate());
+
 
         if(date.isLaterThan(Date.getCurrentDate())) {
             throw new InvalidArgumentException(new String[]{"Given date: " + date.toString()
@@ -25,7 +44,7 @@ public class OreQuery implements Query{
         }
 
         try {
-            String out = new Scanner(new URL(address + date.toString())
+            String out = new Scanner(new URL(base + address + date.toString())
                     .openStream(), "UTF-8")
                          .useDelimiter("\\A").next();
 
@@ -33,12 +52,10 @@ public class OreQuery implements Query{
 
             builder.setPrettyPrinting();
             Gson gson = builder.create();
-            System.out.println(out);
-            System.out.println(gson.fromJson(out, Ore[].class));
             return gson.fromJson(out, Ore[].class)[0];
 
         } catch (JsonSyntaxException ex) {
-            System.err.println("Something went wrong" + ex.getMessage());
+            System.err.println("There is problem with received JSON!" );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,16 +65,7 @@ public class OreQuery implements Query{
 
     public List<Ore> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
 
-        //dla cen złota – od 2 stycznia 2013 r.
-        //limit 93 dni
-        if (!startDate.isLaterThan(new Date("2013-01-02"))){
-            System.err.println("Date can not be earlier than 02-01-2013!");
-            System.exit(1);
-        }
-        else if (startDate.isLaterThan(Date.getCurrentDate())){
-            System.err.println("Start date is later than end date!");
-            System.exit(1);
-        }
+        checkDates(startDate,endDate);
 
         List<Ore> allData = new ArrayList<>();
 
@@ -73,7 +81,7 @@ public class OreQuery implements Query{
             while (endDate.isLaterThan(iterator)) {
 
                 // TODO may be changed with address
-                out = new Scanner(new URL(address + startDate + "/" + iterator)
+                out = new Scanner(new URL(base + address + startDate + "/" + iterator)
                         .openStream(), "UTF-8")
                         .useDelimiter("\\A").next();
 
@@ -86,7 +94,7 @@ public class OreQuery implements Query{
                 iterator = iterator.shiftDate(93);
             }
 
-            out = new Scanner(new URL(address + startDate + "/" + endDate)
+            out = new Scanner(new URL(base + address + startDate + "/" + endDate)
                     .openStream(), "UTF-8")
                     .useDelimiter("\\A").next();
 

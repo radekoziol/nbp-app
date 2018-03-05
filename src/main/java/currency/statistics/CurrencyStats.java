@@ -127,12 +127,12 @@ public class CurrencyStats extends ListStats {
         return map;
     }
 
-    public Currency.Rates getMinRateOf(List<Currency> currencies, String getter) {
-        return (Currency.Rates) super.getMinOf(getRateOf(currencies), getter);
+    public Currency.Rates getMinRateOf(List<Currency> currencies, Function<Currency.Rates,Double> getter) {
+        return super.getMinOf(getRateOf(currencies), getter);
     }
 
-    public Currency.Rates getMaxRateOf(List<Currency> currencies, String getter) {
-        return (Currency.Rates) super.getMaxOf(getRateOf(currencies), getter);
+    public Currency.Rates getMaxRateOf(List<Currency> currencies, Function<Currency.Rates,Double> getter) {
+        return super.getMaxOf(getRateOf(currencies), getter);
     }
 
     private List<Currency.Rates> getRateOf(List<Currency> currencies) {

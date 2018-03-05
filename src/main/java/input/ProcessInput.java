@@ -13,25 +13,38 @@ import java.util.*;
 
 
 /**
- * This class is processing input and it's more a intermediary between other classes
+ * This class is processing (including calculating) input
  */
 public class ProcessInput {
 
-    public static final String base = "http://api.nbp.pl/api/";
-
     private final String[] args;
 
+    /**
+     * @param args input
+     */
     public ProcessInput(String[] args) {
         this.args = args;
     }
 
+    /**
+     * @throws ParseException
+     * @throws IOException
+     * @throws InvalidArgumentException
+     * @
+     */
     public void process() throws ParseException, IOException, InvalidArgumentException {
 
         OptionFactory optionFactory = new OptionFactory();
-
         Options options = optionFactory.generateOptions();
 
-        handleOptions(options);
+        try {
+            handleOptions(options);
+        }
+        catch (ParseException e){
+            System.err.println("There is problem with generated options or arguments! Message: ");
+            System.err.println(e.getMessage());
+        }
+
 
     }
 
@@ -88,7 +101,7 @@ public class ProcessInput {
 
             CurrencyQuery currencyQuery = new CurrencyQuery();
 
-            currencyQuery.getDataFrom (new Date(args[1]), base + "exchangerates/tables/a/")
+            currencyQuery.getDataFrom (new Date(args[1]), "exchangerates/tables/a/")
                     .getRates()
                     .stream()
                     .filter(x -> x.getCurrency().equals(args[0]))
@@ -103,11 +116,11 @@ public class ProcessInput {
 
             List<Currency> rates = (
                     Collections.singletonList(currencyQuery.getDataFrom
-                            (new Date(date), base + "exchangerates/tables/c/")));
+                            (new Date(date), "exchangerates/tables/c/")));
 
             CurrencyStats currencyStats = new CurrencyStats();
 
-            Currency.Rates rate = currencyStats.getMinRateOf(rates, "getBid");
+            Currency.Rates rate = currencyStats.getMinRateOf(rates, Currency.Rates::getBid);
 
             System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " +  rate.getBid());
 
@@ -126,7 +139,7 @@ public class ProcessInput {
 
             List<Currency> list = Arrays.asList
                     (currencyQuery
-                            .getDataFrom(new Date(date), base + "exchangerates/tables/c/"));
+                            .getDataFrom(new Date(date), "exchangerates/tables/c/"));
 
             list.get(0)
                     .getRates()

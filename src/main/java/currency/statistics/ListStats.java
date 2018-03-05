@@ -3,6 +3,7 @@ package currency.statistics;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Function;
 
 public class ListStats {
 
@@ -55,23 +56,19 @@ public class ListStats {
         return getSummaryStatistics(records,method).getAverage();
     }
 
-    protected Object getMinOf(List<?> records, String method){
+    protected <T> T  getMinOf(List<T> records, Function<T,Double> method){
 
         return records.stream()
-                .filter(r ->
-                        r.equals(
-                                getSummaryStatistics(records,method).getMin()));
+                .min(Comparator.comparing(method))
+                .get();
 
     }
 
-    protected Object getMaxOf(List<?> records, String method){
+    protected <T> T getMaxOf(List<T> records, Function<T,Double> method){
 
         return records.stream()
-                .filter(r ->
-                        r.equals(
-                                getSummaryStatistics(records,method)
-                                        .getMax()));
-
+                .max(Comparator.comparing(method))
+                .get();
     }
 
 }
