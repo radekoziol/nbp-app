@@ -25,7 +25,7 @@ public class OreStats extends ListStats{
         OreQuery oreQuery = new OreQuery();
         List<Ore> orePrizes = oreQuery.getAllDataFrom(startDate,endDate,address);
 
-        return super.getAverageOf(orePrizes, "getCena" );
+        return super.getAverageOf(orePrizes, Ore::getCena);
 
     }
 
