@@ -16,8 +16,6 @@ TODO what about dates like 1st of jan
  */
 
 
-
-
 public class Main {
 
     private static final String base = "http://api.nbp.pl/api/";

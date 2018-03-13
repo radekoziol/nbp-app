@@ -11,7 +11,9 @@ public class OptionFactory {
 
     /**
      * Generates options
-     * @return
+     * @return options
+     * @TODO as options number will increase they should be genarated in separated private fun
+     * @TODO well, they should be already
      */
     public Options generateOptions() {
 

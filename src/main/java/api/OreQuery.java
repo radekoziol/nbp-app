@@ -85,7 +85,7 @@ public class OreQuery implements Query{
      * @return
      * @throws IOException
      */
-    public List<List<Currency>> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
+    public List<Ore> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
 
         checkDates(startDate,endDate);
 
