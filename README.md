@@ -5,7 +5,7 @@ Simple console java application for http://api.nbp.pl/ with some features
 
 ## Getting Started
 
-``` Java
+``` 
 usage:
  -a <YYYY-MM-DD>                           returns sorted (ascending)
                                            difference between bid and ask
@@ -30,6 +30,6 @@ usage:
 
 More to find on JavaDoc or in code :>
 
-#### Project uses [simple java library](https://github.com/radekoziol/java-date-library)
+#### Project uses [simple java library](https://github.com/radekoziol/java-date-library) , [apache options](http://commons.apache.org/proper/commons-cli/javadocs/api-release/org/apache/commons/cli/Options.html), , [apache options](https://sites.google.com/site/gson/)
 
 
