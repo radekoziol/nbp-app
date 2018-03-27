@@ -98,23 +98,31 @@ public class ProcessInput {
             System.exit(0);
         }
 
+
         Arrays.stream(cmd.getOptions())
                 .forEach((Option o) ->{
-                    switch (o.getValue()) {
+                    switch (o.getOpt()) {
                         case "getGoldPrize":
                             printGoldPrize(cmd.getOptionValue("getGoldPrize"));
+                            break;
                         case "getAverageGoldPrize":
                             printAverageGoldPrize(cmd.getOptionValues("getAverageGoldPrize"));
+                            break;
                         case "getMostVolatileCurrency":
                             printMostVolatileCurrency(cmd.getOptionValues("getMostVolatileCurrency"));
+                            break;
                         case "getCurrencyPrize":
                             printCurrencyPrice(cmd.getOptionValues("getCurrencyPrize"));
+                            break;
                         case "getMinBidPrice":
                             printMinBidPrice(cmd.getOptionValue("getMinBidPrice"));
+                            break;
                         case "a": case "b":
                             System.out.println("This is not working!");
+                            break;
                     }
                 });
+
 
     }
 
