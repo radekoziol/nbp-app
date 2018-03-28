@@ -23,7 +23,7 @@ public class Main {
     public static void main(String[] args) throws IOException, ParseException, java.text.ParseException, InvalidArgumentException {
 
         ProcessInput processInput = new ProcessInput(new String[]
-                {"-getGoldPrize" , "2015-03-06"});
+                {"-getGoldPrize" , "2013-11-19"});
 
         try {
             processInput.process();

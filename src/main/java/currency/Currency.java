@@ -23,16 +23,23 @@ public class Currency {
         return rates;
     }
 
+    public String getEffectiveDate() {
+        return effectiveDate;
+    }
+
     /**
      * Describes properties of rate
      */
     public static class Rates {
 
+        public static HashMap<String,String> codes = generateCodes();
+
+        //
         private transient String country;
         private transient String symbol;
         private String currency;
         // Currency code
-        private transient String code;
+        private String code;
         // Bid rate
         private Double bid;
         // Exchange rate
@@ -71,6 +78,34 @@ public class Currency {
 
         public void setAsk(Double ask) {
             this.ask = ask;
+        }
+
+
+        private static  HashMap<String,String> generateCodes() {
+
+            HashMap<String,String> codes = new HashMap<>();
+
+            codes.put("forint (Węgry)","HUF");
+            codes.put("jen (Japonia)","JPY");
+            codes.put("korona czeska","CZK");
+            codes.put("korona szwedzka","SEK");
+            codes.put("korona norweska","NOK");
+            codes.put("korona duńska","DKK");
+            codes.put("dolar australijski","AUD");
+            codes.put("dolar kanadyjski","CAD");
+            codes.put("dolar amerykański","USD");
+            codes.put("frank szwajcarski","CHF");
+            codes.put("euro","EUR");
+            codes.put("SDR (MFW)","XDR");
+            codes.put("funt szterling","GBP");
+
+            return codes;
+        }
+
+
+
+        public String getCode() {
+            return code;
         }
     }
 

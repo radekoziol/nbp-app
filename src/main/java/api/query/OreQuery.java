@@ -1,12 +1,12 @@
-package api;
+package api.query;
 
 import api.date.Date;
+import api.query.request.Request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sun.javaws.exceptions.InvalidArgumentException;
-import currency.Currency;
 import currency.Ore;
 
 import java.io.IOException;
@@ -20,10 +20,12 @@ import java.util.Scanner;
  */
 public class OreQuery implements Query{
 
+
     /**
-     * Base URL for sending requests to api
+     * Api has data back to 2002
      */
-    private static final String base = "http://api.nbp.pl/api/";
+    static public Date oldestDate = new Date("2013-01-02");
+
 
 
     /**
@@ -33,7 +35,7 @@ public class OreQuery implements Query{
      */
     private void checkDates(Date startDate, Date endDate){
 
-        if (startDate.getYear() < 2013){
+        if (!startDate.isLaterThan(oldestDate) ){
             throw new IllegalArgumentException("Date can not be earlier than 2013-01-02!");
         }
         else if (startDate.isLaterThan(Date.getCurrentDate())){
@@ -48,17 +50,16 @@ public class OreQuery implements Query{
 
     /**
      * Returns data from given date as Ore object
-     * @param date
-     * @param address
+     * @param request
      * @return
      * @throws InvalidArgumentException
      */
-    public Ore getDataFrom(Date date, String address) throws InvalidArgumentException {
+    public Ore getDataFrom(Request request) throws InvalidArgumentException {
 
-        checkDates(date,Date.getCurrentDate());
+        checkDates(request.getStartDate(),request.getStartDate());
 
         try {
-            String out = new Scanner(new URL(base + address + date.toString())
+            String out = new Scanner(new URL( request.toString() )
                     .openStream(), "UTF-8")
                          .useDelimiter("\\A").next();
 
@@ -69,7 +70,7 @@ public class OreQuery implements Query{
             return gson.fromJson(out, Ore[].class)[0];
 
         } catch (JsonSyntaxException ex) {
-            System.err.println("There is problem with received JSON!" );
+            System.err.println(ex.getMessage() );
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -79,15 +80,16 @@ public class OreQuery implements Query{
 
     /**
      * Returns data from given period
-     * @param startDate
-     * @param endDate
-     * @param address
+     * @param request
      * @return
      * @throws IOException
      */
-    public List<Ore> getAllDataFrom(Date startDate, Date endDate, String address) throws IOException {
+    public List<Ore> getAllDataFrom(Request request) throws IOException {
 
-        checkDates(startDate,endDate);
+        checkDates(request.getStartDate(), request.getEndDate());
+
+        Date startDate = request.getStartDate();
+        Date endDate = request.getEndDate();
 
         // Returning data
         List<Ore> allData = new ArrayList<>();
@@ -104,7 +106,7 @@ public class OreQuery implements Query{
 
             while (endDate.isLaterThan(iterator)) {
 
-                out = new Scanner(new URL(base + address + startDate + "/" + iterator)
+                out = new Scanner(new URL( request.toString() + "/" + iterator)
                         .openStream(), "UTF-8")
                         .useDelimiter("\\A").next();
 
@@ -118,7 +120,7 @@ public class OreQuery implements Query{
             }
 
             // Rest of data
-            out = new Scanner(new URL(base + address + startDate + "/" + endDate)
+            out = new Scanner(new URL(request.toString() +  startDate + "/" + endDate)
                     .openStream(), "UTF-8")
                     .useDelimiter("\\A").next();
 
@@ -128,11 +130,12 @@ public class OreQuery implements Query{
                             }.getType()));
 
         } catch (JsonSyntaxException ex) {
-            System.err.println("Something went wrong" + ex.getMessage());
+            System.err.println(ex.getMessage());
         }
 
 
         return allData;
 
     }
+
 }

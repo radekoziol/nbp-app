@@ -1,10 +1,10 @@
 package currency.statistics;
 
-import api.OreQuery;
+import api.query.OreQuery;
 import api.date.Date;
+import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import currency.Ore;
-import currency.statistics.ListStats;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,12 +27,14 @@ public class OreStats extends ListStats{
 
         String address = "cenyzlota" + "/" ;
 
-        OreQuery oreQuery = new OreQuery();
-        List<Ore> orePrizes = oreQuery.getAllDataFrom(startDate,endDate,address);
+//        OreQuery oreQuery = new OreQuery();
+//        List<Ore> orePrizes = oreQuery.getAllDataFrom(startDate,endDate,address);
+//
+//        return super.getAverageOf(orePrizes, Ore::getCena);
 
-        return super.getAverageOf(orePrizes, Ore::getCena);
-
+        return Double.parseDouble(null);
     }
+
 
     /**
      * Returns gold price for given date
@@ -44,7 +46,13 @@ public class OreStats extends ListStats{
 
         OreQuery oreQuery = new OreQuery();
 
-        return oreQuery.getDataFrom(date,"cenyzlota" + "/").getCena();
+        Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
+        Request request = requestBuilder
+                .setCode("cenyzlota/")
+                .setStartDate(date)
+                .build();
+
+        return oreQuery.getDataFrom(request).getCena();
 
     }
 

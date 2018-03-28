@@ -36,9 +36,7 @@ public class Date {
         this.day = day;
     }
 
-    public Date() {
-
-    }
+    public Date() {}
 
 
     /**

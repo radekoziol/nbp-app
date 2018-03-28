@@ -1,12 +1,13 @@
 package input;
 
-import api.CurrencyQuery;
+import api.query.CurrencyQuery;
 import api.date.Date;
+import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import currency.Currency;
 import currency.statistics.CurrencyStats;
 import currency.statistics.OreStats;
+import jdk.management.resource.ResourceRequest;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -30,29 +31,6 @@ public class ProcessInput {
         this.args = args;
     }
 
-    private void printMinBidPrice(String date) {
-
-        CurrencyQuery currencyQuery = new CurrencyQuery();
-
-        try {
-            List<Currency> rates = (
-                    Collections.singletonList(currencyQuery.getDataFrom
-                            (new Date(date), "exchangerates/tables/c/")));
-
-            CurrencyStats currencyStats = new CurrencyStats();
-
-            Currency.Rates rate = currencyStats.getMinRateOf(rates, Currency.Rates::getBid);
-
-            System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " + rate.getBid());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Given argument: " + date +
-                    " is not in right format or is invalid. ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 
     /**
      * This method process arguments and generate program options.
@@ -100,26 +78,29 @@ public class ProcessInput {
 
 
         Arrays.stream(cmd.getOptions())
-                .forEach((Option o) ->{
+                .forEach((Option o) -> {
                     switch (o.getOpt()) {
                         case "getGoldPrize":
                             printGoldPrize(cmd.getOptionValue("getGoldPrize"));
                             break;
-                        case "getAverageGoldPrize":
-                            printAverageGoldPrize(cmd.getOptionValues("getAverageGoldPrize"));
-                            break;
-                        case "getMostVolatileCurrency":
-                            printMostVolatileCurrency(cmd.getOptionValues("getMostVolatileCurrency"));
-                            break;
-                        case "getCurrencyPrize":
-                            printCurrencyPrice(cmd.getOptionValues("getCurrencyPrize"));
-                            break;
-                        case "getMinBidPrice":
-                            printMinBidPrice(cmd.getOptionValue("getMinBidPrice"));
-                            break;
-                        case "a": case "b":
-                            System.out.println("This is not working!");
-                            break;
+//                        case "getAverageGoldPrize":
+//                            printAverageGoldPrize(cmd.getOptionValues("getAverageGoldPrize"));
+//                            break;
+//                        case "getMostVolatileCurrency":
+//                            printMostVolatileCurrency(cmd.getOptionValues("getMostVolatileCurrency"));
+//                            break;
+//                        case "getCurrencyPrize":
+//                            printCurrencyPrice(cmd.getOptionValues("getCurrencyPrize"));
+//                            break;
+//                        case "getMinBidPrice":
+//                            printMinBidPrice(cmd.getOptionValue("getMinBidPrice"));
+//                            break;
+//                        case "a":
+//                            printA(cmd.getOptionValue("a"));
+//                            break;
+//                        case "b":
+//                            printB(cmd.getOptionValue("b"));
+//                            break;
                     }
                 });
 
@@ -129,9 +110,10 @@ public class ProcessInput {
 
     /**
      * Prints gold price for given date
+     *
      * @param date
      */
-    private void printGoldPrize(String date)  {
+    private void printGoldPrize(String date) {
 
         OreStats oreStats = new OreStats();
 
@@ -144,101 +126,155 @@ public class ProcessInput {
 
     }
 
-    /**
-     * Prints average gold prize for given dates
-     * @param dates
-     */
-    private void printAverageGoldPrize(String[] dates) {
-
-        OreStats oreStats = new OreStats();
-
-        try {
-            System.out.println("Average gold prize from " +
-                    dates[0] + " to " + dates[1] + ": " +
-                    oreStats.getAverageGoldPrize(
-                            new Date(dates[0]), new Date(dates[1])));
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Given dates: " + dates[0] + "," + dates[1] +
-                    " are not in right format or are invalid. ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * Prints most volatile currency for given dates
-     * @param dates
-     */
-    private void printMostVolatileCurrency(String[] dates) {
-
-        CurrencyStats currencyStats = new CurrencyStats();
-
-        try {
-            System.out.println("Most volatile currency from " +
-                    dates[0] + "to " + dates[1] + ": " +
-                    currencyStats
-                            .getMostVolatileCurrency(new Date(dates[0]), new Date(dates[1])));
-
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Given dates: " + dates[0] + "," + dates[1] +
-                    " are not in right format or are invalid. ");
-        }
-
-    }
-
-    /**
-     * Prints currency price for given date
-     * @param arguments
-     */
-    private void printCurrencyPrice(String[] arguments) {
-
-
-        CurrencyQuery currencyQuery = new CurrencyQuery();
-
-        try {
-            currencyQuery.getDataFrom(new Date(arguments[1]), "exchangerates/tables/a/")
-                    .getRates()
-                    .stream()
-                    .filter(x -> x.getCurrency().equals(arguments[0]))
-                    .forEach(r ->
-                            System.out.println(arguments[0] + " price for " + arguments[1] + ": " + r.getMid()));
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Given arguments: " + arguments[0] + "," + arguments[1] +
-                    " are not in right format or are invalid. ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    private void printB() {
-        System.out.println("This is not working yet");
-
-    }
-
-    private void printA(String date) throws IOException {
-        System.out.println("This is not working probably yet");
-
-        CurrencyQuery currencyQuery = new CurrencyQuery();
-
-        List<Currency> list = Arrays.asList
-                (currencyQuery
-                        .getDataFrom(new Date(date), "exchangerates/tables/c/"));
-
-        list.get(0)
-                .getRates()
-                .sort(Comparator.comparing(e -> e.getAsk() - e.getBid()));
-
-
-        list.get(0)
-                .getRates()
-                .forEach(r ->
-                        System.out.println(r.getCurrency() + " " + (r.getAsk() - r.getBid())));
-
-    }
-
-
-
+//    /**
+//     * Prints average gold prize for given dates
+//     *
+//     * @param dates
+//     */
+//    private void printAverageGoldPrize(String[] dates) {
+//
+//        OreStats oreStats = new OreStats();
+//
+//        try {
+//            System.out.println("Average gold prize from " +
+//                    dates[0] + " to " + dates[1] + ": " +
+//                    oreStats.getAverageGoldPrize(
+//                            new Date(dates[0]), new Date(dates[1])));
+//        } catch (IllegalArgumentException ex) {
+//            System.err.println("Given dates: " + dates[0] + "," + dates[1] +
+//                    " are not in right format or are invalid. ");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+//
+//    /**
+//     * Prints most volatile currency for given dates
+//     *
+//     * @param dates
+//     */
+//    private void printMostVolatileCurrency(String[] dates) {
+//
+//        CurrencyStats currencyStats = new CurrencyStats();
+//
+//        try {
+//            System.out.println("Most volatile currency from " +
+//                    dates[0] + "to " + dates[1] + ": " +
+//                    currencyStats
+//                            .getMostVolatileCurrency(new Date(dates[0]), new Date(dates[1])));
+//
+//        } catch (IllegalArgumentException ex) {
+//            System.err.println("Given dates: " + dates[0] + "," + dates[1] +
+//                    " are not in right format or are invalid. ");
+//        }
+//
+//    }
+//
+//    /**
+//     * Prints currency price for given date
+//     *
+//     * @param arguments
+//     */
+//    private void printCurrencyPrice(String[] arguments) {
+//
+//
+//        CurrencyQuery currencyQuery = new CurrencyQuery();
+//
+//        try {
+//            currencyQuery.getDataFrom(new Date(arguments[1]), "exchangerates/tables/a/")
+//                    .getRates()
+//                    .stream()
+//                    .filter(x -> x.getCurrency().equals(arguments[0]))
+//                    .forEach(r ->
+//                            System.out.println(arguments[0] + " price for " + arguments[1] + ": " + r.getMid()));
+//        } catch (IllegalArgumentException ex) {
+//            System.err.println("Given arguments: " + arguments[0] + "," + arguments[1] +
+//                    " are not in right format or are invalid. ");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
+//
+//    private void printB(String currency) {
+//        System.out.println("Currency " + currency +
+//                " was the cheapest on: ");
+//
+//        CurrencyQuery currencyQuery = new CurrencyQuery();
+//
+//        List<List<Currency>> list = null;
+//        try {
+//            list = Arrays.asList
+//                    (currencyQuery
+//                            .getAllDataFrom(CurrencyQuery.oldestDate, CurrencyQuery.oldestDate,"/exchangerates/rates/c/"
+//                                            + Currency.Rates.codes.get(currency) + "/"));
+////            Currency min = list.
+////            System.out.println(cur.getEffectiveDate() + " - " +
+////                    cur
+////                            .getRates().get(0)
+////                            .getMid());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//
+//    }
+//
+//    private void printA(String date) {
+//
+//        System.out.println("Difference between bid and ask for " + date + " are: \n");
+//
+//        CurrencyQuery currencyQuery = new CurrencyQuery();
+//
+//        List<Currency> list = null;
+//        try {
+//            list = Arrays.asList
+//                    (currencyQuery
+//                            .getDataFrom(new Date(date), "exchangerates/tables/c/"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        assert list != null;
+//        list.get(0)
+//                .getRates()
+//                .sort(Comparator.comparing(e -> e.getAsk() - e.getBid()));
+//
+//
+//        list.get(0)
+//                .getRates()
+//                .forEach(r ->
+//                        System.out.println(r.getCurrency() + " - " + (r.getAsk() - r.getBid())));
+//
+//    }
+//
+//
+//    private void printMinBidPrice(String date) {
+//
+//        CurrencyQuery currencyQuery = new CurrencyQuery();
+//
+//        try {
+//            List<Currency> rates = (
+//                    Collections.singletonList(currencyQuery.getDataFrom
+//                            (new Date(date), "exchangerates/tables/c/")));
+//
+//            CurrencyStats currencyStats = new CurrencyStats();
+//
+//            Currency.Rates rate = currencyStats.getMinRateOf(rates, Currency.Rates::getBid);
+//
+//            System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " + rate.getBid());
+//        } catch (IllegalArgumentException ex) {
+//            System.err.println("Given argument: " + date +
+//                    " is not in right format or is invalid. ");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
+//
+//
 }
