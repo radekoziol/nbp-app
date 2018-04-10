@@ -120,7 +120,7 @@ public class OreQuery implements Query{
             }
 
             // Rest of data
-            out = new Scanner(new URL(request.toString() +  startDate + "/" + endDate)
+            out = new Scanner(new URL(request.toString())
                     .openStream(), "UTF-8")
                     .useDelimiter("\\A").next();
 

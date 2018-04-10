@@ -18,7 +18,7 @@ import java.util.Scanner;
 /**
  *
  */
-public class CurrencyQuery implements Query{
+public class CurrencyQuery{
 
 
     /**
@@ -50,45 +50,56 @@ public class CurrencyQuery implements Query{
 
     }
 
-    @Override
-    public <T> List<T> getAllDataFrom(Request request) throws IOException {
-        return null;
-    }
-
-    @Override
-    public <T> T getDataFrom(Request request) throws InvalidArgumentException, IOException {
-        return null;
-    }
 
     /**
      * Returns data from given data as Currency
-     * @param date
-     * @param address
+     * @param request
      * @return
      * @throws IOException
      */
-//    public Currency getDataFrom(Request request) throws IOException {
-//
-////        checkDates(date,Date.getCurrentDate());
-//
-//        String out = (new Scanner
-//                (new URL(base + address + date.toString() )
-//                        .openStream(), "UTF-8")
-//                .useDelimiter("\\A")
-//                .next());
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.setPrettyPrinting();
-//        Gson gson = builder.create();
-//
-//        List<Currency> allData = new ArrayList<>(gson.fromJson
-//                (out, new TypeToken<List<Currency>>() {
-//                }.getType()));
-//
-//
-//        return (allData).get(0);
-//    }
-//
+    public Currency getCurrencyDataFrom(Request request) throws IOException{
+
+        checkDates(request.getStartDate(),request.getStartDate());
+
+        String out = (new Scanner
+                (new URL(request.toString())
+                        .openStream(), "UTF-8")
+                .useDelimiter("\\A")
+                .next());
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+
+        return gson.fromJson(out,Currency.class);
+    }
+
+        /**
+     * Returns data from given data as Currency
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    public List<Currency> getCurrencyTableFrom(Request request) throws IOException {
+        checkDates(request.getStartDate(),request.getStartDate());
+
+        String out = (new Scanner
+                (new URL(request.toString())
+                        .openStream(), "UTF-8")
+                .useDelimiter("\\A")
+                .next());
+
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+
+        return  new ArrayList<>(gson.fromJson
+                (out, new TypeToken<List<Currency>>() {
+                }.getType()));
+
+    }
+
+
 //    /**
 //     * Returns data from given address
 //     * @param address

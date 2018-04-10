@@ -1,6 +1,7 @@
 package api.query.request;
 
 import api.date.Date;
+import currency.Currency;
 
 public class Request {
 
@@ -11,13 +12,13 @@ public class Request {
     public static final String base = "http://api.nbp.pl/api/";
 
     private String code;
-    private String table;
     private Date startDate;
     private Date endDate;
+    private String currency;
 
     public Request(RequestBuilder requestBuilder) {
         this.code = requestBuilder.code;
-        this.table = requestBuilder.table;
+        this.currency = requestBuilder.currency;
         this.startDate = requestBuilder.startDate;
         this.endDate = requestBuilder.endDate;
     }
@@ -26,9 +27,10 @@ public class Request {
     public static class RequestBuilder{
 
         private String code;
-        private String table;
         private Date startDate;
         private Date endDate;
+        private String currency;
+
 
 
         public RequestBuilder setCode(String code) {
@@ -36,8 +38,8 @@ public class Request {
             return this;
         }
 
-        public RequestBuilder setTable(String table) {
-            this.table = table;
+        public RequestBuilder setCurrency(String currency) {
+            this.currency = Currency.Rates.codes.get(currency);
             return this;
         }
 
@@ -57,18 +59,32 @@ public class Request {
 
     }
 
-
     @Override
     public String toString() {
-        return base + code + startDate;
+
+        StringBuilder str = new StringBuilder();
+        str.append(base + "/")
+                .append(code + "/");
+
+        if(currency != null)
+            str.append(currency + "/");
+
+        if(startDate != null)
+            str.append(startDate + "/");
+
+        if(endDate != null)
+            str.append(endDate + "/");
+
+
+        return str.toString();
     }
 
     public String getCode() {
         return code;
     }
 
-    public String getTable() {
-        return table;
+    public String getCurrency() {
+        return currency;
     }
 
     public Date getStartDate() {

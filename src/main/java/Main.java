@@ -23,7 +23,11 @@ public class Main {
     public static void main(String[] args) throws IOException, ParseException, java.text.ParseException, InvalidArgumentException {
 
         ProcessInput processInput = new ProcessInput(new String[]
-                {"-getGoldPrize" , "2013-11-19"});
+                {"-b" , "euro",
+//                        "-getAverageGoldPrize" , "2013-11-19", "2013-12-19",
+//                        "-getCurrencyPrize" , "euro", "2017-03-28",
+//                        "-getMinBidPrice" , "2017-03-28"
+                        });
 
         try {
             processInput.process();

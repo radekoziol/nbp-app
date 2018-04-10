@@ -25,14 +25,18 @@ public class OreStats extends ListStats{
      */
     public double getAverageGoldPrize(Date startDate, Date endDate) throws IOException {
 
-        String address = "cenyzlota" + "/" ;
+        Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
+        Request request = requestBuilder
+                .setCode("cenyzlota/")
+                .setStartDate(startDate)
+                .setEndDate(endDate)
+                .build();
 
-//        OreQuery oreQuery = new OreQuery();
-//        List<Ore> orePrizes = oreQuery.getAllDataFrom(startDate,endDate,address);
-//
-//        return super.getAverageOf(orePrizes, Ore::getCena);
+        OreQuery oreQuery = new OreQuery();
+        List<Ore> orePrizes = oreQuery.getAllDataFrom(request);
 
-        return Double.parseDouble(null);
+        return super.getAverageOf(orePrizes, Ore::getCena);
+
     }
 
 

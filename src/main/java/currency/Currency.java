@@ -15,6 +15,10 @@ public class Currency {
     private String effectiveDate;
     private List<Rates> rates;
 
+    public void setEffectiveDate(String effectiveDate) {
+        this.effectiveDate = effectiveDate;
+    }
+
     public void setRates(Rates[] rates) {
         this.rates = Arrays.asList(rates);
     }
