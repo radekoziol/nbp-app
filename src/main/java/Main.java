@@ -18,11 +18,9 @@ TODO what about dates like 1st of jan
 
 public class Main {
 
-    private static final String base = "http://api.nbp.pl/api/";
-
     public static void main(String[] args) throws IOException, ParseException, java.text.ParseException, InvalidArgumentException {
 
-        // Example input
+        //Example input
         ProcessInput processInput = new ProcessInput(new String[]
                 {"-a" , "2015-11-19",
                         "-getAverageGoldPrize" , "2013-11-19", "2013-12-19",
