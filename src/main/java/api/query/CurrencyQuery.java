@@ -4,15 +4,18 @@ import api.date.Date;
 import api.query.request.Request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  *
  */
-public class CurrencyQuery{
+public class CurrencyQuery implements Query{
 
 
     /**
@@ -46,12 +49,12 @@ public class CurrencyQuery{
 
 
     /**
-     * Returns data from given data as Currency
+     * Returns data from given request
      * @param request
      * @return
      * @throws IOException
      */
-    public Object getCurrencyDataFrom(Request request) throws IOException{
+    public <T> T getDataFrom(Request request) throws IOException{
 
         checkDates(request.getStartDate(),request.getStartDate());
 
@@ -69,64 +72,63 @@ public class CurrencyQuery{
     }
 
 
-//    /**
-//     * Returns all data from given period as list of list of currencies
-//     * @param startDate
-//     * @param endDate
-//     * @param address
-//     * @return
-//     * @throws IOException
-//     */
-//    public List<Currency> getAllDataFrom(Request request) throws IOException {
-//
-//        checkDates(startDate,endDate);
-//
-//        List<Currency> allData = new ArrayList<>();
-//        Date currentDate = Date.getCurrentDate();
-//
-//        try {
-//            GsonBuilder builder = new GsonBuilder();
-//            builder.setPrettyPrinting();
-//            Gson gson = builder.create();
-//
-//
-//            Date iterator = startDate.shiftDate(93);
-//            String out;
-//
-//            while (currentDate.isLaterThan(iterator)) {
-//
-//                out = (new Scanner
-//                        (new URL(base + address + startDate.toString() + "/" + iterator.toString() + "/\n\n")
-//                                .openStream(), "UTF-8")
-//                        .useDelimiter("\\A")
-//                        .next());
-//
-//                allData.addAll(gson.fromJson(out, new TypeToken<List<Currency>>() {
-//                }.getType()));
-//
-//                startDate = iterator;
-//                iterator = iterator.shiftDate(93);
-//
-//            }
-//
-//            out = (new Scanner
-//                    (new URL(base + address + startDate.toString() + "/" +
-//                            currentDate.shiftDate(-2).toString() + "/\n\n")
-//                            .openStream(), "UTF-8")
-//                    .useDelimiter("\\A")
-//                    .next());
-//
-//            allData.addAll
-//                    (gson.fromJson
-//                            (out, new TypeToken<List<Currency>>() {
-//                            }.getType()));
-//        }catch (JsonSyntaxException ex){
-//            System.err.println("Something went wrong" + ex.getMessage());
-//        }
-//
-//        return allData;
-//
-//    }
-//
+
+
+    /**
+     * Returns data from given period
+     * @param request
+     * @return
+     * @throws IOException
+     */
+    public <T> List<T> getAllDataFrom(Request request) throws IOException {
+
+        checkDates(request.getStartDate(),request.getStartDate());
+
+        List<T> allData = new ArrayList<>();
+        Date currentDate = Date.getCurrentDate();
+
+        try {
+            GsonBuilder builder = new GsonBuilder();
+            builder.setPrettyPrinting();
+            Gson gson = builder.create();
+
+
+            Date iterator = request.getStartDate().shiftDate(93);
+
+            Date startDate = request.getStartDate();
+            String out;
+
+            while (currentDate.isLaterThan(iterator)) {
+
+                out = (new Scanner
+                        (new URL(request.getBase() + startDate.toString() + "/" + iterator.toString() + "/\n\n")
+                                .openStream(), "UTF-8")
+                        .useDelimiter("\\A")
+                        .next());
+
+                allData.addAll(gson.fromJson(out, request.getReturnType()));
+
+                startDate = iterator;
+                iterator = iterator.shiftDate(93);
+
+            }
+
+            out = (new Scanner
+                    (new URL(request.getBase()+ startDate.toString() + "/" +
+                            currentDate.shiftDate(-2).toString() + "/\n\n")
+                            .openStream(), "UTF-8")
+                    .useDelimiter("\\A")
+                    .next());
+
+            allData.addAll
+                    (gson.fromJson
+                            (out, request.getReturnType()));
+        }catch (JsonSyntaxException ex){
+            System.err.println("Something went wrong" + ex.getMessage());
+        }
+
+        return allData;
+
+    }
 
 }

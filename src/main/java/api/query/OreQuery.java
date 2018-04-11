@@ -17,6 +17,8 @@ import java.util.Scanner;
 
 /**
  * Queries connected with ores
+ * TODO should be adjusted to request class (returning types and dates)
+ * TODO request.returnType makes no sense here so .. ?
  */
 public class OreQuery implements Query{
 
@@ -25,7 +27,6 @@ public class OreQuery implements Query{
      * Api has data back to 2002
      */
     static public Date oldestDate = new Date("2013-01-02");
-
 
 
     /**

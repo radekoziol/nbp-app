@@ -13,76 +13,6 @@ import java.util.function.Function;
 public class CurrencyStats extends ListStats {
 
 
-    /*
-    public Currency getMin(Currency currency) throws IOException {
-
-        CurrencyQuery currencyQuery = new CurrencyQuery();
-
-        Date startDate = new Date("2002", "1","2");
-
-        List<Currency> currencies = (List<Currency>) currencyQuery
-                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
-
-        Comparator<Currency.Rates> byMid = Comparator.comparing(Currency.Rates::getMid);
-
-        Map<Float,String> rates = new HashMap<>();
-
-        currencies.forEach(c ->
-                c.getRates()
-                        .forEach(r ->{
-                            if( (r.getCurrency() != null) && (r.getCurrency().equals(currency)) ) {
-                                rates.put(r.getMid(), c.getEffectiveDate());
-                            }
-                        }));
-
-
-        Comparator<? super Map.Entry<Float, String>> keyComparator = Comparator.comparing(Map.Entry::getKey);
-
-        return (Currency) rates.entrySet().stream().min(keyComparator).get();
-
-
-    }
-    */
-
-    /*
-    public void getMinAndMaxOf(String currency) throws IOException {
-
-        CurrencyQuery currencyQuery = new CurrencyQuery();
-
-        Date startDate = new Date("2002", "1","2");
-
-        List<currency.Currency> currencies = (List<Currency>) currencyQuery
-                .getAllDataFrom(startDate,base + "exchangerates/tables/a/");
-
-        Comparator<Currency.Rates> byMid = Comparator.comparing(Currency.Rates::getMid);
-
-        Map<Float,String> rates = new HashMap<>();
-
-        currencies.forEach(c ->
-                c.getRates()
-                        .forEach(r ->{
-                            if( (r.getCurrency() != null) && (r.getCurrency().equals(currency)) ) {
-                                rates.put(r.getMid(), c.getEffectiveDate());
-                            }
-                        }));
-
-
-        Comparator<? super Map.Entry<Float, String>> keyComparator = Comparator.comparing(Map.Entry::getKey);
-
-        Map.Entry<Float, String> minValue = rates.entrySet()
-                .stream().min(keyComparator).get();
-
-        Map.Entry<Float, String> maxValue = rates.entrySet()
-                .stream().max(keyComparator).get();
-
-        System.out.println("For " + currency + ":");
-        System.out.println("cheapest mid price: " + minValue.getKey() + ", " + minValue.getValue());
-        System.out.println("most expensive mid price: " + maxValue.getKey() + ", " + maxValue.getValue());
-
-
-    }
-    */
-
     /**
      * Returns most volatile currency from given period
      * @param startDate
@@ -115,7 +45,6 @@ public class CurrencyStats extends ListStats {
             }
         }
 
-
         //Filling averageExchangeRate to map
         Map<String, Double> map = new HashMap<>();
         for (currency.Table currency : currencies) {
@@ -138,8 +67,8 @@ public class CurrencyStats extends ListStats {
      * @param getter
      * @return
      */
-    public Table.Rates getMinRateOf(List<Table> currencies, Function<Table.Rates,Double> getter) {
-        return super.getMinOf(getRateOf(currencies), getter);
+    public Table.Rates getMinRateOf(List<Table.Rates> currencies, Function<Table.Rates,Double> getter) {
+        return super.getMinOf(currencies, getter);
     }
 
     /**
@@ -148,19 +77,9 @@ public class CurrencyStats extends ListStats {
      * @param getter
      * @return
      */
-    public Table.Rates getMaxRateOf(List<Table> currencies, Function<Table.Rates,Double> getter) {
-        return super.getMaxOf(getRateOf(currencies), getter);
+    public Table.Rates getMaxRateOf(List<Table.Rates> currencies, Function<Table.Rates,Double> getter) {
+        return super.getMaxOf(currencies, getter);
     }
 
-    /**
-     * Returns list of rates for a given currency
-     * @param currencies
-     * @return
-     * @TODO this is terrible done, since there is needed only single
-     * @TODO currency object
-     */
-    private List<Table.Rates> getRateOf(List<Table> currencies) {
-        return currencies.get(0).getRates();
-    }
 }
 

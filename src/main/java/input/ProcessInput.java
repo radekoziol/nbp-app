@@ -6,6 +6,7 @@ import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import currency.Table;
 import currency.statistics.CurrencyStats;
+import currency.statistics.ListStats;
 import currency.statistics.OreStats;
 import org.apache.commons.cli.*;
 
@@ -190,7 +191,7 @@ public class ProcessInput {
             CurrencyQuery currencyQuery = new CurrencyQuery();
 
             Table currency = (Table) currencyQuery
-                    .getCurrencyDataFrom(request);
+                    .getDataFrom(request);
 
             System.out.println(arguments[0] + " price for "
                     + arguments[1] + ": bid = " + currency.getRates().get(0).getBid()
@@ -212,64 +213,37 @@ public class ProcessInput {
 //        http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
         CurrencyQuery currencyQuery = new CurrencyQuery();
         Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
+
         List<List<Table.Rates>> list = new LinkedList<>();
 
-        Date it = CurrencyQuery.oldestDate;
-        while (Date.getCurrentDate().isLaterThan(it)) {
-
-            Request request;
-            if (Date.getCurrentDate().isLaterThan(it.shiftDate(91)))
-                request = requestBuilder
-                        .setCode("exchangerates/rates/c")
-                        .setCurrency(currency)
-                        .setStartDate(it)
-                        .setEndDate(it.shiftDate(91))
-                        .setReturnType(Currency.class)
-                        .build();
-            else {
-                // @TODO found mistake at date.daydiffrence  (the sequence)
-                Date date1 = it.shiftDate(Date.dayDifference(it, Date.getCurrentDate()) - 5);
-                request = requestBuilder
-                        .setCode("exchangerates/rates/c")
-                        .setCurrency(currency)
-                        .setStartDate(it)
-                        .setEndDate(date1)
-                        .build();
-            }
-
-            try {
-                Table currency1 = (Table) currencyQuery
-                        .getCurrencyDataFrom(request);
-                list.add(currency1.getRates());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            it = it.shiftDate(91);
-
-        }
+        Request request = requestBuilder
+                .setCode("exchangerates/rates/c")
+                .setCurrency(currency)
+                .setStartDate(CurrencyQuery.oldestDate)
+                .setReturnType(Table[].class)
+                .build();
 
         List<Table.Rates> allRates = new LinkedList<>();
-        list.forEach(allRates::addAll);
+        try {
+            allRates = currencyQuery
+                    .getAllDataFrom(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Optional<Table.Rates> min = allRates
-                .stream()
-                .min(Comparator.comparing(Table.Rates::getBid));
 
-        Optional<Table.Rates> max = allRates
-                .stream()
-                .max(Comparator.comparing(Table.Rates::getBid));
+        CurrencyStats currencyStats = new CurrencyStats();
+        Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
+        Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
 
-        min.ifPresent(
-                c -> System.out.println(currency + " was the cheapest on " +
-                        c.getEffectiveDate() + " - " +
-                        c.getBid()))
-        ;
-        max.ifPresent(
-                c -> System.out.println(currency + " was the most expensive on " +
-                        c.getEffectiveDate() + " - " +
-                        c.getBid()))
-        ;
+
+        System.out.println(currency + " was the cheapest on " +
+                min.getEffectiveDate() + " - " +
+                min.getBid());
+
+        System.out.println(currency + " was the most expensive on " +
+                max.getEffectiveDate() + " - " +
+                max.getBid());
 
 
     }
@@ -288,12 +262,12 @@ public class ProcessInput {
 
         CurrencyQuery currencyQuery = new CurrencyQuery();
 
-        Table currencies []= null;
+        Table currencies[] = null;
 
         Table list = new Table();
         try {
             currencies = (Table[]) currencyQuery
-                            .getCurrencyDataFrom(request);
+                    .getDataFrom(request);
             list = currencies[0];
         } catch (IOException e) {
             e.printStackTrace();
@@ -325,14 +299,14 @@ public class ProcessInput {
                     .setReturnType(Table[].class)
                     .build();
 
-            Table ratesArray [] = (Table[]) currencyQuery.getCurrencyDataFrom(request);
-            List <Table> rates = Arrays.asList(ratesArray);
+            Table ratesArray[] = (Table[]) currencyQuery.getDataFrom(request);
+            List<Table> rates = Arrays.asList(ratesArray);
             CurrencyStats currencyStats = new CurrencyStats();
 
-            Table.Rates rate = currencyStats.getMinRateOf(rates, Table.Rates::getBid);
+            Table.Rates rate = currencyStats.getMinRateOf(rates.get(0).getRates(), Table.Rates::getBid);
 
             System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " + rate.getBid());
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

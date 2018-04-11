@@ -152,11 +152,11 @@ class CurrencyStatsTest {
         //Checking if currency names are equal and getMid Values also
         assertTrue(Objects.equals(
                 rate2.getCurrency(),
-                currencyStats.getMinRateOf(currencies, Table.Rates::getMid).getCurrency()) );
+                currencyStats.getMinRateOf(currencies.get(0).getRates(), Table.Rates::getMid).getCurrency()) );
 
         assertTrue( Objects.equals(
                 rate2.getMid(),
-                currencyStats.getMinRateOf(currencies, Table.Rates::getMid).getMid()) );
+                currencyStats.getMinRateOf(currencies.get(0).getRates(), Table.Rates::getMid).getMid()) );
 
     }
 
@@ -187,11 +187,11 @@ class CurrencyStatsTest {
         //Checking if currency names are equal and getMid Values also
         assertTrue(Objects.equals(
                     rate1.getCurrency(),
-                    currencyStats.getMaxRateOf(currencies, Table.Rates::getMid).getCurrency()) );
+                    currencyStats.getMaxRateOf(currencies.get(0).getRates(), Table.Rates::getMid).getCurrency()) );
 
         assertTrue( Objects.equals(
                 rate1.getMid(),
-                    currencyStats.getMaxRateOf(currencies, Table.Rates::getMid).getMid()) );
+                    currencyStats.getMaxRateOf(currencies.get(0).getRates(), Table.Rates::getMid).getMid()) );
 
     }
 }

@@ -35,8 +35,48 @@ public class Request {
         this.returnType = returnType;
     }
 
+    public String getBase() {
+        return (base + "/") +
+                code + "/";
+    }
 
-    public static class RequestBuilder{
+    @Override
+    public String toString() {
+
+        StringBuilder str = new StringBuilder();
+
+        str.append(getBase());
+
+        if (currency != null)
+            str.append(currency + "/");
+
+        if (startDate != null)
+            str.append(startDate + "/");
+
+        if (endDate != null)
+            str.append(endDate + "/");
+
+
+        return str.toString();
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public static class RequestBuilder {
 
         private String code;
         private Date startDate;
@@ -45,8 +85,7 @@ public class Request {
         private Type returnType;
 
 
-
-        public RequestBuilder setReturnType(Type type){
+        public RequestBuilder setReturnType(Type type) {
             this.returnType = type;
             return this;
         }
@@ -71,45 +110,9 @@ public class Request {
             return this;
         }
 
-        public Request build(){
+        public Request build() {
             return new Request(this);
         }
 
-    }
-
-    @Override
-    public String toString() {
-
-        StringBuilder str = new StringBuilder();
-        str.append(base + "/")
-                .append(code + "/");
-
-        if(currency != null)
-            str.append(currency + "/");
-
-        if(startDate != null)
-            str.append(startDate + "/");
-
-        if(endDate != null)
-            str.append(endDate + "/");
-
-
-        return str.toString();
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
     }
 }
