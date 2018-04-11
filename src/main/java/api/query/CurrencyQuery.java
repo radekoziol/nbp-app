@@ -8,8 +8,10 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import currency.Currency;
+import currency.Table;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class CurrencyQuery{
      * @return
      * @throws IOException
      */
-    public Currency getCurrencyDataFrom(Request request) throws IOException{
+    public Object getCurrencyDataFrom(Request request) throws IOException{
 
         checkDates(request.getStartDate(),request.getStartDate());
 
@@ -71,7 +73,7 @@ public class CurrencyQuery{
         builder.setPrettyPrinting();
         Gson gson = builder.create();
 
-        return gson.fromJson(out,Currency.class);
+        return gson.fromJson(out,request.getReturnType());
     }
 
         /**
@@ -80,7 +82,7 @@ public class CurrencyQuery{
      * @return
      * @throws IOException
      */
-    public List<Currency> getCurrencyTableFrom(Request request) throws IOException {
+    public Object getCurrencyTableFrom(Request request) throws IOException {
         checkDates(request.getStartDate(),request.getStartDate());
 
         String out = (new Scanner
@@ -93,9 +95,8 @@ public class CurrencyQuery{
         builder.setPrettyPrinting();
         Gson gson = builder.create();
 
-        return  new ArrayList<>(gson.fromJson
-                (out, new TypeToken<List<Currency>>() {
-                }.getType()));
+        return  (gson.fromJson
+                (out, request.getReturnType()));
 
     }
 

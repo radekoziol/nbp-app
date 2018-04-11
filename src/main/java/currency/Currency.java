@@ -39,6 +39,8 @@ public class Currency {
         public static HashMap<String,String> codes = generateCodes();
 
         //
+        private String effectiveDate;
+
         private transient String country;
         private transient String symbol;
         private String currency;
@@ -110,6 +112,14 @@ public class Currency {
 
         public String getCode() {
             return code;
+        }
+
+        public String getEffectiveDate() {
+            return effectiveDate;
+        }
+
+        public void setEffectiveDate(String effectiveDate) {
+            this.effectiveDate = effectiveDate;
         }
     }
 

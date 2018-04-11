@@ -3,6 +3,8 @@ package api.query.request;
 import api.date.Date;
 import currency.Currency;
 
+import java.lang.reflect.Type;
+
 public class Request {
 
 
@@ -15,12 +17,22 @@ public class Request {
     private Date startDate;
     private Date endDate;
     private String currency;
+    private Type returnType;
 
     public Request(RequestBuilder requestBuilder) {
         this.code = requestBuilder.code;
         this.currency = requestBuilder.currency;
         this.startDate = requestBuilder.startDate;
         this.endDate = requestBuilder.endDate;
+        this.returnType = requestBuilder.returnType;
+    }
+
+    public Type getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(Type returnType) {
+        this.returnType = returnType;
     }
 
 
@@ -30,8 +42,14 @@ public class Request {
         private Date startDate;
         private Date endDate;
         private String currency;
+        private Type returnType;
 
 
+
+        public RequestBuilder setReturnType(Type type){
+            this.returnType = type;
+            return this;
+        }
 
         public RequestBuilder setCode(String code) {
             this.code = code;
