@@ -1,7 +1,7 @@
 package currency.statistics;
 
-import currency.Currency;
 import api.date.Date;
+import currency.Table;
 
 import java.util.*;
 import java.util.function.Function;
@@ -102,14 +102,14 @@ public class CurrencyStats extends ListStats {
      * @param getter method returning Double
      * @return
      */
-    public Map<String, Double> getAverageRateOf(List<currency.Currency> currencies, Function<Currency.Rates, Double> getter) {
+    public Map<String, Double> getAverageRateOf(List<currency.Table> currencies, Function<Table.Rates, Double> getter) {
 
         Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
         Arrays.fill(averageExchangeRate, 0d);
 
-        for (currency.Currency currency : currencies) {
+        for (currency.Table currency : currencies) {
             int counter = 0;
-            for (currency.Currency.Rates rate0 : currency.getRates()) {
+            for (currency.Table.Rates rate0 : currency.getRates()) {
                 averageExchangeRate[counter] += getter.apply(rate0);
                 counter++;
             }
@@ -118,9 +118,9 @@ public class CurrencyStats extends ListStats {
 
         //Filling averageExchangeRate to map
         Map<String, Double> map = new HashMap<>();
-        for (currency.Currency currency : currencies) {
+        for (currency.Table currency : currencies) {
             int counter = 0;
-            for (Currency.Rates rate4 : currency.getRates()) {
+            for (Table.Rates rate4 : currency.getRates()) {
                 //Average is really below calculated
                 averageExchangeRate[counter] /= currency.getRates().size();
                 map.put(rate4.getCurrency(), averageExchangeRate[counter]);
@@ -138,7 +138,7 @@ public class CurrencyStats extends ListStats {
      * @param getter
      * @return
      */
-    public Currency.Rates getMinRateOf(List<Currency> currencies, Function<Currency.Rates,Double> getter) {
+    public Table.Rates getMinRateOf(List<Table> currencies, Function<Table.Rates,Double> getter) {
         return super.getMinOf(getRateOf(currencies), getter);
     }
 
@@ -148,7 +148,7 @@ public class CurrencyStats extends ListStats {
      * @param getter
      * @return
      */
-    public Currency.Rates getMaxRateOf(List<Currency> currencies, Function<Currency.Rates,Double> getter) {
+    public Table.Rates getMaxRateOf(List<Table> currencies, Function<Table.Rates,Double> getter) {
         return super.getMaxOf(getRateOf(currencies), getter);
     }
 
@@ -159,7 +159,7 @@ public class CurrencyStats extends ListStats {
      * @TODO this is terrible done, since there is needed only single
      * @TODO currency object
      */
-    private List<Currency.Rates> getRateOf(List<Currency> currencies) {
+    private List<Table.Rates> getRateOf(List<Table> currencies) {
         return currencies.get(0).getRates();
     }
 }

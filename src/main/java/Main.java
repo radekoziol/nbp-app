@@ -24,9 +24,9 @@ public class Main {
 
         ProcessInput processInput = new ProcessInput(new String[]
                 {"-a" , "2015-11-19",
-//                        "-getAverageGoldPrize" , "2013-11-19", "2013-12-19",
-//                        "-getCurrencyPrize" , "euro", "2017-03-28",
-//                        "-getMinBidPrice" , "2017-03-28"
+                        "-getAverageGoldPrize" , "2013-11-19", "2013-12-19",
+                        "-getCurrencyPrize" , "euro", "2017-03-28",
+                        "-getMinBidPrice" , "2017-03-28"
                         });
 
         try {

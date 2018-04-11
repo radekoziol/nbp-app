@@ -1,7 +1,7 @@
 package api.query.request;
 
 import api.date.Date;
-import currency.Currency;
+import currency.Table;
 
 import java.lang.reflect.Type;
 
@@ -57,7 +57,7 @@ public class Request {
         }
 
         public RequestBuilder setCurrency(String currency) {
-            this.currency = Currency.Rates.codes.get(currency);
+            this.currency = Table.Rates.codes.get(currency);
             return this;
         }
 

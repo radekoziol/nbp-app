@@ -4,17 +4,9 @@ import api.date.Date;
 import api.query.request.Request;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import currency.Currency;
-import currency.Table;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -76,52 +68,7 @@ public class CurrencyQuery{
         return gson.fromJson(out,request.getReturnType());
     }
 
-        /**
-     * Returns data from given data as Currency
-     * @param request
-     * @return
-     * @throws IOException
-     */
-    public Object getCurrencyTableFrom(Request request) throws IOException {
-        checkDates(request.getStartDate(),request.getStartDate());
 
-        String out = (new Scanner
-                (new URL(request.toString())
-                        .openStream(), "UTF-8")
-                .useDelimiter("\\A")
-                .next());
-
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        Gson gson = builder.create();
-
-        return  (gson.fromJson
-                (out, request.getReturnType()));
-
-    }
-
-
-//    /**
-//     * Returns data from given address
-//     * @param address
-//     * @return
-//     * @throws IOException
-//     */
-//    public Currency getDataFrom(String address) throws IOException {
-//
-//        String out = (new Scanner
-//                (new URL(base + address )
-//                        .openStream(), "UTF-8")
-//                .useDelimiter("\\A")
-//                .next());
-//
-//        GsonBuilder builder = new GsonBuilder();
-//        builder.setPrettyPrinting();
-//        Gson gson = builder.create();
-//
-//        return gson.fromJson(out, Currency.class);
-//    }
-//
 //    /**
 //     * Returns all data from given period as list of list of currencies
 //     * @param startDate

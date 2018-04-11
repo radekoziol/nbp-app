@@ -4,11 +4,9 @@ import api.query.CurrencyQuery;
 import api.date.Date;
 import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
-import currency.Currency;
 import currency.Table;
 import currency.statistics.CurrencyStats;
 import currency.statistics.OreStats;
-import jdk.management.resource.ResourceRequest;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
@@ -187,10 +185,11 @@ public class ProcessInput {
                     .setCode("exchangerates/rates/c/")
                     .setStartDate(new Date(arguments[1]))
                     .setCurrency(arguments[0])
+                    .setReturnType(Table.class)
                     .build();
             CurrencyQuery currencyQuery = new CurrencyQuery();
 
-            Currency currency = (Currency) currencyQuery
+            Table currency = (Table) currencyQuery
                     .getCurrencyDataFrom(request);
 
             System.out.println(arguments[0] + " price for "
@@ -213,7 +212,7 @@ public class ProcessInput {
 //        http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
         CurrencyQuery currencyQuery = new CurrencyQuery();
         Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
-        List<List<Currency.Rates>> list = new LinkedList<>();
+        List<List<Table.Rates>> list = new LinkedList<>();
 
         Date it = CurrencyQuery.oldestDate;
         while (Date.getCurrentDate().isLaterThan(it)) {
@@ -239,7 +238,7 @@ public class ProcessInput {
             }
 
             try {
-                Currency currency1 = (Currency) currencyQuery
+                Table currency1 = (Table) currencyQuery
                         .getCurrencyDataFrom(request);
                 list.add(currency1.getRates());
             } catch (IOException e) {
@@ -250,16 +249,16 @@ public class ProcessInput {
 
         }
 
-        List<Currency.Rates> allRates = new LinkedList<>();
+        List<Table.Rates> allRates = new LinkedList<>();
         list.forEach(allRates::addAll);
 
-        Optional<Currency.Rates> min = allRates
+        Optional<Table.Rates> min = allRates
                 .stream()
-                .min(Comparator.comparing(Currency.Rates::getBid));
+                .min(Comparator.comparing(Table.Rates::getBid));
 
-        Optional<Currency.Rates> max = allRates
+        Optional<Table.Rates> max = allRates
                 .stream()
-                .max(Comparator.comparing(Currency.Rates::getBid));
+                .max(Comparator.comparing(Table.Rates::getBid));
 
         min.ifPresent(
                 c -> System.out.println(currency + " was the cheapest on " +
@@ -283,18 +282,18 @@ public class ProcessInput {
         Request request = requestBuilder
                 .setCode("exchangerates/tables/c")
                 .setStartDate(new Date(date))
-                .setReturnType(Currency[].class)
+                .setReturnType(Table[].class)
                 .build();
 
 
         CurrencyQuery currencyQuery = new CurrencyQuery();
 
-        Currency currencies []= null;
+        Table currencies []= null;
 
-        Currency list = new Currency();
+        Table list = new Table();
         try {
-            currencies = (Currency[]) currencyQuery
-                            .getCurrencyTableFrom(request);
+            currencies = (Table[]) currencyQuery
+                            .getCurrencyDataFrom(request);
             list = currencies[0];
         } catch (IOException e) {
             e.printStackTrace();
@@ -323,21 +322,17 @@ public class ProcessInput {
             Request request = requestBuilder
                     .setCode("exchangerates/tables/c/")
                     .setStartDate(new Date(date))
-                    .setReturnType(new Type() {
-                        List<Currency> currencyList;
-                    })
+                    .setReturnType(Table[].class)
                     .build();
 
-            List<Currency> rates = (List<Currency>) currencyQuery.getCurrencyTableFrom(request);
+            Table ratesArray [] = (Table[]) currencyQuery.getCurrencyDataFrom(request);
+            List <Table> rates = Arrays.asList(ratesArray);
             CurrencyStats currencyStats = new CurrencyStats();
 
-            Currency.Rates rate = currencyStats.getMinRateOf(rates, Currency.Rates::getBid);
+            Table.Rates rate = currencyStats.getMinRateOf(rates, Table.Rates::getBid);
 
             System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " + rate.getBid());
-        } catch (IllegalArgumentException ex) {
-            System.err.println("Given argument: " + date +
-                    " is not in right format or is invalid. ");
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
         }
 

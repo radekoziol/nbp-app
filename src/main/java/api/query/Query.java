@@ -1,9 +1,7 @@
 package api.query;
 
-import api.date.Date;
 import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
-import currency.Currency;
 
 import java.io.IOException;
 import java.util.List;
