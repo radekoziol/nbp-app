@@ -25,8 +25,8 @@ usage:
  -getMinBidPrice <YYYY-MM-DD>              prints minimum bid prize for
                                            certain day
                                            
- -getMostVolatileCurrency <YYYY-MM-DD>     prints most volatile currency
-                                           from a period // not working yet
+ -getMostVolatileCurrency 2x <YYYY-MM-DD>  prints most volatile currency
+                                           from a period 
                                            
  -help                                     prints this
 ```

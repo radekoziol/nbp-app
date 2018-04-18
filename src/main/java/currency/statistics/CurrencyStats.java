@@ -1,9 +1,10 @@
 package currency.statistics;
 
-import api.date.Date;
 import currency.Table;
+import javafx.util.Pair;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 /**
@@ -15,15 +16,26 @@ public class CurrencyStats extends ListStats {
 
     /**
      * Returns most volatile currency from given period
-     * @param startDate
-     * @param endDate
      * @return
      */
-    public Currency getMostVolatileCurrency(Date startDate, Date endDate){
+    public String getMostVolatileCurrency(List<Table> tables, Function<Table.Rates, Double> getter){
 
-        //TODO
-        System.out.println("This is not working yet!");
-        return null;
+        // Setting variable to be changed for maximum
+        Pair<String, Double> maxDeviation = new Pair<>(null, -0.1);
+
+        for (Table table : tables) {
+            // Getting deviation
+            Double deviation = super.getStandardDeviation(table.getRates(), getter);
+
+            Pair<String,Double> iterator =
+                    new Pair<>(table.getCurrency(),deviation);
+
+            // Setting new maximum
+            if(maxDeviation.getValue() < iterator.getValue())
+                maxDeviation = iterator;
+        }
+
+        return maxDeviation.getKey();
     }
 
     /**
@@ -32,14 +44,14 @@ public class CurrencyStats extends ListStats {
      * @param getter method returning Double
      * @return
      */
-    public Map<String, Double> getAverageRateOf(List<currency.Table> currencies, Function<Table.Rates, Double> getter) {
+    public Map<String, Double> getAverageRateOf(List<Table> currencies, Function<Table.Rates, Double> getter) {
 
         Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
         Arrays.fill(averageExchangeRate, 0d);
 
-        for (currency.Table currency : currencies) {
+        for (Table currency : currencies) {
             int counter = 0;
-            for (currency.Table.Rates rate0 : currency.getRates()) {
+            for (Table.Rates rate0 : currency.getRates()) {
                 averageExchangeRate[counter] += getter.apply(rate0);
                 counter++;
             }
@@ -47,7 +59,7 @@ public class CurrencyStats extends ListStats {
 
         //Filling averageExchangeRate to map
         Map<String, Double> map = new HashMap<>();
-        for (currency.Table currency : currencies) {
+        for (Table currency : currencies) {
             int counter = 0;
             for (Table.Rates rate4 : currency.getRates()) {
                 //Average is really below calculated

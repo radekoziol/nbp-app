@@ -6,12 +6,10 @@ import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import currency.Table;
 import currency.statistics.CurrencyStats;
-import currency.statistics.ListStats;
 import currency.statistics.OreStats;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.*;
 
 
@@ -77,7 +75,6 @@ public class ProcessInput {
             System.exit(0);
         }
 
-
         Arrays.stream(cmd.getOptions())
                 .forEach((Option o) -> {
                     switch (o.getOpt()) {
@@ -87,9 +84,9 @@ public class ProcessInput {
                         case "getAverageGoldPrize":
                             printAverageGoldPrize(cmd.getOptionValues("getAverageGoldPrize"));
                             break;
-//                        case "getMostVolatileCurrency":
-//                            printMostVolatileCurrency(cmd.getOptionValues("getMostVolatileCurrency"));
-//                            break;
+                        case "getMostVolatileCurrency":
+                            printMostVolatileCurrency(cmd.getOptionValues("getMostVolatileCurrency"));
+                            break;
                         case "getCurrencyPrize":
                             printCurrencyPrice(cmd.getOptionValues("getCurrencyPrize"));
                             break;
@@ -157,17 +154,39 @@ public class ProcessInput {
      */
     private void printMostVolatileCurrency(String[] dates) {
 
-        CurrencyStats currencyStats = new CurrencyStats();
-
         try {
-            System.out.println("Most volatile currency from " +
-                    dates[0] + "to " + dates[1] + ": " +
+            CurrencyQuery currencyQuery = new CurrencyQuery();
+
+            Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
+
+            List<Table> rates = new LinkedList<>();
+
+            for (Map.Entry<String, String> entry : Table.Rates.codes.entrySet()) {
+                Request request = requestBuilder
+                        .setCode("exchangerates/rates/c")
+                        .setCurrency(entry.getKey())
+                        .setStartDate(new Date(dates[0]))
+                        .setEndDate(new Date(dates[1]))
+                        .setReturnType(Table.class)
+                        .build();
+
+                List<Table> allRates;
+                allRates = currencyQuery
+                        .getAllDataFrom(request);
+
+                rates.addAll(allRates);
+            }
+            CurrencyStats currencyStats = new CurrencyStats();
+            System.out.println("Most volatile(bid price) currency from " +
+                    dates[0] + " to " + dates[1] + ": " +
                     currencyStats
-                            .getMostVolatileCurrency(new Date(dates[0]), new Date(dates[1])));
+                            .getMostVolatileCurrency(rates, Table.Rates::getBid));
 
         } catch (IllegalArgumentException ex) {
             System.err.println("Given dates: " + dates[0] + "," + dates[1] +
                     " are not in right format or are invalid. ");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -213,8 +232,6 @@ public class ProcessInput {
 //        http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
         CurrencyQuery currencyQuery = new CurrencyQuery();
         Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
-
-        List<List<Table.Rates>> list = new LinkedList<>();
 
         Request request = requestBuilder
                 .setCode("exchangerates/rates/c")

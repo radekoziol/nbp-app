@@ -36,8 +36,10 @@ public class Request {
     }
 
     public String getBase() {
-        return (base + "/") +
-                code + "/";
+        String str = (base + "/") + code + "/";
+        if(!currency.isEmpty())
+            str += currency + "/";
+        return str;
     }
 
     @Override
@@ -45,7 +47,8 @@ public class Request {
 
         StringBuilder str = new StringBuilder();
 
-        str.append(getBase());
+        // Base
+        str.append(base + "/" + code + "/");
 
         if (currency != null)
             str.append(currency + "/");

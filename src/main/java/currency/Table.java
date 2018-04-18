@@ -14,6 +14,8 @@ public class Table {
     //Publication
     private String effectiveDate;
     private List<Rates> rates;
+    private String currency;
+
 
     public void setEffectiveDate(String effectiveDate) {
         this.effectiveDate = effectiveDate;
@@ -31,14 +33,21 @@ public class Table {
         return effectiveDate;
     }
 
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
     /**
-     * Describes properties of rate
+     * Describes properties of currency/rate
      */
     public static class Rates {
 
         public static HashMap<String,String> codes = generateCodes();
 
-        //
         private String effectiveDate;
 
         private transient String country;

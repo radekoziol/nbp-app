@@ -1,10 +1,10 @@
 package currency.statistics;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
+import java.util.stream.Collectors;
 
 /**
  * This is more general class for dealing with statistics.
@@ -53,6 +53,21 @@ public class ListStats {
         return records.stream()
                 .max(Comparator.comparing(method))
                 .get();
+    }
+
+    protected <T> Double getStandardDeviation(List<T> data, Function<T,Double> method) {
+
+        Double average = getAverageOf(data,method);
+
+        List<Double> deviationSquares =
+                data.stream()
+                        .map(d -> Math.pow(method.apply(d) - average,2))
+                        .collect(Collectors.toList());
+
+        Double deviationSquareSum = deviationSquares.stream().mapToDouble(f -> f).sum();
+
+        return deviationSquareSum/(data.size()-1);
+
     }
 
 }

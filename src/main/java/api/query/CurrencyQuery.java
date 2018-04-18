@@ -106,7 +106,7 @@ public class CurrencyQuery implements Query{
                         .useDelimiter("\\A")
                         .next());
 
-                allData.addAll(gson.fromJson(out, request.getReturnType()));
+                allData.add(gson.fromJson(out, request.getReturnType()));
 
                 startDate = iterator;
                 iterator = iterator.shiftDate(93);
@@ -120,11 +120,11 @@ public class CurrencyQuery implements Query{
                     .useDelimiter("\\A")
                     .next());
 
-            allData.addAll
+            allData.add
                     (gson.fromJson
                             (out, request.getReturnType()));
         }catch (JsonSyntaxException ex){
-            System.err.println("Something went wrong" + ex.getMessage());
+            System.err.println("Something went wrong while parsing!\n" + ex.getMessage());
         }
 
         return allData;
