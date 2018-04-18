@@ -20,7 +20,7 @@ public class Main {
         //Example input
         ProcessInput processInput = new ProcessInput(new String[]
                 {
-                        "-getMostVolatileCurrency", "2013-11-19", "2013-12-19"
+                        "-getMostVolatileCurrency", "2013-11-19", "2017-12-19"
 //                        "-a" , "2015-11-19",
 //                        "-getAverageGoldPrize" , "2013-11-19", "2013-12-19",
 //                        "-getCurrencyPrize" , "euro", "2017-03-28",
