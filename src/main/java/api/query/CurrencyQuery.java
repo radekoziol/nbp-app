@@ -115,7 +115,7 @@ public class CurrencyQuery implements Query{
 
             out = (new Scanner
                     (new URL(request.getBase()+ startDate.toString() + "/" +
-                            currentDate.shiftDate(-2).toString() + "/\n\n")
+                            currentDate + "/\n\n")
                             .openStream(), "UTF-8")
                     .useDelimiter("\\A")
                     .next());

@@ -6,9 +6,10 @@ import java.io.IOException;
 
 /*
     TODO check the problem with dayDiffrence method (date) (negative input)
-    TODO catch 400 and other responses from api
+    TODO catch 400 and other responses from api -> more descriptive ex mssg
     TODO do other methods
     TODO try/catch should cover whole methods
+    TODO what if for curent date response is not avivable -> try,catch
     TODO gui?
  */
 
