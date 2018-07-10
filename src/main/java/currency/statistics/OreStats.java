@@ -44,9 +44,8 @@ public class OreStats extends ListStats{
      * Returns gold price for given date
      * @param date
      * @return
-     * @throws IOException
      */
-    public double getGoldPrize(Date date) throws IOException, InvalidArgumentException {
+    public double getGoldPrize(Date date) throws InvalidArgumentException {
 
         OreQuery oreQuery = new OreQuery();
 

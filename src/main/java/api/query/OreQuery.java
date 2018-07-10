@@ -26,7 +26,7 @@ public class OreQuery implements Query{
     /**
      * Api has data back to 2002
      */
-    static public Date oldestDate = new Date("2013-01-02");
+    private final Date oldestDate = new Date("2013-01-02");
 
 
     /**

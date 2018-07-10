@@ -31,6 +31,6 @@ usage:
  -help                                     prints this
 ```
 
-#### Project uses [simple java library](https://github.com/radekoziol/java-date-library) , [apache options](http://commons.apache.org/proper/commons-cli/javadocs/api-release/org/apache/commons/cli/Options.html), , [apache options](https://sites.google.com/site/gson/)
+#### Project uses [simple java library](https://github.com/radekoziol/java-date-library) , [apache options](http://commons.apache.org/proper/commons-cli/javadocs/api-release/org/apache/commons/cli/Options.html), , [google gson](https://sites.google.com/site/gson/)
 
 

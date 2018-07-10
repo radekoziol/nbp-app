@@ -21,7 +21,7 @@ public class CurrencyQuery implements Query{
     /**
      * Api has data back to 2002
      */
-    static public Date oldestDate = new Date("2002-01-01");
+    public static final Date oldestDate = new Date("2002-01-01");
 
     /**
      * Base URL for sending requests to api

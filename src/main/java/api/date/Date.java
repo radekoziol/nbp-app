@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static java.lang.Math.abs;
+
 /**
  * Supports yyyy-mm-dd api.date (without time)
  */
@@ -16,56 +17,113 @@ public class Date {
     /**
      * @param date String in format "yyyy-mm-dd"
      */
-    public Date(String date){
+    public Date(String date) {
         checkDate(date);
-        String [] temp = date.split("-",3);
+        String[] temp = date.split("-", 3);
         this.year = temp[0];
         this.month = temp[1];
         this.day = temp[2];
     }
 
     /**
-     * @param year String in format "yyyy"
+     * @param year  String in format "yyyy"
      * @param month String in format "mm"
-     * @param day String in format "dd"
+     * @param day   String in format "dd"
      */
     public Date(String year, String month, String day) {
-        checkDate(year + "-" + month  + "-" +  day);
+        checkDate(year + "-" + month + "-" + day);
         this.year = year;
         this.month = month;
         this.day = day;
     }
 
-    public Date() {}
+    public Date() {
+    }
 
+    /**
+     * This method implements binary search with shiftDate method.
+     * Note that day difference may be also negative
+     *
+     * @param startDate
+     * @param endDate
+     * @return Day difference between startDate and endDate
+     */
+    public static int dayDifference(Date startDate, Date endDate) {
+
+        // Firstly let's calculate year difference, which will be useful for binary search
+        int yearDifference = abs(startDate.getYear() - endDate.getYear());
+
+        // If startDate is later than endDate we need to swap and multiply by -1
+        if (startDate.isLaterThan(endDate))
+            return -1 * searchBinaryDayDifference
+                    (0, ((yearDifference + 1) * 365), endDate, startDate);
+
+        return searchBinaryDayDifference
+                (0, ((yearDifference + 1) * 365), startDate, endDate);
+
+    }
+
+    /**
+     * @param l         search from l
+     * @param r         search to r
+     * @param startDate
+     * @param endDate
+     * @return Day difference between startDate and endDate
+     */
+    private static int searchBinaryDayDifference(int l, int r, Date startDate, Date endDate) {
+
+        while (l != r) {
+            int mid = (l + r) / 2;
+
+            if (startDate.shiftDate(mid).equals(endDate))
+                return mid;
+
+            if (startDate.shiftDate(mid).isLaterThan(endDate))
+                r = mid;
+            else
+                l = mid;
+        }
+
+        return l;
+    }
+
+    /**
+     * @return current api.date - thanks to DataTimeFormatter
+     */
+    public static Date getCurrentDate() {
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String[] date = dtf.format(now).split("-", 3);
+        return new Date(date[0], date[1], date[2]);
+    }
 
     /**
      * This method checks if data is in valid format (yyyy-mm-dd)
      * Note that it is assumed that year must be > 1582
+     *
      * @param input input
      * @throws IllegalArgumentException if api.date is invalid or impossible
      * @// TODO: 08.02.18 assumption that year > 1582 may have troubles
-     *
      */
     private void checkDate(String input) throws IllegalArgumentException {
 
         //Firstly we check if number of chars is correct
-        if(!input.matches("\\d{4}-\\d{1,2}-\\d{1,2}"))
+        if (!input.matches("\\d{4}-\\d{1,2}-\\d{1,2}"))
             throw new IllegalArgumentException("This date: " + input + " is impossible!");
 
-        String [] temp = input.split("-",3);
+        String[] temp = input.split("-", 3);
         int year = Integer.parseInt(temp[0]);
         int month = Integer.parseInt(temp[1]);
         int day = Integer.parseInt(temp[2]);
 
         //Finally we check if this api.date is even possible
-        if(!( ((year > 1582 ) && ((month > 0))
-                && (month<= 12)) && ((day > 0)
-                && (day <= 31)) && (Month.dayIsWithinMonth(day,month,year)) ))
+        if (!(((year > 1582) && ((month > 0))
+                && (month <= 12)) && ((day > 0)
+                && (day <= 31)) && (Month.dayIsWithinMonth(day, month, year))))
             throw new IllegalArgumentException("This api.date: " + input + " is impossible!");
 
     }
-
 
     /**
      * @param endDate
@@ -75,7 +133,7 @@ public class Date {
     //        ISO 4217
     public boolean isLaterThan(Date endDate) {
 
-        if(this.getYear() - endDate.getYear() > 0)
+        if (this.getYear() - endDate.getYear() > 0)
             return true;
         else if (this.getYear() - endDate.getYear() < 0)
             return false;
@@ -86,9 +144,9 @@ public class Date {
         else return this.getDay() - endDate.getDay() > 0;
     }
 
-
     /**
      * This method shift given api.date for given day number
+     *
      * @param dayNumber
      * @return shifted api.date
      * @// TODO: 08.02.18 Can this function be simplified? Surely..
@@ -105,20 +163,18 @@ public class Date {
             //If next year is leap year and we need to consider february
             if (Year.isLeapYear(getYear() + yearAdd + 1)
                     && month.ordinal() > 2) {
-                if(dayNumber >= 366) {
+                if (dayNumber >= 366) {
                     yearAdd++;
                     dayNumber -= 366;
-                }
-                else break;
+                } else break;
             }
             //Else if we want to jump leap year we should consider if we are before february
-            else if (Year.isLeapYear(getYear() + yearAdd )
+            else if (Year.isLeapYear(getYear() + yearAdd)
                     && month.ordinal() <= 2) {
-                if(dayNumber >= 366) {
+                if (dayNumber >= 366) {
                     yearAdd++;
                     dayNumber -= 366;
-                }
-                else break;
+                } else break;
             }
             //Standard case
             else {
@@ -146,10 +202,9 @@ public class Date {
          * Men.. I'm tired already - me too :<
          * Firstly, we check if we don't have to switch month
          */
-        if (getDay() + dayNumber <= month.getDayAsInt()){
+        if (getDay() + dayNumber <= month.getDayAsInt()) {
             dayNumber += getDay();
-        }
-        else{
+        } else {
             dayNumber = abs(month.getDayAsInt() - getDay() - dayNumber);
             month = month.getNextMonth(getYear() + yearAdd);
             if (month.equals(Month.January))
@@ -162,65 +217,6 @@ public class Date {
                 String.valueOf(dayNumber));
 
     }
-
-    /**
-     * This method implements binary search with shiftDate method.
-     * Note that day difference may be also negative
-     * @param startDate
-     * @param endDate
-     * @return Day difference between startDate and endDate
-     *
-     */
-    public static int dayDifference(Date startDate, Date endDate) {
-
-        // Firstly let's calculate year difference, which will be useful for binary search
-        int yearDifference = abs(startDate.getYear() - endDate.getYear());
-
-        // If startDate is later than endDate we need to swap and multiply by -1
-        if(startDate.isLaterThan(endDate))
-            return -1 * searchBinaryDayDifference
-                (0,((yearDifference + 1) * 365), endDate, startDate);
-
-        return searchBinaryDayDifference
-                (0,((yearDifference + 1) * 365), startDate, endDate);
-
-    }
-
-    /**
-     * @param l search from l
-     * @param r search to r
-     * @param startDate
-     * @param endDate
-     * @return Day difference between startDate and endDate
-     */
-    private static int searchBinaryDayDifference(int l, int r, Date startDate, Date endDate) {
-
-        while(l != r) {
-            int mid = (l + r) / 2;
-
-            if (startDate.shiftDate(mid).equals(endDate))
-                return mid;
-
-            if (startDate.shiftDate(mid).isLaterThan(endDate))
-                r = mid;
-            else
-                l = mid;
-        }
-
-        return l;
-    }
-
-    /**
-     * @return current api.date - thanks to DataTimeFormatter
-     */
-    public static Date getCurrentDate(){
-
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime now = LocalDateTime.now();
-        String[] date = dtf.format(now).split("-",3);
-        return new Date(date[0], date[1], date[2]);
-    }
-
 
     /**
      * @return year as int
@@ -252,11 +248,11 @@ public class Date {
 
         String output = year + "-";
 
-        if(month.length() == 1)
+        if (month.length() == 1)
             output += "0" + month + "-";
         else output += month + "-";
 
-        if(day.length() == 1)
+        if (day.length() == 1)
             output += "0" + day;
         else output += day;
 
@@ -269,7 +265,9 @@ public class Date {
      */
     @Override
     public boolean equals(Object obj) {
-        return this.toString().equals(obj.toString());
+        if (obj != null)
+            return this.toString().equals(obj.toString());
+        return false;
     }
 
 }

@@ -18,18 +18,6 @@ import java.util.*;
  */
 public class ProcessInput {
 
-    /**
-     * Program arguments
-     */
-    private final String[] args;
-
-    /**
-     * @param args input
-     */
-    public ProcessInput(String[] args) {
-        this.args = args;
-    }
-
 
     /**
      * This method process arguments and generate program options.
@@ -38,18 +26,17 @@ public class ProcessInput {
      * @throws IOException
      * @throws InvalidArgumentException
      */
-    public void process() throws ParseException, IOException, InvalidArgumentException {
+    public void process(String[] args) throws ParseException, IOException, InvalidArgumentException {
 
         OptionFactory optionFactory = new OptionFactory();
         Options options = optionFactory.generateOptions();
 
         try {
-            handleOptions(options);
+            handleOptions(options, args);
         } catch (ParseException e) {
             System.err.println("There is problem with generated options or arguments! Message: ");
             System.err.println(e.getMessage());
         }
-
 
     }
 
@@ -58,11 +45,12 @@ public class ProcessInput {
      * This method handles arguments options
      *
      * @param options
+     * @param args
      * @throws ParseException
      * @throws IOException
      * @throws InvalidArgumentException
      */
-    private void handleOptions(Options options) throws ParseException, IOException, InvalidArgumentException {
+    private void handleOptions(Options options, String[] args) throws ParseException, IOException, InvalidArgumentException {
 
         // Following schema given on apache page
         CommandLineParser parser = new DefaultParser();
@@ -72,7 +60,7 @@ public class ProcessInput {
 
         if ((cmd.hasOption("help"))) {
             formatter.printHelp(" ", options);
-            System.exit(0);
+            return;
         }
 
         Arrays.stream(cmd.getOptions())
@@ -118,7 +106,7 @@ public class ProcessInput {
         try {
             System.out.println("Gold Prize: " + oreStats.getGoldPrize
                     (new Date(date)));
-        } catch (IOException | InvalidArgumentException e) {
+        } catch (InvalidArgumentException e) {
             e.printStackTrace();
         }
 
