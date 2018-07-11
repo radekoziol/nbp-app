@@ -19,6 +19,8 @@ public class Request {
     private String currency;
     private Type returnType;
 
+
+
     public Request(RequestBuilder requestBuilder) {
         this.code = requestBuilder.code;
         this.currency = requestBuilder.currency;
@@ -77,6 +79,14 @@ public class Request {
 
     public Date getEndDate() {
         return endDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public static class RequestBuilder {
