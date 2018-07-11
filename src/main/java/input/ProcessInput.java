@@ -106,7 +106,7 @@ public class ProcessInput {
         try {
             System.out.println("Gold Prize: " + oreStats.getGoldPrize
                     (new Date(date)));
-        } catch (InvalidArgumentException e) {
+        } catch (InvalidArgumentException | InterruptedException | IOException e) {
             e.printStackTrace();
         }
 
@@ -129,7 +129,7 @@ public class ProcessInput {
         } catch (IllegalArgumentException ex) {
             System.err.println("Given dates: " + dates[0] + "," + dates[1] +
                     " are not in right format or are invalid. ");
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -160,7 +160,7 @@ public class ProcessInput {
 
                 List<Table> allRates;
                 allRates = currencyQuery
-                        .getAllDataFrom(request);
+                        .getAllObjectsFrom(request);
 
                 rates.addAll(allRates);
             }
@@ -173,7 +173,7 @@ public class ProcessInput {
         } catch (IllegalArgumentException ex) {
             System.err.println("Given dates: " + dates[0] + "," + dates[1] +
                     " are not in right format or are invalid. ");
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -198,16 +198,16 @@ public class ProcessInput {
             CurrencyQuery currencyQuery = new CurrencyQuery();
 
             Table currency = (Table) currencyQuery
-                    .getDataFrom(request);
+                    .getObjectFrom(request);
 
             System.out.println(arguments[0] + " price for "
                     + arguments[1] + ": bid = " + currency.getRates().get(0).getBid()
                     + " ask = " + currency.getRates().get(0).getAsk());
 
-        } catch (IOException e) {
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
 
@@ -225,35 +225,39 @@ public class ProcessInput {
                 .setCode("exchangerates/rates/c")
                 .setCurrency(currency)
                 .setStartDate(CurrencyQuery.oldestDate)
-                .setReturnType(Table[].class)
+                .setEndDate(Date.getCurrentDate())
+                .setReturnType(Table.class)
                 .build();
 
-        List<Table.Rates> allRates = new LinkedList<>();
         try {
-            allRates = currencyQuery
-                    .getAllDataFrom(request);
-        } catch (IOException e) {
+            List<Table> allTables = currencyQuery
+                    .getAllObjectsFrom(request);
+
+            List<Table.Rates> allRates = new ArrayList<>();
+            allTables
+                    .forEach(t -> allRates.addAll(t.getRates()));
+
+
+            CurrencyStats currencyStats = new CurrencyStats();
+            Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
+            Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
+
+
+            System.out.println(currency + " was the cheapest on " +
+                    min.getEffectiveDate() + " - " +
+                    min.getBid());
+
+            System.out.println(currency + " was the most expensive on " +
+                    max.getEffectiveDate() + " - " +
+                    max.getBid());
+
+
+        } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
-
-
-        CurrencyStats currencyStats = new CurrencyStats();
-        Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
-        Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
-
-
-        System.out.println(currency + " was the cheapest on " +
-                min.getEffectiveDate() + " - " +
-                min.getBid());
-
-        System.out.println(currency + " was the most expensive on " +
-                max.getEffectiveDate() + " - " +
-                max.getBid());
-
-
     }
 
-    private void printA(String date) {
+        private void printA(String date) {
 
         System.out.println("Difference between bid and ask for " + date + " are: \n");
 
@@ -272,13 +276,13 @@ public class ProcessInput {
         Table list = new Table();
         try {
             currencies = (Table[]) currencyQuery
-                    .getDataFrom(request);
+                    .getObjectFrom(request);
             list = currencies[0];
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 
-        assert list != null;
+            assert list != null;
         list
                 .getRates()
                 .sort(Comparator.comparing(e -> e.getAsk() - e.getBid()));
@@ -304,14 +308,14 @@ public class ProcessInput {
                     .setReturnType(Table[].class)
                     .build();
 
-            Table ratesArray[] = (Table[]) currencyQuery.getDataFrom(request);
+            Table ratesArray[] = (Table[]) currencyQuery.getObjectFrom(request);
             List<Table> rates = Arrays.asList(ratesArray);
             CurrencyStats currencyStats = new CurrencyStats();
 
             Table.Rates rate = currencyStats.getMinRateOf(rates.get(0).getRates(), Table.Rates::getBid);
 
             System.out.println("For " + date + " lowest Bid Price has " + rate.getCurrency() + ": " + rate.getBid());
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
 

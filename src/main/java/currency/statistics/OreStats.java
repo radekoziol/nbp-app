@@ -1,12 +1,14 @@
 package currency.statistics;
 
-import api.query.OreQuery;
 import api.date.Date;
+import api.query.OreQuery;
 import api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import currency.Ore;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -23,20 +25,23 @@ public class OreStats extends ListStats{
      * @return
      * @throws IOException
      */
-    public double getAverageGoldPrize(Date startDate, Date endDate) throws IOException {
+    public double getAverageGoldPrize(Date startDate, Date endDate) throws IOException, InterruptedException {
 
         Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
         Request request = requestBuilder
                 .setCode("cenyzlota/")
                 .setStartDate(startDate)
+                .setReturnType(Ore[].class)
                 .setEndDate(endDate)
                 .build();
 
         OreQuery oreQuery = new OreQuery();
-        List<Ore> orePrizes = oreQuery.getAllDataFrom(request);
+        List<Ore[]> oreTablePrizes = oreQuery.getAllObjectsFrom(request);
+        List<Ore> orePrizes = new ArrayList<>();
+        oreTablePrizes
+                .forEach(t -> orePrizes.addAll(Arrays.asList(t)));
 
         return super.getAverageOf(orePrizes, Ore::getCena);
-
     }
 
 
@@ -45,18 +50,19 @@ public class OreStats extends ListStats{
      * @param date
      * @return
      */
-    public double getGoldPrize(Date date) throws InvalidArgumentException {
+    public double getGoldPrize(Date date) throws InvalidArgumentException, IOException, InterruptedException {
 
         OreQuery oreQuery = new OreQuery();
 
         Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
         Request request = requestBuilder
                 .setCode("cenyzlota/")
+                .setReturnType(Ore[].class)
                 .setStartDate(date)
                 .build();
 
-        return oreQuery.getDataFrom(request).getCena();
-
+        Ore[] ores = oreQuery.getObjectFrom(request);
+        return ores[0].getCena();
     }
 
 }

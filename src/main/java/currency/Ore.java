@@ -1,11 +1,5 @@
 package currency;
 
-import com.google.gson.reflect.TypeToken;
-
-import java.util.Arrays;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
-
 /**
  * This class describes actually gold
  */

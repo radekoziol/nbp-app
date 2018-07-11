@@ -110,7 +110,7 @@ public class Date {
 
         //Firstly we check if number of chars is correct
         if (!input.matches("\\d{4}-\\d{1,2}-\\d{1,2}"))
-            throw new IllegalArgumentException("This date: " + input + " is impossible!");
+                throw new IllegalArgumentException("This date: " + input + " is impossible!");
 
         String[] temp = input.split("-", 3);
         int year = Integer.parseInt(temp[0]);
