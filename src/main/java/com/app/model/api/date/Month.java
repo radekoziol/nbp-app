@@ -1,5 +1,4 @@
 package com.app.model.api.date;
-
 /**
  * Handles useful month methods.
  */

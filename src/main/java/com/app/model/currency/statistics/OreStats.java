@@ -1,14 +1,10 @@
 package com.app.model.currency.statistics;
 
-import api.query.OreQuery;
-import api.date.Date;
-import api.query.request.Request;
-import com.app.model.api.date.Date;
 import com.app.model.api.query.OreQuery;
+import com.app.model.api.date.Date;
 import com.app.model.api.query.request.Request;
-import com.app.model.currency.Ore;
 import com.sun.javaws.exceptions.InvalidArgumentException;
-import currency.Ore;
+import com.app.model.currency.Ore;
 
 import java.io.IOException;
 import java.util.List;
@@ -48,15 +44,15 @@ public class OreStats extends ListStats{
      * Returns gold price for given date
      * @param date
      * @return
-     * @throws IOException
      */
-    public double getGoldPrize(Date date) throws IOException, InvalidArgumentException {
+    public double getGoldPrize(Date date) throws InvalidArgumentException {
 
         OreQuery oreQuery = new OreQuery();
 
         Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
         Request request = requestBuilder
                 .setCode("cenyzlota/")
+                .setReturnType(Ore[].class)
                 .setStartDate(date)
                 .build();
 

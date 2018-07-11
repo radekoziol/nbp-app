@@ -1,13 +1,13 @@
 package com.app.model.api.query;
 
-import api.date.Date;
-import api.query.request.Request;
+import com.app.model.api.date.Date;
+import com.app.model.api.query.request.Request;
+import com.app.model.api.date.Date;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.sun.javaws.exceptions.InvalidArgumentException;
-import currency.Ore;
+import com.app.model.currency.Ore;
 
 import java.io.IOException;
 import java.net.URL;
@@ -26,7 +26,7 @@ public class OreQuery implements Query{
     /**
      * Api has data back to 2002
      */
-    static public Date oldestDate = new Date("2013-01-02");
+    private final Date oldestDate = new Date("2013-01-02");
 
 
     /**
@@ -53,9 +53,8 @@ public class OreQuery implements Query{
      * Returns data from given date as Ore object
      * @param request
      * @return
-     * @throws InvalidArgumentException
      */
-    public Ore getDataFrom(Request request) throws InvalidArgumentException {
+    public Ore getDataFrom(Request request) {
 
         checkDates(request.getStartDate(),request.getStartDate());
 
@@ -68,6 +67,7 @@ public class OreQuery implements Query{
 
             builder.setPrettyPrinting();
             Gson gson = builder.create();
+            assert request.getReturnType().equals(Ore[].class);
             return gson.fromJson(out, Ore[].class)[0];
 
         } catch (JsonSyntaxException ex) {

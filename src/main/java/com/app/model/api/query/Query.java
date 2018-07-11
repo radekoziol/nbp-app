@@ -1,6 +1,5 @@
 package com.app.model.api.query;
 
-import api.query.request.Request;
 import com.app.model.api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 

@@ -1,7 +1,6 @@
 package com.app.model.currency.statistics;
 
 import com.app.model.currency.Table;
-import currency.Table;
 import javafx.util.Pair;
 
 import java.util.*;

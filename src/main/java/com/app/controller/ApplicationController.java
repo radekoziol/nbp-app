@@ -1,14 +1,11 @@
-package com.app.api.controller;
+package com.app.controller;
 
-import com.app.exceptions.NoSuchNoteException;
 import com.app.model.api.date.Date;
 import com.app.model.api.query.CurrencyQuery;
 import com.app.model.api.query.request.Request;
 import com.app.model.currency.Table;
 import com.app.model.currency.statistics.CurrencyStats;
 import com.app.model.currency.statistics.OreStats;
-import com.app.repository.NoteRepository;
-import com.app.service.NoteService;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,26 +22,25 @@ import java.util.stream.Collectors;
 public class ApplicationController {
 
 
-    @RequestMapping(path = "/getGoldPrize", method = RequestMethod.GET)
+    @RequestMapping(path = "/getGoldPrize")
     public @ResponseBody
-    double getGoldPrize(@RequestParam Date date) {
+    String getGoldPrize(@RequestParam String date) {
         OreStats oreStats = new OreStats();
         try {
-            return oreStats.getGoldPrize(date);
-        } catch (IOException | InvalidArgumentException e) {
+            return String.valueOf(oreStats.getGoldPrize(new Date(date)));
+        } catch (InvalidArgumentException e) {
             e.printStackTrace();
         }
-        return -1;
-
+        return "Error occurred";
     }
 
 
     /**
      * TODO user input should be adapted
      */
-    @RequestMapping(path = "/getCurrencyPrize", method = RequestMethod.GET)
+    @RequestMapping(path = "/getCurrencyPrize")
     public @ResponseBody
-    double getCurrencyPrize(@RequestParam String currency, @RequestParam String date) {
+    String getCurrencyPrize(@RequestParam String currency, @RequestParam String date) {
         try {
 
             Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
@@ -59,16 +55,16 @@ public class ApplicationController {
             Table currencyTable = (Table) currencyQuery
                     .getDataFrom(request);
 
-            return currencyTable.getRates().get(0).getAsk();
+            return String.valueOf(currencyTable.getRates().get(0).getAsk());
 
-        } catch (IOException | IllegalArgumentException | InvalidArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
-        return -1;
+        return "Error occurred";
     }
 
 
-    @RequestMapping(path = "/getMostVolatileCurrency", method = RequestMethod.GET)
+    @RequestMapping(path = "/getMostVolatileCurrency")
     public @ResponseBody
     String getMostVolatileCurrency(@RequestParam String from, @RequestParam String to) {
         try {
@@ -105,30 +101,30 @@ public class ApplicationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "Error";
+        return "Error occurred";
     }
 
 
-    @RequestMapping(path = "/getAverageGoldPrize", method = RequestMethod.GET)
+    @RequestMapping(path = "/getAverageGoldPrize")
     public @ResponseBody
-    double getAverageGoldPrize(@RequestParam String from, @RequestParam String to) {
+    String getAverageGoldPrize(@RequestParam String from, @RequestParam String to) {
 
         try {
             OreStats oreStats = new OreStats();
 
-            return oreStats.getAverageGoldPrize(new Date(from), new Date(to));
+            return String.valueOf(oreStats.getAverageGoldPrize(new Date(from), new Date(to)));
         } catch (IllegalArgumentException ex) {
             System.err.println("Given dates: " + from + "," + to +
                     " are not in right format or are invalid. ");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return -1;
+        return "Error occurred";
     }
 
-    @RequestMapping(path = "/getMinBidPrice", method = RequestMethod.GET)
+    @RequestMapping(path = "/getMinBidPrice")
     public @ResponseBody
-    Pair<String,Double> getMinBidPrice(@RequestParam String date) {
+    String getMinBidPrice(@RequestParam String date) {
 
         try {
             CurrencyQuery currencyQuery = new CurrencyQuery();
@@ -146,10 +142,9 @@ public class ApplicationController {
 
             Table.Rates rate = currencyStats.getMinRateOf(rates.get(0).getRates(), Table.Rates::getBid);
 
-            return new Pair<>(rate.getCurrency(), rate.getBid());
+            return new Pair<>
+                    (String.valueOf(rate.getCurrency()), String.valueOf(rate.getBid())).toString();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InvalidArgumentException e) {
             e.printStackTrace();
         }
 
@@ -158,9 +153,9 @@ public class ApplicationController {
 
 
 
-    @RequestMapping(path = "/getDatesWhenCurrencyWasMostAndLeastExpensive", method = RequestMethod.GET)
+    @RequestMapping(path = "/getDatesWhenCurrencyWasMostAndLeastExpensive")
     public @ResponseBody
-    Pair<Pair<String,Double>,Pair<String,Double>> getDatesWhenCurrencyWasMostAndLeastExpensive(@RequestParam String currency) {
+    String getDatesWhenCurrencyWasMostAndLeastExpensive(@RequestParam String currency) {
 
 //        http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
         CurrencyQuery currencyQuery = new CurrencyQuery();
@@ -182,9 +177,9 @@ public class ApplicationController {
             Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
             Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
 
-            return new Pair<>(
-                    new Pair<String, Double>(min.getEffectiveDate(), min.getBid()),
-                    new Pair<String, Double>(max.getEffectiveDate(), max.getBid()));
+            return String.valueOf(new Pair(
+                    new Pair<String, String>(min.getEffectiveDate(), String.valueOf(min.getBid())),
+                    new Pair<String, String>(max.getEffectiveDate(), String.valueOf(max.getBid()))));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -198,7 +193,7 @@ public class ApplicationController {
      * TODO return type?
      * @return
      */
-    @RequestMapping(path = "/getSortedListOfBidPrize", method = RequestMethod.GET)
+    @RequestMapping(path = "/getSortedListOfBidPrize")
     public @ResponseBody
     String getSortedListOfBidPrize(@RequestParam String date) {
 
@@ -238,7 +233,7 @@ public class ApplicationController {
 
 
 
-        } catch (IOException | InvalidArgumentException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

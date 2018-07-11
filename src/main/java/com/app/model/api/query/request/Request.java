@@ -1,9 +1,7 @@
 package com.app.model.api.query.request;
 
-import api.date.Date;
 import com.app.model.api.date.Date;
 import com.app.model.currency.Table;
-import currency.Table;
 
 import java.lang.reflect.Type;
 

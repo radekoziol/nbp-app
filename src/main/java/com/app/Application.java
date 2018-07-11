@@ -1,37 +1,13 @@
 package com.app;
 
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 
-/*
-    ./gradlew build
-    java -jar build/libs/gs-accessing-data-mysql-0.1.0.jar
-
-    ***
-    curl -X POST -d "title=Ex2&content=blablablaa2" localhost:8080/notes?
-
-    curl 'localhost:8080/notes/generate?number=5'
-
-    curl 'localhost:8080/notes/all'
-
-    curl -X PUT -d "title=Ex2&content=changed!" localhost:8080/notes?
-
-
-    curl -X DELETE localhost:8080/notes?title=Ex2
-
-    curl -X GET localhost:8080/notes?title=Ex2
-
-
-
-    curl 'localhost:8080/demo/all'
-
-
-    TODO exception should be more descriptive
-    TODO user input should be adapted
-    TODO methods should return objects rather than String or int,doubles..
- */
-
-
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class,WebMvcAutoConfiguration.class
+        ,org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration.class })
 @SpringBootApplication
 public class Application {
 

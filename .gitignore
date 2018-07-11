@@ -2,7 +2,6 @@
 /target/
 NBPApi.iml
 NBPApp.iml
-pom.xml
 
 # Compiled class file
 *.class
