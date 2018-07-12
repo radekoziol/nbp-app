@@ -1,4 +1,4 @@
-package com.app.controller;
+package com.app.api.application.controller;
 
 import com.app.model.api.date.Date;
 import com.app.model.api.query.CurrencyQuery;
@@ -8,6 +8,7 @@ import com.app.model.currency.statistics.CurrencyStats;
 import com.app.model.currency.statistics.OreStats;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.util.Pair;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,11 +18,11 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api")
 public class ApplicationController {
 
-    @RequestMapping(path = "/getGoldPrize")
+    @GetMapping(path = "/getGoldPrize")
     public @ResponseBody
     ResponseEntity<String> getGoldPrize(@RequestParam String date) {
         OreStats oreStats = new OreStats();
