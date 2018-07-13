@@ -17,46 +17,28 @@ import javax.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final UserRepository userRepository;
 
-//    private final UserRepository userRepository;
-//
-//    @Autowired
-//    public SecurityConfig(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .httpBasic()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/api/**").authenticated()
-                .antMatchers("/users").permitAll()
-                .and()
-                .csrf().disable();
-
-        http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
-        http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
+    @Autowired
+    public SecurityConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http.csrf().disable()
+                .antMatcher("/api/**")
+                .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+                .httpBasic();
     }
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("user")
-                .password("{noop}password")
-                .roles("USER")
-                .and()
-                .withUser("sysuser")
-                .password("{noop}password")
-                .roles("SYSTEM");
-
-//        auth
-//                .userDetailsService(userRepository::findByUsername);
+        auth
+                .userDetailsService(userRepository::findByUsername);
 
     }
 

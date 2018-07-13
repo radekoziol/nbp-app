@@ -10,12 +10,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 public class User implements UserDetails {
     public final static String emailRegex = "[a-zA-z0-9.]+@[a-zA-Z0-9]+.[a-zA-Z]+";
+
+    private final String ROLE_PREFIX = "ROLE_";
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    private String role;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,10 +44,25 @@ public class User implements UserDetails {
     @Pattern(regexp = emailRegex)
     private String email;
 
+    public static String getEmailRegex() {
+        return emailRegex;
+    }
+
+    public GrantedAuthority getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(GrantedAuthority authority) {
+        this.authority = authority;
+    }
+
+    private GrantedAuthority authority;
+
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
         this.password = password;
+        role = "USER";
     }
 
     public User() {
@@ -73,9 +102,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("SHOUTER"));
-    }
+        List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
 
+        list.add(new SimpleGrantedAuthority(ROLE_PREFIX + role));
+
+        return list;
+    }
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -96,5 +128,13 @@ public class User implements UserDetails {
         return true;
     }
 
-
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

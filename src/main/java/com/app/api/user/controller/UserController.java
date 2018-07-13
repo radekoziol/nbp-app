@@ -4,7 +4,6 @@ import com.app.api.user.request.UserRegisterRequest;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import com.app.service.UserService;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @RestController
 public class UserController {
@@ -34,16 +32,17 @@ public class UserController {
      */
     @PostMapping(path = "/users")
     public @ResponseBody
-    ResponseEntity<String> register(@RequestBody @JsonFormat UserRegisterRequest request) {
-
+    ResponseEntity<String> register(@RequestBody @Valid UserRegisterRequest request) {
         User user = request.extractUser();
+
+        userService.addUser(user);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(user.toString());
     }
 
     @GetMapping(path = "/users")
-    public  ResponseEntity<Iterable<User>> getUsers() {
+    public ResponseEntity<Iterable<User>> getUsers() {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userRepository.findAll());
@@ -53,9 +52,21 @@ public class UserController {
     @DeleteMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public void delete(Authentication authentication) {
-        User user = (User)authentication.getCredentials();
+        User user = (User) authentication.getCredentials();
 
         userRepository.delete(user);
     }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping("/users/generate")
+    public ResponseEntity<User> generate() {
+
+        User user = new User("radekoziol", "example@com.pl", "admin123");
+        userRepository.save(user);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(user);
+    }
+
 
 }
