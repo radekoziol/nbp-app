@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
 @RequestMapping(path = "/api")
 public class ApplicationController {
 
+
+
+
     @GetMapping(path = "/getGoldPrize")
     public @ResponseBody
     ResponseEntity<String> getGoldPrize(@RequestParam String date) {

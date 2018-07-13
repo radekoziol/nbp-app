@@ -18,6 +18,8 @@ public class UserController {
     private UserService userService;
     private UserRepository userRepository;
 
+
+
     @Autowired
     public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
@@ -48,6 +50,12 @@ public class UserController {
                 .body(userRepository.findAll());
 
     }
+//
+//    @GetMapping(path = "/login")
+//    public String login() {
+//        return "login";
+//    }
+
 
     @DeleteMapping("/users")
     @ResponseStatus(HttpStatus.OK)

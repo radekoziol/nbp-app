@@ -9,6 +9,14 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Service;
 
+
+
+
+/*
+    TODO adding simple html for any request ..
+    https://stackoverflow.com/questions/1483063/how-to-handle-static-content-in-spring-mvc
+    https://stackoverflow.com/questions/15479213/how-to-serve-html-files-with-spring
+ */
 @SpringBootApplication
 
 //@ComponentScan({"com.app"})

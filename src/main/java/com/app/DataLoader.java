@@ -20,9 +20,8 @@ public class DataLoader implements ApplicationRunner {
 
     public void run(ApplicationArguments args) {
 
-        User user =new User("radekkoziol", "admin@adm.pl", "admin123");
+        User user =new User("radekoziol2", "admin@adm.pl", "admin123");
         user.setRole("ADMIN");
-
 
         userRepository.save(user);
     }
