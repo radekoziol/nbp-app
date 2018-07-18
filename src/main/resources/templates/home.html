@@ -1,10 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>nbp-app</title>
+    <link id="pagestyle" href="../static/css/styles.css" rel="stylesheet"/>
 </head>
 <body>
+<h1>
+    Welcome to nbp-app
+</h1>
+
+<text>
+    Gold Prize
+    <form th:action="@{/api/getGoldPrize}" method="get">
+        <div><label> Date <input type="text" name="date"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br/>
+</text>
+
+<text>
+    Average Gold Prize
+    <form th:action="@{/api/getAverageGoldPrize}" method="get">
+        <div>
+            <label> Start date <input type="text" name="from"/> </label>
+            <label> End date <input type="text" name="to"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br/>
+</text>
+
+
+<text>
+    Currency Prize
+    <form th:action="@{/api/getCurrencyPrize}" method="get">
+        <div>
+            <label> Currency <input type="text" name="currency"/> </label>
+            <label> Date <input type="text" name="date"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br/>
+
+</text>
+
+<text>
+    Most Volatile Currency From Period
+    <form th:action="@{/api/getMostVolatileCurrency}" method="get">
+        <div>
+            <label> Start date <input type="text" name="from"/> </label>
+            <label> End date <input type="text" name="to"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br />
+</text>
+
+<text>
+    Minimum Bid Price For a Date
+    <form th:action="@{/api/getMinBidPrice}" method="get">
+        <div>
+            <label> Date <input type="text" name="date"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br/>
+
+</text>
+
+<text>
+    Dates (With Values) When Currency Was The Most And The Lest Expensive
+    <form th:action="@{/api/getDatesWhenCurrencyWasMostAndLeastExpensive}" method="get">
+        <div>
+            <label> Currency <input type="text" name="currency"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br />
+</text>
+
+<text>
+    Sorted List Of Bid Prize For a Day
+    <form th:action="@{/api/getSortedListOfBidPrize}" method="get">
+        <div>
+            <label> Date <input type="text" name="date"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br />
+
+</text>
 
 </body>
 </html>

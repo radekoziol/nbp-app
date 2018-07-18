@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .authenticated()
                 .and()
                     .formLogin()
+                    .defaultSuccessUrl("/home",true)
                         .permitAll()
                 .and()
                     .csrf()

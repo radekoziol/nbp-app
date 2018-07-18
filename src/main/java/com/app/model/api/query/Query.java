@@ -56,7 +56,6 @@ public interface Query {
                     .openStream(), "UTF-8")
                     .useDelimiter("\\A").next();
 
-            System.out.println(out);
             allData.add(tryParseJson(request.getReturnType(), out));
 
             request.setStartDate(request.getEndDate());
@@ -112,7 +111,6 @@ public interface Query {
                 builder.setPrettyPrinting();
                 Gson gson = builder.create();
 
-                System.out.println(out);
                 T ret = gson.fromJson(out, returnType);
                 return ret;
 
