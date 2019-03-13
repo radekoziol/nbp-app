@@ -1,8 +1,10 @@
 package com.app.model.currency.statistics;
 
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,7 +37,9 @@ public class ListStats {
      */
     protected <T> T  getMinOf(List<T> records, Function<T,Double> method){
 
-        return records.stream()
+        return Optional.ofNullable(records)
+                .orElse(Collections.emptyList())
+                .stream()
                 .min(Comparator.comparing(method))
                 .get();
 
@@ -57,6 +61,13 @@ public class ListStats {
 
     protected <T> Double getStandardDeviation(List<T> data, Function<T,Double> method) {
 
+        Double deviationSquareSum = calculateDeviationSquareSum(data,method);
+
+        return deviationSquareSum/(data.size()-1);
+    }
+
+    private <T> Double calculateDeviationSquareSum(List<T> data, Function<T, Double> method) {
+
         Double average = getAverageOf(data,method);
 
         List<Double> deviationSquares =
@@ -64,10 +75,7 @@ public class ListStats {
                         .map(d -> Math.pow(method.apply(d) - average,2))
                         .collect(Collectors.toList());
 
-        Double deviationSquareSum = deviationSquares.stream().mapToDouble(f -> f).sum();
-
-        return deviationSquareSum/(data.size()-1);
-
+        return deviationSquares.stream().mapToDouble(f -> f).sum();
     }
 
 }

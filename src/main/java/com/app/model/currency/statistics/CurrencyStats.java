@@ -1,10 +1,13 @@
 package com.app.model.currency.statistics;
 
+import com.app.model.api.date.Date;
+import com.app.model.api.query.CurrencyQuery;
+import com.app.model.api.query.request.Request;
 import com.app.model.currency.Table;
 import javafx.util.Pair;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 /**
@@ -14,36 +17,77 @@ import java.util.function.Function;
 public class CurrencyStats extends ListStats {
 
 
-    /**
-     * Returns most volatile currency from given period
-     * @return
-     */
-    public String getMostVolatileCurrency(List<Table> tables, Function<Table.Rates, Double> getter){
+    public String getMostVolatileCurrency(Date from, Date to) throws IOException, InterruptedException {
 
-        // Setting variable to be changed for maximum
-        Pair<String, Double> maxDeviation = new Pair<>(null, -0.1);
+        List<Table> rates = createListOfAllCurrenciesRates(from, to);
 
-        for (Table table : tables) {
-            // Getting deviation
-            Double deviation = super.getStandardDeviation(table.getRates(), getter);
-
-            Pair<String,Double> iterator =
-                    new Pair<>(table.getCurrency(),deviation);
-
-            // Setting new maximum
-            if(maxDeviation.getValue() < iterator.getValue())
-                maxDeviation = iterator;
-        }
-
-        return maxDeviation.getKey();
+        return getCurrencyWithMaxDeviationOutOfRates(rates);
     }
 
-    /**
-     * Returns average rate of given list of currencies
-     * @param currencies
-     * @param getter method returning Double
-     * @return
-     */
+    private String getCurrencyWithMaxDeviationOutOfRates(List<Table> rates) {
+
+        // Setting variable to be changed for maximum
+        Pair<String, Double> maxCurrencyDeviation = new Pair<>("", -0.1);
+
+        for (Table currencyTable : rates) {
+            Double deviationValue = getStandardDeviationForGivenRates(currencyTable.getRates());
+            Pair<String, Double> currencyDeviation = new Pair<>(currencyTable.getCurrency(), deviationValue);
+
+            maxCurrencyDeviation = setNewMaxDeviationIfNecessary(currencyDeviation,maxCurrencyDeviation);
+        }
+
+        return maxCurrencyDeviation.getKey();
+    }
+
+    private Pair<String, Double> setNewMaxDeviationIfNecessary(Pair<String, Double> iterator, Pair<String, Double> maxDeviation) {
+
+        if (maxDeviation.getValue() < iterator.getValue())
+            return iterator;
+        else
+            return maxDeviation;
+    }
+
+    private Double getStandardDeviationForGivenRates(List<Table.Rates> rates) {
+
+        // Calculation based on bid price
+        Function<Table.Rates, Double> getter = Table.Rates::getBid;
+
+        return super.getStandardDeviation(rates, getter);
+    }
+
+    private List<Table> createListOfAllCurrenciesRates(Date from, Date to) throws IOException, InterruptedException {
+
+        List<Table> rates = new ArrayList<>();
+
+        for (Map.Entry<String, String> entry : Table.Rates.codes.entrySet()) {
+            String currency = entry.getKey();
+            List<Table> ratesForCurrency = getRatesForCurrency(new Pair<>(from, to), currency);
+            rates.addAll(ratesForCurrency);
+        }
+
+        return rates;
+    }
+
+    private List<Table> getRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) throws IOException, InterruptedException {
+
+        Request request = createRequestForExchangeRatesForCurrency(datesFromTo, currency);
+        CurrencyQuery currencyQuery = new CurrencyQuery();
+
+        return currencyQuery
+                .getAllObjectsFrom(request);
+    }
+
+    private Request createRequestForExchangeRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) {
+
+        return new Request.RequestBuilder()
+                .setStartDate(datesFromTo.getKey())
+                .setEndDate(datesFromTo.getValue())
+                .setCode("exchangerates/rates/c")
+                .setCurrency(currency)
+                .setReturnType(Table.class)
+                .build();
+    }
+
     public Map<String, Double> getAverageRateOf(List<Table> currencies, Function<Table.Rates, Double> getter) {
 
         Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
@@ -75,21 +119,23 @@ public class CurrencyStats extends ListStats {
 
     /**
      * Returns minimum rate of given currencies
+     *
      * @param currencies
      * @param getter
      * @return
      */
-    public Table.Rates getMinRateOf(List<Table.Rates> currencies, Function<Table.Rates,Double> getter) {
+    public Table.Rates getMinRateOf(List<Table.Rates> currencies, Function<Table.Rates, Double> getter) {
         return super.getMinOf(currencies, getter);
     }
 
     /**
      * Returns maximum rate of given currencies
+     *
      * @param currencies
      * @param getter
      * @return
      */
-    public Table.Rates getMaxRateOf(List<Table.Rates> currencies, Function<Table.Rates,Double> getter) {
+    public Table.Rates getMaxRateOf(List<Table.Rates> currencies, Function<Table.Rates, Double> getter) {
         return super.getMaxOf(currencies, getter);
     }
 

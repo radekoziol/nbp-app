@@ -40,7 +40,7 @@ public class ApplicationController {
         try {
             try {
                 return ResponseEntity
-                        .status(HttpStatus.OK).body(String.valueOf(oreStats.getGoldPrize(new Date(date))));
+                        .status(HttpStatus.OK).body(String.valueOf(oreStats.getGoldPrice(new Date(date))));
             } catch (IOException | InterruptedException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Error occurred: " + e.getMessage());
@@ -94,30 +94,13 @@ public class ApplicationController {
 
             Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
 
-            List<Table> rates = new LinkedList<>();
-
-            for (Map.Entry<String, String> entry : Table.Rates.codes.entrySet()) {
-                Request request = requestBuilder
-                        .setCode("exchangerates/rates/c")
-                        .setCurrency(entry.getKey())
-                        .setStartDate(new Date(from))
-                        .setEndDate(new Date(to))
-                        .setReturnType(Table.class)
-                        .build();
-
-                List<Table> allRates;
-                allRates = currencyQuery
-                        .getAllObjectsFrom(request);
-
-                rates.addAll(allRates);
-            }
 
             CurrencyStats currencyStats = new CurrencyStats();
 
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(currencyStats
-                            .getMostVolatileCurrency(rates, Table.Rates::getBid));
+                            .getMostVolatileCurrency(new Date(from), new Date(to)));
 
         } catch (IllegalArgumentException ex) {
             return ResponseEntity
@@ -139,7 +122,7 @@ public class ApplicationController {
             OreStats oreStats = new OreStats();
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(String.valueOf(oreStats.getAverageGoldPrize(new Date(from), new Date(to))));
+                    .body(String.valueOf(oreStats.getAverageGoldPrice(new Date(from), new Date(to))));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred: " + "Given dates: " + from + "," + to +
