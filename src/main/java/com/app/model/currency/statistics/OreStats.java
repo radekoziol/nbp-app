@@ -2,6 +2,7 @@ package com.app.model.currency.statistics;
 
 import com.app.model.api.query.OreQuery;
 import com.app.model.api.date.Date;
+import com.app.model.api.query.request.GoldRequest;
 import com.app.model.api.query.request.Request;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import com.app.model.currency.Ore;
@@ -27,7 +28,7 @@ public class OreStats extends ListStats{
      */
     public double getAverageGoldPrice(Date startDate, Date endDate) throws IOException, InterruptedException {
 
-        Request request = createRequestForAverageGoldPrice(startDate,endDate);
+        Request request = GoldRequest.createRequestForAverageGoldPrice(startDate,endDate);
 
         return calculateAverageGoldPriceFromRequest(request);
     }
@@ -50,17 +51,6 @@ public class OreStats extends ListStats{
         return orePrices;
     }
 
-    private Request createRequestForAverageGoldPrice(Date startDate, Date endDate) {
-
-        Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
-        return requestBuilder
-                .setCode("cenyzlota/")
-                .setStartDate(startDate)
-                .setReturnType(Ore[].class)
-                .setEndDate(endDate)
-                .build();
-    }
-
 
     /**
      * Returns gold price for given date
@@ -69,7 +59,7 @@ public class OreStats extends ListStats{
      */
     public double getGoldPrice(Date date) throws IOException, InterruptedException {
 
-        Request request = createRequestForGoldPrice(date);
+        Request request = GoldRequest.createRequestForGoldPrice(date);
 
         return getGoldPriceFromRequest(request);
     }
@@ -82,14 +72,5 @@ public class OreStats extends ListStats{
         return ores[0].getCena();
     }
 
-    private Request createRequestForGoldPrice(Date date) {
-
-        Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
-        return requestBuilder
-                .setCode("cenyzlota/")
-                .setReturnType(Ore[].class)
-                .setStartDate(date)
-                .build();
-    }
 
 }

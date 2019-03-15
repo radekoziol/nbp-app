@@ -1,47 +1,26 @@
 package com.app.model.api.query.request;
 
 import com.app.model.api.date.Date;
-import com.app.model.currency.Table;
 
 import java.lang.reflect.Type;
 
 public class Request {
-
 
     /**
      * Base URL for sending requests to api
      */
     public static final String base = "http://api.nbp.pl/api/";
 
-    private String code;
-    private Date startDate;
-    private Date endDate;
-    private String currency;
-    private Type returnType;
+    final protected String pageCode;
+    final protected Date startDate;
+    final protected Date endDate;
+    final protected Type returnType;
 
-
-
-    public Request(RequestBuilder requestBuilder) {
-        this.code = requestBuilder.code;
-        this.currency = requestBuilder.currency;
+    protected Request(Builder<?> requestBuilder) {
+        this.pageCode = requestBuilder.pageCode;
         this.startDate = requestBuilder.startDate;
         this.endDate = requestBuilder.endDate;
         this.returnType = requestBuilder.returnType;
-    }
-
-    public Type getReturnType() {
-        return returnType;
-    }
-
-    public void setReturnType(Type returnType) {
-        this.returnType = returnType;
-    }
-
-    public String getBase() {
-        String str = (base + "/") + code + "/";
-        if(!currency.isEmpty())
-            str += currency + "/";
-        return str;
     }
 
     @Override
@@ -49,28 +28,23 @@ public class Request {
 
         StringBuilder str = new StringBuilder();
 
-        // Base
-        str.append(base + "/" + code + "/");
-
-        if (currency != null)
-            str.append(currency + "/");
+        str.append(base + "/").append(getPageCode()).append("/");
 
         if (startDate != null)
-            str.append(startDate + "/");
+            str.append(getStartDate()).append("/");
 
         if (endDate != null)
-            str.append(endDate + "/");
-
+            str.append(getEndDate()).append("/");
 
         return str.toString();
     }
 
-    public String getCode() {
-        return code;
+    public String getPageCode() {
+        return pageCode;
     }
 
-    public String getCurrency() {
-        return currency;
+    public Type getReturnType() {
+        return returnType;
     }
 
     public Date getStartDate() {
@@ -81,46 +55,41 @@ public class Request {
         return endDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 
-    public static class RequestBuilder {
+    public static class Builder<T extends Builder<T>> {
 
-        private String code;
+        private String pageCode;
         private Date startDate;
         private Date endDate;
-        private String currency;
         private Type returnType;
 
+        public T setRequest(Request request) {
+            setStartDate(request.getStartDate());
+            setEndDate(request.getEndDate());
+            setPageCode(request.getPageCode());
+            setReturnType(request.getReturnType());
+            return (T) this;
+        }
 
-        public RequestBuilder setReturnType(Type type) {
+        public T setReturnType(Type type) {
             this.returnType = type;
-            return this;
+            return (T) this;
         }
 
-        public RequestBuilder setCode(String code) {
-            this.code = code;
-            return this;
+        public T setPageCode(String pageCode) {
+            this.pageCode = pageCode;
+            return (T) this;
         }
 
-        public RequestBuilder setCurrency(String currency) {
-            this.currency = Table.Rates.codes.get(currency);
-            return this;
-        }
-
-        public RequestBuilder setStartDate(Date startDate) {
+        public T setStartDate(Date startDate) {
             this.startDate = startDate;
-            return this;
+            return (T) this;
         }
 
-        public RequestBuilder setEndDate(Date endDate) {
+        public T setEndDate(Date endDate) {
             this.endDate = endDate;
-            return this;
+            return (T) this;
         }
 
         public Request build() {

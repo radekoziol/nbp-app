@@ -39,7 +39,7 @@ public interface Query {
      */
     default <T> List<T> getAllObjectsFrom(Request request) throws IOException, InterruptedException {
 
-        checkDates(request.getStartDate(), request.getEndDate());
+        validateRequestContent(request);
 
         Date endDate = request.getEndDate();
 
@@ -47,7 +47,7 @@ public interface Query {
         List<T> allData = new ArrayList<>();
 
         // Since we can only send request of 93 days..
-        request.setEndDate(request.getStartDate().shiftDate(93));
+        request = new Request.Builder().setRequest(request).setEndDate(request.getStartDate().shiftDate(93)).build();
         String out;
 
         while (endDate.isLaterThan(request.getEndDate())) {
@@ -58,8 +58,10 @@ public interface Query {
 
             allData.add(tryParseJson(request.getReturnType(), out));
 
-            request.setStartDate(request.getEndDate());
-            request.setEndDate(request.getEndDate().shiftDate(93));
+            request = new Request.Builder().setRequest(request)
+                    .setStartDate(request.getEndDate())
+                    .setEndDate(request.getEndDate().shiftDate(93))
+                            .build();
         }
 
         // Rest of data
@@ -71,6 +73,11 @@ public interface Query {
 
         return allData;
     }
+
+    default void validateRequestContent(Request request){
+        checkDates(request.getStartDate(), request.getEndDate());
+    }
+
 
     /**
      * Returns data from given date from request

@@ -2,6 +2,7 @@ package com.app.model.currency.statistics;
 
 import com.app.model.api.date.Date;
 import com.app.model.api.query.CurrencyQuery;
+import com.app.model.api.query.request.CurrencyRequest;
 import com.app.model.api.query.request.Request;
 import com.app.model.currency.Table;
 import javafx.util.Pair;
@@ -70,24 +71,15 @@ public class CurrencyStats extends ListStats {
 
     private List<Table> getRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) throws IOException, InterruptedException {
 
-        Request request = createRequestForExchangeRatesForCurrency(datesFromTo, currency);
+        Request request = CurrencyRequest.createRequestForExchangeRatesForCurrency(datesFromTo, currency);
         CurrencyQuery currencyQuery = new CurrencyQuery();
 
         return currencyQuery
                 .getAllObjectsFrom(request);
     }
 
-    private Request createRequestForExchangeRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) {
 
-        return new Request.RequestBuilder()
-                .setStartDate(datesFromTo.getKey())
-                .setEndDate(datesFromTo.getValue())
-                .setCode("exchangerates/rates/c")
-                .setCurrency(currency)
-                .setReturnType(Table.class)
-                .build();
-    }
-
+/*
     public Map<String, Double> getAverageRateOf(List<Table> currencies, Function<Table.Rates, Double> getter) {
 
         Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
@@ -116,6 +108,7 @@ public class CurrencyStats extends ListStats {
 
         return map;
     }
+/*
 
     /**
      * Returns minimum rate of given currencies
