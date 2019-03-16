@@ -6,10 +6,13 @@ import com.app.model.api.request.RequestExecutor;
 import com.app.model.api.request.currency.CurrencyRequest;
 import com.app.model.api.request.currency.CurrencyRequestValidator;
 import com.app.model.currency.Table;
+import javafx.scene.control.Tab;
 import javafx.util.Pair;
+import org.hibernate.validator.constraints.Currency;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -77,7 +80,7 @@ public class CurrencyStats extends ListStats {
         Request request = CurrencyRequest.createRequestForExchangeRatesForCurrency(datesFromTo, currency);
         RequestExecutor<Table> requestExecutor = new RequestExecutor<Table>(new CurrencyRequestValidator(), request);
 
-        return requestExecutor.getAllObjectsFrom(request);
+        return requestExecutor.getAllObjectsFrom();
     }
 
 
@@ -126,5 +129,36 @@ public class CurrencyStats extends ListStats {
         return super.getMaxOf(currencies, getter);
     }
 
+    public double getCurrencyPrice(Date date, String currency) throws IOException, InterruptedException {
+
+        Request request = CurrencyRequest.createRequestForCurrencyPrice(date, currency);
+        RequestExecutor<Table> requestExecutor = new RequestExecutor<>(new CurrencyRequestValidator(), request);
+
+        return getCurrencyPriceFromRequestResponse(requestExecutor);
+    }
+
+    private double getCurrencyPriceFromRequestResponse(RequestExecutor<Table> requestExecutor) throws IOException, InterruptedException {
+
+        Table table = (Table) requestExecutor
+                .getAllObjectsFrom()
+                .get(0);
+
+        return table.getRates().get(0).getAsk();
+
+    }
+
+    public Pair<String, Double> getMinBidPrice(Date date) throws IOException, InterruptedException {
+
+        Request request = CurrencyRequest.createRequestForExchangeRatesForCurrencies(date);
+        RequestExecutor requestExecutor = new RequestExecutor(new CurrencyRequestValidator(),request);
+
+        List<Table> rates = requestExecutor.getAllObjectsFrom();
+        CurrencyStats currencyStats = new CurrencyStats();
+
+        Table.Rates rate = currencyStats.getMinRateOf(rates.get(0).getRates(), Table.Rates::getBid);
+
+        return new Pair<>(rate.getCurrency(),rate.getBid());
+
+    }
 }
 

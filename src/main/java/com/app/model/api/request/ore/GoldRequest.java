@@ -18,6 +18,7 @@ public class GoldRequest extends Request {
                 .setPageCode("cenyzlota/")
                 .setReturnType(Ore[].class)
                 .setStartDate(date)
+                .setEndDate(date)
                 .build();
     }
 
@@ -25,6 +26,7 @@ public class GoldRequest extends Request {
 
         return new GoldRequest.Builder()
                 .setStartDate(startDate)
+                .setEndDate(startDate)
                 .setReturnType(Ore[].class)
                 .setEndDate(endDate)
                 .build();

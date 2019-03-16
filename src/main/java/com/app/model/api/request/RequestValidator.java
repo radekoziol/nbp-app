@@ -10,8 +10,12 @@ public interface RequestValidator {
     int MAX_DAY_NUMBER_REQUEST = 93;
 
 
-    default void validateRequestContent(Request request) throws IllegalArgumentException{
-        checkDates(request.getStartDate(), request.getEndDate());
+    default void validateRequestContent(Request request) throws IllegalArgumentException {
+        if (request.getEndDate() == null) {
+            checkDates(request.getStartDate(), request.getStartDate());
+        } else {
+            checkDates(request.getStartDate(),request.getEndDate());
+        }
     }
 
 

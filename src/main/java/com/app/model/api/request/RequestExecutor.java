@@ -1,6 +1,5 @@
 package com.app.model.api.request;
 
-import com.app.model.api.request.currency.CurrencyRequestValidator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
@@ -17,12 +16,14 @@ import static java.lang.Thread.sleep;
 public class RequestExecutor<T> {
 
     private final RequestParser requestParser;
+    private final Request request;
 
     public RequestExecutor(RequestValidator requestValidator, Request request) {
+        this.request = request;
         this.requestParser = new RequestParser(requestValidator,request);
     }
 
-    public <T> List<T> getAllObjectsFrom(Request request) throws IOException, InterruptedException {
+    public <T> List<T> getAllObjectsFrom() throws IOException, InterruptedException {
         requestParser.validateAndParseRequest(request);
         List<Request> requests = requestParser.getSubRequests();
 

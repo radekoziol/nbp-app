@@ -35,7 +35,7 @@ public class OreStats extends ListStats{
     private List<Ore> createListOfGoldPricesFromRequest(Request request) throws IOException, InterruptedException {
 
         RequestExecutor<Ore> requestExecutor = new RequestExecutor<>(new GoldRequestValidator(),request);
-        List<Ore[]> oreTablePrices = requestExecutor.getAllObjectsFrom(request);
+        List<Ore[]> oreTablePrices = requestExecutor.getAllObjectsFrom();
         List<Ore> orePrices = new ArrayList<>();
         oreTablePrices
                 .forEach(t -> orePrices.addAll(Arrays.asList(t)));
@@ -54,7 +54,7 @@ public class OreStats extends ListStats{
     private double getGoldPriceFromRequest(Request request) throws IOException, InterruptedException {
 
         RequestExecutor<Ore> requestExecutor = new RequestExecutor<>(new GoldRequestValidator(),request);
-        List<Ore> ores = requestExecutor.getAllObjectsFrom(request);
+        List<Ore> ores = requestExecutor.getAllObjectsFrom();
 
         return ores.get(0).getCena();
     }
