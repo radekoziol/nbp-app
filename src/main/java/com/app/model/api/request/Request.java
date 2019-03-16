@@ -1,4 +1,4 @@
-package com.app.model.api.query.request;
+package com.app.model.api.request;
 
 import com.app.model.api.date.Date;
 
@@ -11,10 +11,10 @@ public class Request {
      */
     public static final String base = "http://api.nbp.pl/api/";
 
-    final protected String pageCode;
-    final protected Date startDate;
-    final protected Date endDate;
-    final protected Type returnType;
+    protected String pageCode;
+    protected Date startDate;
+    protected Date endDate;
+    protected Type returnType;
 
     protected Request(Builder<?> requestBuilder) {
         this.pageCode = requestBuilder.pageCode;
@@ -55,6 +55,21 @@ public class Request {
         return endDate;
     }
 
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public void shiftRequestStartDate(int dayNumber) {
+        setStartDate(getStartDate().shiftDate(dayNumber));
+    }
+
+    public void shiftRequestEndDate(int dayNumber) {
+        setEndDate(getEndDate().shiftDate(dayNumber));
+    }
 
 
     public static class Builder<T extends Builder<T>> {
@@ -63,14 +78,6 @@ public class Request {
         private Date startDate;
         private Date endDate;
         private Type returnType;
-
-        public T setRequest(Request request) {
-            setStartDate(request.getStartDate());
-            setEndDate(request.getEndDate());
-            setPageCode(request.getPageCode());
-            setReturnType(request.getReturnType());
-            return (T) this;
-        }
 
         public T setReturnType(Type type) {
             this.returnType = type;

@@ -1,14 +1,17 @@
 package com.app.model.currency.statistics;
 
 import com.app.model.api.date.Date;
-import com.app.model.api.query.CurrencyQuery;
-import com.app.model.api.query.request.CurrencyRequest;
-import com.app.model.api.query.request.Request;
+import com.app.model.api.request.Request;
+import com.app.model.api.request.RequestExecutor;
+import com.app.model.api.request.currency.CurrencyRequest;
+import com.app.model.api.request.currency.CurrencyRequestValidator;
 import com.app.model.currency.Table;
 import javafx.util.Pair;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -72,10 +75,9 @@ public class CurrencyStats extends ListStats {
     private List<Table> getRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) throws IOException, InterruptedException {
 
         Request request = CurrencyRequest.createRequestForExchangeRatesForCurrency(datesFromTo, currency);
-        CurrencyQuery currencyQuery = new CurrencyQuery();
+        RequestExecutor<Table> requestExecutor = new RequestExecutor<Table>(new CurrencyRequestValidator(), request);
 
-        return currencyQuery
-                .getAllObjectsFrom(request);
+        return requestExecutor.getAllObjectsFrom(request);
     }
 
 
@@ -112,10 +114,6 @@ public class CurrencyStats extends ListStats {
 
     /**
      * Returns minimum rate of given currencies
-     *
-     * @param currencies
-     * @param getter
-     * @return
      */
     public Table.Rates getMinRateOf(List<Table.Rates> currencies, Function<Table.Rates, Double> getter) {
         return super.getMinOf(currencies, getter);
@@ -123,10 +121,6 @@ public class CurrencyStats extends ListStats {
 
     /**
      * Returns maximum rate of given currencies
-     *
-     * @param currencies
-     * @param getter
-     * @return
      */
     public Table.Rates getMaxRateOf(List<Table.Rates> currencies, Function<Table.Rates, Double> getter) {
         return super.getMaxOf(currencies, getter);

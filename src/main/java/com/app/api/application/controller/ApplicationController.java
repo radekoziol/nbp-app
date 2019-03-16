@@ -1,21 +1,17 @@
 package com.app.api.application.controller;
 
 import com.app.model.api.date.Date;
-import com.app.model.api.query.CurrencyQuery;
-import com.app.model.api.query.request.Request;
+import com.app.model.api.query.currency.CurrencyQuery;
+import com.app.model.api.request.Request;
 import com.app.model.currency.Table;
 import com.app.model.currency.statistics.CurrencyStats;
 import com.app.model.currency.statistics.OreStats;
 import com.sun.javaws.exceptions.InvalidArgumentException;
 import javafx.util.Pair;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.*;

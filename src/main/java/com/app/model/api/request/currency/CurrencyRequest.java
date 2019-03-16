@@ -1,6 +1,7 @@
-package com.app.model.api.query.request;
+package com.app.model.api.request.currency;
 
 import com.app.model.api.date.Date;
+import com.app.model.api.request.Request;
 import com.app.model.currency.Table;
 import javafx.util.Pair;
 

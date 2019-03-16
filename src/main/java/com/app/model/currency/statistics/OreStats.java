@@ -1,10 +1,10 @@
 package com.app.model.currency.statistics;
 
-import com.app.model.api.query.OreQuery;
 import com.app.model.api.date.Date;
-import com.app.model.api.query.request.GoldRequest;
-import com.app.model.api.query.request.Request;
-import com.sun.javaws.exceptions.InvalidArgumentException;
+import com.app.model.api.request.RequestExecutor;
+import com.app.model.api.request.ore.GoldRequest;
+import com.app.model.api.request.Request;
+import com.app.model.api.request.ore.GoldRequestValidator;
 import com.app.model.currency.Ore;
 
 import java.io.IOException;
@@ -18,14 +18,6 @@ import java.util.List;
  */
 public class OreStats extends ListStats{
 
-
-    /**
-     * Returns average gold price for given period
-     * @param startDate
-     * @param endDate
-     * @return
-     * @throws IOException
-     */
     public double getAverageGoldPrice(Date startDate, Date endDate) throws IOException, InterruptedException {
 
         Request request = GoldRequest.createRequestForAverageGoldPrice(startDate,endDate);
@@ -42,8 +34,8 @@ public class OreStats extends ListStats{
 
     private List<Ore> createListOfGoldPricesFromRequest(Request request) throws IOException, InterruptedException {
 
-        OreQuery oreQuery = new OreQuery();
-        List<Ore[]> oreTablePrices = oreQuery.getAllObjectsFrom(request);
+        RequestExecutor<Ore> requestExecutor = new RequestExecutor<>(new GoldRequestValidator(),request);
+        List<Ore[]> oreTablePrices = requestExecutor.getAllObjectsFrom(request);
         List<Ore> orePrices = new ArrayList<>();
         oreTablePrices
                 .forEach(t -> orePrices.addAll(Arrays.asList(t)));
@@ -52,11 +44,6 @@ public class OreStats extends ListStats{
     }
 
 
-    /**
-     * Returns gold price for given date
-     * @param date
-     * @return
-     */
     public double getGoldPrice(Date date) throws IOException, InterruptedException {
 
         Request request = GoldRequest.createRequestForGoldPrice(date);
@@ -66,10 +53,10 @@ public class OreStats extends ListStats{
 
     private double getGoldPriceFromRequest(Request request) throws IOException, InterruptedException {
 
-        OreQuery oreQuery = new OreQuery();
-        Ore[] ores = oreQuery.getObjectFrom(request);
+        RequestExecutor<Ore> requestExecutor = new RequestExecutor<>(new GoldRequestValidator(),request);
+        List<Ore> ores = requestExecutor.getAllObjectsFrom(request);
 
-        return ores[0].getCena();
+        return ores.get(0).getCena();
     }
 
 

@@ -1,6 +1,7 @@
-package com.app.model.api.query.request;
+package com.app.model.api.request.ore;
 
 import com.app.model.api.date.Date;
+import com.app.model.api.request.Request;
 import com.app.model.currency.Ore;
 
 public class GoldRequest extends Request {
