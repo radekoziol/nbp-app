@@ -9,12 +9,12 @@ Enables to register user to database, who may later login
 Then he may use 'interface' or standard endpoints
 
 ![alt text](images/home.png)
-####TODO
+####
 
 ~~~
 [     ] More fabolous home page
 [     ] Tips for input format
-[|    ] More options
+[||   ] More options
 [     ] Testing
 ~~~
 
