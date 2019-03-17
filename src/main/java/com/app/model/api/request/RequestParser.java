@@ -14,13 +14,13 @@ public abstract class RequestParser<T> {
     private final RequestValidator requestValidator;
     protected List<Request> subRequests = new ArrayList<>();
 
-    public RequestParser(int max_day_number_request, RequestValidator requestValidator, Request request) {
+    protected RequestParser(int max_day_number_request, RequestValidator requestValidator, Request request) {
         MAX_DAY_NUMBER_REQUEST = max_day_number_request;
         this.requestValidator = requestValidator;
         this.request = request;
     }
 
-    public void validateAndParseRequest(Request request) throws IOException, InterruptedException {
+    public void validateAndParseRequest(Request request) throws IllegalArgumentException{
 
         requestValidator.validateRequestContent(request);
 

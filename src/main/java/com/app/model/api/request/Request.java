@@ -9,7 +9,7 @@ public class Request {
     /**
      * Base URL for sending requests to api
      */
-    public static final String base = "http://api.nbp.pl/api/";
+    protected static final String base = "http://api.nbp.pl/api/";
 
     protected String pageCode;
     protected Date startDate;
@@ -23,7 +23,7 @@ public class Request {
         this.returnType = requestBuilder.returnType;
     }
 
-    public Request(Request request) {
+    protected Request(Request request) {
         this.pageCode = request.pageCode;
         this.startDate = request.startDate;
         this.endDate = request.endDate;

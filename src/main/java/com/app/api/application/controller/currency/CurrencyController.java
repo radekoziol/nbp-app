@@ -90,10 +90,10 @@ public class CurrencyController extends ApplicationController {
             CurrencyStats currencyStats = new CurrencyStats();
             Pair<Pair<Date, Double>, Pair<Date, Double>> mostAndLeastExpensive = currencyStats.getDatesWhenCurrencyWasMostAndLeastExpensive(currency);
 
+            String output = buildOutputStringForDatesWhenCurrencyWasMostAndLeastExpensive(mostAndLeastExpensive);
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(mostAndLeastExpensive.getKey().getKey().toString() + " " + mostAndLeastExpensive.getKey().getValue() + " , "
-                            + mostAndLeastExpensive.getValue().getKey().toString() + " " + mostAndLeastExpensive.getValue().getValue());
+                    .body(output);
         } catch (IOException | InterruptedException e) {
             return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
@@ -101,6 +101,17 @@ public class CurrencyController extends ApplicationController {
         }
 
 
+    }
+
+    private String buildOutputStringForDatesWhenCurrencyWasMostAndLeastExpensive(Pair<Pair<Date, Double>, Pair<Date, Double>> mostAndLeastExpensive) {
+
+        return mostAndLeastExpensive.getKey().getKey().toString() +
+                " " +
+                mostAndLeastExpensive.getKey().getValue().toString() +
+                " , " +
+                mostAndLeastExpensive.getValue().getKey().toString() +
+                " " +
+                mostAndLeastExpensive.getValue().getValue().toString();
     }
 
     @RequestMapping(path = "/getSortedListOfBidPrice")

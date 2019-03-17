@@ -19,7 +19,7 @@ public class RequestExecutor<T> {
     private final RequestParser requestParser;
     private final Request request;
 
-    public RequestExecutor(RequestParser requestParser, Request request) {
+    protected RequestExecutor(RequestParser requestParser, Request request) {
         this.request = request;
         this.requestParser = requestParser;
     }

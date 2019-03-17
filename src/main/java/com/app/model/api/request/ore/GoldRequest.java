@@ -8,7 +8,7 @@ public class GoldRequest extends Request {
 
     private static final String goldPageCode = "cenyzlota/";
 
-    public GoldRequest(Builder requestBuilder) {
+    private GoldRequest(Builder requestBuilder) {
         super(requestBuilder);
     }
 
