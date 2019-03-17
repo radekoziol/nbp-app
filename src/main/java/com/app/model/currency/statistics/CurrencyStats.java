@@ -10,9 +10,7 @@ import com.app.model.currency.Table;
 import javafx.util.Pair;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -167,11 +165,11 @@ public class CurrencyStats extends ListStats {
         CurrencyRequestExecutor requestExecutor = new CurrencyRequestExecutor(request);
         List<Table> allTables = requestExecutor.getAllObjectsFromRequest();
 
-        Pair<Table.Rates,Table.Rates> minAndMax = calculateWhenCurrencyWasMostAndLeastExpensive(allTables);
-        Pair<Date,Double> min = new Pair<>(new Date(minAndMax.getKey().getEffectiveDate()), minAndMax.getKey().getBid());
-        Pair<Date,Double> max = new Pair<>(new Date(minAndMax.getValue().getEffectiveDate()), minAndMax.getValue().getBid());
+        Pair<Table.Rates, Table.Rates> minAndMax = calculateWhenCurrencyWasMostAndLeastExpensive(allTables);
+        Pair<Date, Double> min = new Pair<>(new Date(minAndMax.getKey().getEffectiveDate()), minAndMax.getKey().getBid());
+        Pair<Date, Double> max = new Pair<>(new Date(minAndMax.getValue().getEffectiveDate()), minAndMax.getValue().getBid());
 
-        return new Pair<>(min,max);
+        return new Pair<>(min, max);
     }
 
     private Pair<Table.Rates, Table.Rates> calculateWhenCurrencyWasMostAndLeastExpensive(List<Table> allTables) {
@@ -184,8 +182,42 @@ public class CurrencyStats extends ListStats {
         Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
         Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
 
-        return new Pair<>(min,max);
+        return new Pair<>(min, max);
     }
+
+    public Map<String, Double> getSortedListOfBidPrice(Date date) throws IOException, InterruptedException {
+
+        Request request = CurrencyRequest.createRequestForExchangeRatesForCurrencies(date);
+
+        CurrencyRequestExecutor currencyRequestExecutor = new CurrencyRequestExecutor(request);
+
+        List<Table[]> currencies = currencyRequestExecutor.getAllObjectsFromRequest();
+        Table list = getSortedTable(currencies);
+
+        return createOutputMapOutOfSortedTable(list);
+    }
+
+    private Map<String, Double> createOutputMapOutOfSortedTable(Table list) {
+
+        Map<String, Double> output = new HashMap<>();
+        list
+                .getRates()
+                .forEach(r -> output.put(r.getCurrency(), (r.getAsk() - r.getBid())));
+
+        return output;
+    }
+
+    private Table getSortedTable(List<Table[]> currencies) {
+
+        Table list = currencies.get(0)[0];
+
+        list
+                .getRates()
+                .sort(Comparator.comparing(e -> e.getAsk() - e.getBid()));
+
+        return list;
+    }
+
 
 }
 

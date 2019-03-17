@@ -25,11 +25,9 @@ public class GoldController extends ApplicationController {
             return ResponseEntity
                     .status(HttpStatus.OK).body(String.valueOf(price));
         } catch (IOException | InterruptedException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred: " + e.getMessage());
+            return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Invalid arguments: " + e.getMessage());
+            return getStandardExternalErrorResponse(e);
         }
 
     }
@@ -46,13 +44,10 @@ public class GoldController extends ApplicationController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(String.valueOf(goldPrice));
-        } catch (IllegalArgumentException ex) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred: " + "Given dates: " + from + "," + to +
-                            " are not in right format or are invalid. ");
         } catch (IOException | InterruptedException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error occurred: " + e.getMessage());
+            return getStandardInternalErrorResponse(e);
+        } catch (IllegalArgumentException e) {
+            return getStandardExternalErrorResponse(e);
         }
     }
 }
