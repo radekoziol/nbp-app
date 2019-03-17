@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -18,16 +19,30 @@ public class RequestExecutor<T> {
     private final RequestParser requestParser;
     private final Request request;
 
-    public RequestExecutor(RequestValidator requestValidator, Request request) {
+    public RequestExecutor(RequestParser requestParser, Request request) {
         this.request = request;
-        this.requestParser = new RequestParser(requestValidator,request);
+        this.requestParser = requestParser;
     }
 
-    public <T> List<T> getAllObjectsFrom() throws IOException, InterruptedException {
+    public <T> List<T> getAllObjectsFromRequest() throws IOException, InterruptedException {
         requestParser.validateAndParseRequest(request);
         List<Request> requests = requestParser.getSubRequests();
 
-        return getAllDataFromRequests(requests);
+        return getAllDataFromRequestsAndParseToList(requests);
+    }
+
+    private <T> List<T> getAllDataFromRequestsAndParseToList(List<Request> requests) throws IOException, InterruptedException {
+
+        Object data = getAllDataFromRequests(requests);
+        if(isArray(data))
+            return (List<T>) Arrays.asList(data);
+        else
+            return (List<T>) data;
+    }
+
+    private boolean isArray(Object obj)
+    {
+        return obj!=null && obj.getClass().isArray();
     }
 
     private <T> List<T> getAllDataFromRequests(List<Request> requests) throws IOException, InterruptedException {
@@ -40,7 +55,7 @@ public class RequestExecutor<T> {
         return data;
     }
 
-    public  <T> T getDataFromRequest(Request request) throws IOException, InterruptedException {
+    private <T> T getDataFromRequest(Request request) throws IOException, InterruptedException {
         String out = getStringOutputFromRequest(request);
 
         return tryParseJson(request.getReturnType(), out);
@@ -68,7 +83,7 @@ public class RequestExecutor<T> {
                 return gson.fromJson(out, returnType);
 
             } catch (IllegalStateException | JsonSyntaxException e) {
-                if (counter > 100)
+                if (counter > 10)
                     throw new InterruptedException("10 server responses in a row can not be parsed. Returning");
                 counter++;
                 sleep(1000);

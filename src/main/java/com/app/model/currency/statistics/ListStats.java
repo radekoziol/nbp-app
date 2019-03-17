@@ -17,7 +17,7 @@ public class ListStats {
     /**
      * Returns average of list with given method
      */
-    protected <T> Double getAverageOf(List<T> records, Function<T,Double> method) {
+    protected <T> Double getAverageOf(List<T> records, Function<T, Double> method) {
 
         return records.stream()
                 .mapToDouble(method::apply)
@@ -27,40 +27,39 @@ public class ListStats {
     /**
      * Returns minimum element of given list
      */
-    protected <T> T  getMinOf(List<T> records, Function<T,Double> method){
+    protected <T> T getMinOf(List<T> records, Function<T, Double> method) {
 
         return Optional.ofNullable(records)
                 .orElse(Collections.emptyList())
                 .stream()
                 .min(Comparator.comparing(method))
                 .get();
-
     }
 
     /**
      * Returns maximum element of given list
      */
-    protected <T> T getMaxOf(List<T> records, Function<T,Double> method){
+    protected <T> T getMaxOf(List<T> records, Function<T, Double> method) {
 
         return records.stream()
                 .max(Comparator.comparing(method))
                 .get();
     }
 
-    protected <T> Double getStandardDeviation(List<T> data, Function<T,Double> method) {
+    protected <T> Double getStandardDeviation(List<T> data, Function<T, Double> method) {
 
-        Double deviationSquareSum = calculateDeviationSquareSum(data,method);
+        Double deviationSquareSum = calculateDeviationSquareSum(data, method);
 
-        return deviationSquareSum/(data.size()-1);
+        return deviationSquareSum / (data.size() - 1);
     }
 
     private <T> Double calculateDeviationSquareSum(List<T> data, Function<T, Double> method) {
 
-        Double average = getAverageOf(data,method);
+        Double average = getAverageOf(data, method);
 
         List<Double> deviationSquares =
                 data.stream()
-                        .map(d -> Math.pow(method.apply(d) - average,2))
+                        .map(d -> Math.pow(method.apply(d) - average, 2))
                         .collect(Collectors.toList());
 
         return deviationSquares.stream().mapToDouble(f -> f).sum();

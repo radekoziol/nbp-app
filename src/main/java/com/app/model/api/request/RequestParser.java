@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.app.model.api.request.RequestValidator.MAX_DAY_NUMBER_REQUEST;
+public abstract class RequestParser<T> {
 
-public class RequestParser<T> {
-
+    protected final int MAX_DAY_NUMBER_REQUEST;
     private final RequestValidator requestValidator;
-    private final Request request;
+    protected final Request request;
     private List<Request> subRequests = new ArrayList<>();
 
-    public RequestParser(RequestValidator requestValidator, Request request) {
+    public RequestParser(int max_day_number_request, RequestValidator requestValidator, Request request) {
+        MAX_DAY_NUMBER_REQUEST = max_day_number_request;
         this.requestValidator = requestValidator;
         this.request = request;
     }
@@ -47,13 +47,10 @@ public class RequestParser<T> {
         subRequests.add(request);
     }
 
-    private boolean canPerformOneRequest() {
-        return Date.dayDifference(request.getEndDate(), request.getStartDate()) <= MAX_DAY_NUMBER_REQUEST;
-    }
+    protected abstract boolean canPerformOneRequest();
 
-    private boolean canPerformOneRequest(Date requestStartDate, Date endDate) {
-        return endDate.isLaterThan(requestStartDate);
-    }
+    protected abstract boolean canPerformOneRequest(Date requestStartDate, Date endDate);
+
 
     public List<Request> getSubRequests() {
         return subRequests;

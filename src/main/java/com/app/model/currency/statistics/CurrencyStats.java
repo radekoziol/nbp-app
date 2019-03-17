@@ -3,7 +3,10 @@ package com.app.model.currency.statistics;
 import com.app.model.api.date.Date;
 import com.app.model.api.request.Request;
 import com.app.model.api.request.RequestExecutor;
+import com.app.model.api.request.RequestValidator;
 import com.app.model.api.request.currency.CurrencyRequest;
+import com.app.model.api.request.currency.CurrencyRequestExecutor;
+import com.app.model.api.request.currency.CurrencyRequestParser;
 import com.app.model.api.request.currency.CurrencyRequestValidator;
 import com.app.model.currency.Table;
 import javafx.scene.control.Tab;
@@ -78,9 +81,9 @@ public class CurrencyStats extends ListStats {
     private List<Table> getRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) throws IOException, InterruptedException {
 
         Request request = CurrencyRequest.createRequestForExchangeRatesForCurrency(datesFromTo, currency);
-        RequestExecutor<Table> requestExecutor = new RequestExecutor<Table>(new CurrencyRequestValidator(), request);
+        CurrencyRequestExecutor requestExecutor = new CurrencyRequestExecutor(request);
 
-        return requestExecutor.getAllObjectsFrom();
+        return requestExecutor.getAllObjectsFromRequest();
     }
 
 
@@ -119,7 +122,7 @@ public class CurrencyStats extends ListStats {
      * Returns minimum rate of given currencies
      */
     public Table.Rates getMinRateOf(List<Table.Rates> currencies, Function<Table.Rates, Double> getter) {
-        return super.getMinOf(currencies, getter);
+        return (Table.Rates) super.getMinOf(currencies, getter);
     }
 
     /**
@@ -132,7 +135,7 @@ public class CurrencyStats extends ListStats {
     public double getCurrencyPrice(Date date, String currency) throws IOException, InterruptedException {
 
         Request request = CurrencyRequest.createRequestForCurrencyPrice(date, currency);
-        RequestExecutor<Table> requestExecutor = new RequestExecutor<>(new CurrencyRequestValidator(), request);
+        CurrencyRequestExecutor requestExecutor = new CurrencyRequestExecutor(request);
 
         return getCurrencyPriceFromRequestResponse(requestExecutor);
     }
@@ -140,7 +143,7 @@ public class CurrencyStats extends ListStats {
     private double getCurrencyPriceFromRequestResponse(RequestExecutor<Table> requestExecutor) throws IOException, InterruptedException {
 
         Table table = (Table) requestExecutor
-                .getAllObjectsFrom()
+                .getAllObjectsFromRequest()
                 .get(0);
 
         return table.getRates().get(0).getAsk();
@@ -150,12 +153,12 @@ public class CurrencyStats extends ListStats {
     public Pair<String, Double> getMinBidPrice(Date date) throws IOException, InterruptedException {
 
         Request request = CurrencyRequest.createRequestForExchangeRatesForCurrencies(date);
-        RequestExecutor requestExecutor = new RequestExecutor(new CurrencyRequestValidator(),request);
+        CurrencyRequestExecutor requestExecutor = new CurrencyRequestExecutor(request);
 
-        List<Table> rates = requestExecutor.getAllObjectsFrom();
+        List<Table[]> rates = requestExecutor.getAllObjectsFromRequest();
         CurrencyStats currencyStats = new CurrencyStats();
 
-        Table.Rates rate = currencyStats.getMinRateOf(rates.get(0).getRates(), Table.Rates::getBid);
+        Table.Rates rate = currencyStats.getMinRateOf(rates.get(0)[0].getRates(), Table.Rates::getBid);
 
         return new Pair<>(rate.getCurrency(),rate.getBid());
 

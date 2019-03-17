@@ -4,6 +4,7 @@ import com.app.model.api.date.Date;
 import com.app.model.api.request.RequestExecutor;
 import com.app.model.api.request.ore.GoldRequest;
 import com.app.model.api.request.Request;
+import com.app.model.api.request.ore.GoldRequestExecutor;
 import com.app.model.api.request.ore.GoldRequestValidator;
 import com.app.model.currency.Ore;
 
@@ -34,8 +35,8 @@ public class OreStats extends ListStats{
 
     private List<Ore> createListOfGoldPricesFromRequest(Request request) throws IOException, InterruptedException {
 
-        RequestExecutor<Ore> requestExecutor = new RequestExecutor<>(new GoldRequestValidator(),request);
-        List<Ore[]> oreTablePrices = requestExecutor.getAllObjectsFrom();
+        GoldRequestExecutor requestExecutor = new GoldRequestExecutor(request);
+        List<Ore[]> oreTablePrices = requestExecutor.getAllObjectsFromRequest();
         List<Ore> orePrices = new ArrayList<>();
         oreTablePrices
                 .forEach(t -> orePrices.addAll(Arrays.asList(t)));
@@ -48,15 +49,15 @@ public class OreStats extends ListStats{
 
         Request request = GoldRequest.createRequestForGoldPrice(date);
 
-        return getGoldPriceFromRequest(request);
+         return getGoldPriceFromRequest(request);
     }
 
     private double getGoldPriceFromRequest(Request request) throws IOException, InterruptedException {
 
-        RequestExecutor<Ore> requestExecutor = new RequestExecutor<>(new GoldRequestValidator(),request);
-        List<Ore> ores = requestExecutor.getAllObjectsFrom();
+        GoldRequestExecutor requestExecutor = new GoldRequestExecutor(request);
+        List<Ore[]> ores = requestExecutor.getAllObjectsFromRequest();
 
-        return ores.get(0).getCena();
+        return ores.get(0)[0].getCena();
     }
 
 

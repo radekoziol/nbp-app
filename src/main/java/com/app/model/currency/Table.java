@@ -1,11 +1,12 @@
 package com.app.model.currency;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * This class describes currency
  */
-public class Table {
+public class Table implements Serializable {
 
     //Table type
     private transient String table;
@@ -44,7 +45,7 @@ public class Table {
     /**
      * Describes properties of currency/rate
      */
-    public static class Rates {
+    public static class Rates implements Serializable{
 
         public static HashMap<String,String> codes = generateCodes();
 

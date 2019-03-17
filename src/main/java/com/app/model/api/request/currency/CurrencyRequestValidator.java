@@ -6,6 +6,11 @@ import com.app.model.api.request.RequestValidator;
 public class CurrencyRequestValidator implements RequestValidator {
 
     /**
+     * Limited by nbp.api - max interval of which one may ask is 93 days
+     */
+    int CURRENCY_MAX_DAY_NUMBER_REQUEST = 93;
+
+    /**
      * Api has data back to 2002
      */
     public static final Date oldestDate = new Date("2002-01-02");
