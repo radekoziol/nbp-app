@@ -23,6 +23,13 @@ public class Request {
         this.returnType = requestBuilder.returnType;
     }
 
+    public Request(Request request) {
+        this.pageCode = request.pageCode;
+        this.startDate = request.startDate;
+        this.endDate = request.endDate;
+        this.returnType = request.returnType;
+    }
+
     @Override
     public String toString() {
 
@@ -51,12 +58,12 @@ public class Request {
         return startDate;
     }
 
-    public Date getEndDate() {
-        return endDate;
-    }
-
     public void setStartDate(Date startDate) {
         this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
     }
 
     public void setEndDate(Date endDate) {
@@ -78,6 +85,7 @@ public class Request {
         private Date startDate;
         private Date endDate;
         private Type returnType;
+
 
         public T setReturnType(Type type) {
             this.returnType = type;

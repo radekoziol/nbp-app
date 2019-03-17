@@ -12,6 +12,10 @@ public class GoldRequest extends Request {
         super(requestBuilder);
     }
 
+    public GoldRequest(GoldRequest request) {
+        super(request);
+    }
+
     public static GoldRequest createRequestForGoldPrice(Date date) {
 
         return new GoldRequest.Builder()

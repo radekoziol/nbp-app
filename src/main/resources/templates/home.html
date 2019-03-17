@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>nbp-app</title>
-    <link id="pagestyle" href="../static/css/styles.css" rel="stylesheet"/>
+    <link href="../static/css/styles.css" id="pagestyle" rel="stylesheet"/>
 </head>
 <body>
 <h1>
@@ -11,8 +11,8 @@
 
 <text>
     Gold Prize
-    <form th:action="@{/api/ore/getGoldPrize}" method="get">
-        <div><label> Date <input type="text" name="date"/> </label>
+    <form method="get" th:action="@{/api/ore/getGoldPrize}">
+        <div><label> Date <input name="date" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
@@ -21,10 +21,10 @@
 
 <text>
     Average Gold Prize
-    <form th:action="@{/api/ore/getAverageGoldPrize}" method="get">
+    <form method="get" th:action="@{/api/ore/getAverageGoldPrize}">
         <div>
-            <label> Start date <input type="text" name="from"/> </label>
-            <label> End date <input type="text" name="to"/> </label>
+            <label> Start date <input name="from" type="text"/> </label>
+            <label> End date <input name="to" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
@@ -34,10 +34,10 @@
 
 <text>
     Currency Prize
-    <form th:action="@{/api/currency/getCurrencyPrize}" method="get">
+    <form method="get" th:action="@{/api/currency/getCurrencyPrize}">
         <div>
-            <label> Currency <input type="text" name="currency"/> </label>
-            <label> Date <input type="text" name="date"/> </label>
+            <label> Currency <input name="currency" type="text"/> </label>
+            <label> Date <input name="date" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
@@ -47,21 +47,21 @@
 
 <text>
     Most Volatile Currency From Period
-    <form th:action="@{/api/currency/getMostVolatileCurrency}" method="get">
+    <form method="get" th:action="@{/api/currency/getMostVolatileCurrency}">
         <div>
-            <label> Start date <input type="text" name="from"/> </label>
-            <label> End date <input type="text" name="to"/> </label>
+            <label> Start date <input name="from" type="text"/> </label>
+            <label> End date <input name="to" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
-    <br />
+    <br/>
 </text>
 
 <text>
     Minimum Bid Price For a Date
-    <form th:action="@{/api/currency/getMinBidPrice}" method="get">
+    <form method="get" th:action="@{/api/currency/getMinBidPrice}">
         <div>
-            <label> Date <input type="text" name="date"/> </label>
+            <label> Date <input name="date" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
@@ -71,24 +71,24 @@
 
 <text>
     Dates (With Values) When Currency Was The Most And The Lest Expensive
-    <form th:action="@{/api/currency/getDatesWhenCurrencyWasMostAndLeastExpensive}" method="get">
+    <form method="get" th:action="@{/api/currency/getDatesWhenCurrencyWasMostAndLeastExpensive}">
         <div>
-            <label> Currency <input type="text" name="currency"/> </label>
+            <label> Currency <input name="currency" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
-    <br />
+    <br/>
 </text>
 
 <text>
     Sorted List Of Bid Prize For a Day
-    <form th:action="@{/api/currency/getSortedListOfBidPrize}" method="get">
+    <form method="get" th:action="@{/api/currency/getSortedListOfBidPrize}">
         <div>
-            <label> Date <input type="text" name="date"/> </label>
+            <label> Date <input name="date" type="text"/> </label>
             <input type="submit"/>
         </div>
     </form>
-    <br />
+    <br/>
 
 </text>
 

@@ -9,7 +9,7 @@ public interface RequestValidator {
         if (request.getEndDate() == null) {
             checkDates(request.getStartDate(), request.getStartDate());
         } else {
-            checkDates(request.getStartDate(),request.getEndDate());
+            checkDates(request.getStartDate(), request.getEndDate());
         }
     }
 

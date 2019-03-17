@@ -4,7 +4,6 @@ import com.app.exceptions.UserAlreadyExistsException;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,7 +24,7 @@ public class UserService {
 
 
     private void checkForDuplicates(User user) {
-        if(userRepository.existsByEmail(user.getEmail())) {
+        if (userRepository.existsByEmail(user.getEmail())) {
             throw new UserAlreadyExistsException("User with given email already exists");
         } else if (userRepository.existsByUsername(user.getUsername())) {
             throw new UserAlreadyExistsException("User with given username already exists");

@@ -24,16 +24,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                    .antMatchers("/api/**")
-                        .authenticated()
+                .antMatchers("/api/**")
+                .authenticated()
                 .and()
-                    .formLogin()
-                    .defaultSuccessUrl("/home",true)
-                        .permitAll()
+                .formLogin()
+                .defaultSuccessUrl("/home", true)
+                .permitAll()
                 .and()
-                    .csrf()
-                        .disable()
-                    .httpBasic();
+                .csrf()
+                .disable()
+                .httpBasic();
 
     }
 

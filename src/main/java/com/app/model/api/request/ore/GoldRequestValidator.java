@@ -15,7 +15,7 @@ public class GoldRequestValidator implements RequestValidator {
      * Checks if date is earlier than 2013-01-02 (limited by api)
      */
     @Override
-    public void checkDates(Date startDate, Date endDate) throws IllegalArgumentException{
+    public void checkDates(Date startDate, Date endDate) throws IllegalArgumentException {
         if (!startDate.isLaterThan(oldestDate)) {
             throw new IllegalArgumentException("Date can not be earlier than " + oldestDate.toString());
         } else if (startDate.isLaterThan(Date.getCurrentDate())) {

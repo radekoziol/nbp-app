@@ -34,15 +34,14 @@ public class RequestExecutor<T> {
     private <T> List<T> getAllDataFromRequestsAndParseToList(List<Request> requests) throws IOException, InterruptedException {
 
         Object data = getAllDataFromRequests(requests);
-        if(isArray(data))
+        if (isArray(data))
             return (List<T>) Arrays.asList(data);
         else
             return (List<T>) data;
     }
 
-    private boolean isArray(Object obj)
-    {
-        return obj!=null && obj.getClass().isArray();
+    private boolean isArray(Object obj) {
+        return obj != null && obj.getClass().isArray();
     }
 
     private <T> List<T> getAllDataFromRequests(List<Request> requests) throws IOException, InterruptedException {
@@ -71,7 +70,7 @@ public class RequestExecutor<T> {
     /**
      * For some reason nbp.api sometimes refuses to send valid response and we get some garbage instead
      */
-    private  <T> T tryParseJson(Type returnType, String out) throws InterruptedException {
+    private <T> T tryParseJson(Type returnType, String out) throws InterruptedException {
 
         int counter = 0;
         while (true) {
@@ -90,7 +89,6 @@ public class RequestExecutor<T> {
             }
         }
     }
-
 
 
 }

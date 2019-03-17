@@ -3,7 +3,8 @@ package com.app.model.api.request.currency;
 import com.app.model.api.date.Date;
 import com.app.model.api.request.Request;
 import com.app.model.api.request.RequestParser;
-import com.app.model.api.request.RequestValidator;
+
+import java.util.List;
 
 public class CurrencyRequestParser extends RequestParser {
 
@@ -12,7 +13,7 @@ public class CurrencyRequestParser extends RequestParser {
      */
     private static final int CURRENCY_MAX_DAY_NUMBER_REQUEST = 93;
 
-    public CurrencyRequestParser( Request request) {
+    public CurrencyRequestParser(Request request) {
         super(CURRENCY_MAX_DAY_NUMBER_REQUEST, new CurrencyRequestValidator(), request);
     }
 
@@ -24,6 +25,10 @@ public class CurrencyRequestParser extends RequestParser {
     @Override
     protected boolean canPerformOneRequest(Date requestStartDate, Date endDate) {
         return endDate.isLaterThan(requestStartDate);
+    }
+
+    protected void addSubRequest(Request request) {
+        subRequests.add(new CurrencyRequest((CurrencyRequest) request));
     }
 
 }

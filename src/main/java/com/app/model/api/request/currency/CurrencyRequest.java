@@ -14,7 +14,12 @@ public class CurrencyRequest extends Request {
         this.currency = builder.currency;
     }
 
-    public static Request createRequestForCurrencyPrice(Date date, String currency){
+    public CurrencyRequest(CurrencyRequest request) {
+        super(request);
+        this.currency = request.currency;
+    }
+
+    public static Request createRequestForCurrencyPrice(Date date, String currency) {
 
         return new CurrencyRequest.Builder()
                 .setCurrency(currency)
@@ -22,7 +27,8 @@ public class CurrencyRequest extends Request {
                 .setStartDate(date)
                 .setEndDate(date)
                 .setReturnType(Table.class)
-                .build();    }
+                .build();
+    }
 
     public static Request createRequestForExchangeRatesForCurrency(Pair<Date, Date> datesFromTo, String currency) {
 
@@ -41,7 +47,8 @@ public class CurrencyRequest extends Request {
                 .setStartDate(date)
                 .setEndDate(date)
                 .setReturnType(Table[].class)
-                .build();    }
+                .build();
+    }
 
     @Override
     public String toString() {
@@ -75,7 +82,7 @@ public class CurrencyRequest extends Request {
 
         private String currency;
 
-        public Builder setRequest(CurrencyRequest request){
+        public Builder setRequest(CurrencyRequest request) {
             setStartDate(request.startDate);
             setEndDate(request.endDate);
             setPageCode(request.pageCode);

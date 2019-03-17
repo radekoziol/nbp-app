@@ -1,6 +1,7 @@
 package com.app.model.api.request;
 
 import com.app.model.api.date.Date;
+import com.sun.xml.internal.ws.api.pipe.ServerTubeAssemblerContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,9 +10,9 @@ import java.util.List;
 public abstract class RequestParser<T> {
 
     protected final int MAX_DAY_NUMBER_REQUEST;
-    private final RequestValidator requestValidator;
     protected final Request request;
-    private List<Request> subRequests = new ArrayList<>();
+    private final RequestValidator requestValidator;
+    protected List<Request> subRequests = new ArrayList<>();
 
     public RequestParser(int max_day_number_request, RequestValidator requestValidator, Request request) {
         MAX_DAY_NUMBER_REQUEST = max_day_number_request;
@@ -32,20 +33,27 @@ public abstract class RequestParser<T> {
 
     private void splitRequestToMany() {
 
+        Date startDate = request.getStartDate();
         Date endDate = request.getEndDate();
 
+        request.setEndDate(startDate);
         request.shiftRequestEndDate(MAX_DAY_NUMBER_REQUEST);
-        while (canPerformOneRequest(request.getStartDate(), endDate)) {
 
-            subRequests.add(request);
+        while (canPerformOneRequest(request.getEndDate(), endDate)) {
 
+            addSubRequest(request);
+
+            startDate = request.getStartDate();
             request.shiftRequestEndDate(MAX_DAY_NUMBER_REQUEST);
             request.shiftRequestStartDate(MAX_DAY_NUMBER_REQUEST);
         }
 
+        request.setStartDate(startDate);
         request.setEndDate(endDate);
-        subRequests.add(request);
+        addSubRequest(request);
     }
+
+    protected abstract void addSubRequest(Request request);
 
     protected abstract boolean canPerformOneRequest();
 

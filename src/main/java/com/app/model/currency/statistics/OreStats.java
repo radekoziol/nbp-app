@@ -1,11 +1,9 @@
 package com.app.model.currency.statistics;
 
 import com.app.model.api.date.Date;
-import com.app.model.api.request.RequestExecutor;
-import com.app.model.api.request.ore.GoldRequest;
 import com.app.model.api.request.Request;
+import com.app.model.api.request.ore.GoldRequest;
 import com.app.model.api.request.ore.GoldRequestExecutor;
-import com.app.model.api.request.ore.GoldRequestValidator;
 import com.app.model.currency.Ore;
 
 import java.io.IOException;
@@ -17,11 +15,11 @@ import java.util.List;
 /**
  * This class is has in details ore(gold) statistical methods
  */
-public class OreStats extends ListStats{
+public class OreStats extends ListStats {
 
     public double getAverageGoldPrice(Date startDate, Date endDate) throws IOException, InterruptedException {
 
-        Request request = GoldRequest.createRequestForAverageGoldPrice(startDate,endDate);
+        Request request = GoldRequest.createRequestForAverageGoldPrice(startDate, endDate);
 
         return calculateAverageGoldPriceFromRequest(request);
     }
@@ -49,7 +47,7 @@ public class OreStats extends ListStats{
 
         Request request = GoldRequest.createRequestForGoldPrice(date);
 
-         return getGoldPriceFromRequest(request);
+        return getGoldPriceFromRequest(request);
     }
 
     private double getGoldPriceFromRequest(Request request) throws IOException, InterruptedException {

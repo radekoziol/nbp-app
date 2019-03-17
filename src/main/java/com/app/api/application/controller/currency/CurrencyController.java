@@ -63,14 +63,13 @@ public class CurrencyController extends ApplicationController {
     }
 
 
-
     @RequestMapping(path = "/getMinBidPrice")
     public @ResponseBody
     ResponseEntity<String> getMinBidPrice(@RequestParam String date) {
 
         try {
             CurrencyStats currencyStats = new CurrencyStats();
-            Pair<String,Double> currencyAndPrice = currencyStats.getMinBidPrice(new Date(date));
+            Pair<String, Double> currencyAndPrice = currencyStats.getMinBidPrice(new Date(date));
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -78,56 +77,38 @@ public class CurrencyController extends ApplicationController {
         } catch (IOException | InterruptedException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error occurred: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid arguments: " + e.getMessage());
         }
 
     }
 
 
-//    /**
-//     * @param currency
-//     * @return TODO not working lol
-//     */
-//    @RequestMapping(path = "/getDatesWhenCurrencyWasMostAndLeastExpensive")
-//    public @ResponseBody
-//    ResponseEntity<String> getDatesWhenCurrencyWasMostAndLeastExpensive(@RequestParam String currency) {
-//
-////        http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
-//        CurrencyQuery currencyQuery = new CurrencyQuery();
-//        Request.RequestBuilder requestBuilder = new Request.RequestBuilder();
-//
-//        Request request = requestBuilder
-//                .setCode("exchangerates/rates/c")
-//                .setCurrency(currency)
-//                .setStartDate(CurrencyQuery.oldestDate)
-//                .setEndDate(Date.getCurrentDate())
-//                .setReturnType(Table.class)
-//                .build();
-//
-//        try {
-//            List<Table> allTables = currencyQuery
-//                    .getAllObjectsFrom(request);
-//
-//            List<Table.Rates> allRates = new ArrayList<>();
-//            allTables
-//                    .forEach(t -> allRates.addAll(t.getRates()));
-//
-//
-//            CurrencyStats currencyStats = new CurrencyStats();
-//            Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
-//            Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
-//
-//            return ResponseEntity
-//                    .status(HttpStatus.OK)
-//                    .body(String.valueOf(
-//                            new Pair<>(min.getEffectiveDate(), String.valueOf(min.getBid())).toString() + "\n " +
-//                                    new Pair<>(max.getEffectiveDate(), String.valueOf(max.getBid())).toString()) + "\n");
-//        } catch (IOException | InterruptedException e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("Error occurred: " + e.getMessage());
-//        }
-//
-//    }
+    @RequestMapping(path = "/getDatesWhenCurrencyWasMostAndLeastExpensive")
+    public @ResponseBody
+    ResponseEntity<String> getDatesWhenCurrencyWasMostAndLeastExpensive(@RequestParam String currency) {
 
+//        http://api.nbp.pl/api/exchangerates/rates/{table}/{code}/{startDate}/{endDate}/
+        try {
+
+            CurrencyStats currencyStats = new CurrencyStats();
+            Pair<Pair<Date, Double>, Pair<Date, Double>> mostAndLeastExpensive = currencyStats.getDatesWhenCurrencyWasMostAndLeastExpensive(currency);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(mostAndLeastExpensive.getKey().getKey().toString() + " " + mostAndLeastExpensive.getKey().getValue() + " , "
+                            + mostAndLeastExpensive.getValue().getKey().toString() + " " + mostAndLeastExpensive.getValue().getValue());
+        } catch (IOException | InterruptedException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occurred: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Invalid arguments: " + e.getMessage());
+        }
+
+    }
+//
 
 //    /**
 //     * TODO return type?
@@ -178,8 +159,6 @@ public class CurrencyController extends ApplicationController {
 //                    .body("Error occurred: " + e.getMessage());
 //        }
 //    }
-
-
 
 
 }

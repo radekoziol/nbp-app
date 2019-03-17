@@ -1,11 +1,9 @@
 package com.app.repository;
 
 import com.app.model.user.User;
-import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +18,7 @@ public class DataLoader implements ApplicationRunner {
 
     public void run(ApplicationArguments args) {
 
-        User user =new User("radekoziol2", "admin@adm.pl", "admin123");
+        User user = new User("radekoziol2", "admin@adm.pl", "admin123");
         user.setRole("ADMIN");
 
         userRepository.save(user);

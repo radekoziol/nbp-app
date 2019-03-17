@@ -12,7 +12,6 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -20,42 +19,16 @@ public class User implements UserDetails {
     public final static String emailRegex = "[a-zA-z0-9.]+@[a-zA-Z0-9]+.[a-zA-Z]+";
 
     private final String ROLE_PREFIX = "ROLE_";
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     private String role;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-
     @Size(min = 1, max = 20)
     private String username;
-
     @Size(min = 8)
     private String password;
-
     @Pattern(regexp = emailRegex)
     private String email;
-
-    public static String getEmailRegex() {
-        return emailRegex;
-    }
-
-    public GrantedAuthority getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(GrantedAuthority authority) {
-        this.authority = authority;
-    }
-
     private GrantedAuthority authority;
 
     public User(String username, String email, String password) {
@@ -66,6 +39,26 @@ public class User implements UserDetails {
     }
 
     public User() {
+    }
+
+    public static String getEmailRegex() {
+        return emailRegex;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public GrantedAuthority getAuthority() {
+        return authority;
+    }
+
+    public void setAuthority(GrantedAuthority authority) {
+        this.authority = authority;
     }
 
     public long getId() {
@@ -108,6 +101,7 @@ public class User implements UserDetails {
 
         return list;
     }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

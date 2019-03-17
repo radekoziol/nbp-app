@@ -3,19 +3,14 @@ package com.app.model.currency.statistics;
 import com.app.model.api.date.Date;
 import com.app.model.api.request.Request;
 import com.app.model.api.request.RequestExecutor;
-import com.app.model.api.request.RequestValidator;
 import com.app.model.api.request.currency.CurrencyRequest;
 import com.app.model.api.request.currency.CurrencyRequestExecutor;
-import com.app.model.api.request.currency.CurrencyRequestParser;
 import com.app.model.api.request.currency.CurrencyRequestValidator;
 import com.app.model.currency.Table;
-import javafx.scene.control.Tab;
 import javafx.util.Pair;
-import org.hibernate.validator.constraints.Currency;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -43,7 +38,7 @@ public class CurrencyStats extends ListStats {
             Double deviationValue = getStandardDeviationForGivenRates(currencyTable.getRates());
             Pair<String, Double> currencyDeviation = new Pair<>(currencyTable.getCurrency(), deviationValue);
 
-            maxCurrencyDeviation = setNewMaxDeviationIfNecessary(currencyDeviation,maxCurrencyDeviation);
+            maxCurrencyDeviation = setNewMaxDeviationIfNecessary(currencyDeviation, maxCurrencyDeviation);
         }
 
         return maxCurrencyDeviation.getKey();
@@ -87,42 +82,42 @@ public class CurrencyStats extends ListStats {
     }
 
 
-/*
-    public Map<String, Double> getAverageRateOf(List<Table> currencies, Function<Table.Rates, Double> getter) {
+    /*
+        public Map<String, Double> getAverageRateOf(List<Table> currencies, Function<Table.Rates, Double> getter) {
 
-        Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
-        Arrays.fill(averageExchangeRate, 0d);
+            Double[] averageExchangeRate = new Double[currencies.get(0).getRates().size()];
+            Arrays.fill(averageExchangeRate, 0d);
 
-        for (Table currency : currencies) {
-            int counter = 0;
-            for (Table.Rates rate0 : currency.getRates()) {
-                averageExchangeRate[counter] += getter.apply(rate0);
-                counter++;
+            for (Table currency : currencies) {
+                int counter = 0;
+                for (Table.Rates rate0 : currency.getRates()) {
+                    averageExchangeRate[counter] += getter.apply(rate0);
+                    counter++;
+                }
             }
-        }
 
-        //Filling averageExchangeRate to map
-        Map<String, Double> map = new HashMap<>();
-        for (Table currency : currencies) {
-            int counter = 0;
-            for (Table.Rates rate4 : currency.getRates()) {
-                //Average is really below calculated
-                averageExchangeRate[counter] /= currency.getRates().size();
-                map.put(rate4.getCurrency(), averageExchangeRate[counter]);
-                counter++;
+            //Filling averageExchangeRate to map
+            Map<String, Double> map = new HashMap<>();
+            for (Table currency : currencies) {
+                int counter = 0;
+                for (Table.Rates rate4 : currency.getRates()) {
+                    //Average is really below calculated
+                    averageExchangeRate[counter] /= currency.getRates().size();
+                    map.put(rate4.getCurrency(), averageExchangeRate[counter]);
+                    counter++;
+                }
+                break;
             }
-            break;
+
+            return map;
         }
+    /*
 
-        return map;
-    }
-/*
-
-    /**
-     * Returns minimum rate of given currencies
-     */
+        /**
+         * Returns minimum rate of given currencies
+         */
     public Table.Rates getMinRateOf(List<Table.Rates> currencies, Function<Table.Rates, Double> getter) {
-        return (Table.Rates) super.getMinOf(currencies, getter);
+        return super.getMinOf(currencies, getter);
     }
 
     /**
@@ -160,8 +155,37 @@ public class CurrencyStats extends ListStats {
 
         Table.Rates rate = currencyStats.getMinRateOf(rates.get(0)[0].getRates(), Table.Rates::getBid);
 
-        return new Pair<>(rate.getCurrency(),rate.getBid());
+        return new Pair<>(rate.getCurrency(), rate.getBid());
 
     }
+
+    public Pair<Pair<Date, Double>, Pair<Date, Double>> getDatesWhenCurrencyWasMostAndLeastExpensive(String currency) throws IOException, InterruptedException {
+
+        Request request = CurrencyRequest.createRequestForExchangeRatesForCurrency
+                (new Pair<>(CurrencyRequestValidator.oldestDate, Date.getCurrentDate()), currency);
+
+        CurrencyRequestExecutor requestExecutor = new CurrencyRequestExecutor(request);
+        List<Table> allTables = requestExecutor.getAllObjectsFromRequest();
+
+        Pair<Table.Rates,Table.Rates> minAndMax = calculateWhenCurrencyWasMostAndLeastExpensive(allTables);
+        Pair<Date,Double> min = new Pair<>(new Date(minAndMax.getKey().getEffectiveDate()), minAndMax.getKey().getBid());
+        Pair<Date,Double> max = new Pair<>(new Date(minAndMax.getValue().getEffectiveDate()), minAndMax.getValue().getBid());
+
+        return new Pair<>(min,max);
+    }
+
+    private Pair<Table.Rates, Table.Rates> calculateWhenCurrencyWasMostAndLeastExpensive(List<Table> allTables) {
+
+        List<Table.Rates> allRates = new ArrayList<>();
+        allTables
+                .forEach(t -> allRates.addAll(t.getRates()));
+
+        CurrencyStats currencyStats = new CurrencyStats();
+        Table.Rates min = currencyStats.getMinRateOf(allRates, Table.Rates::getBid);
+        Table.Rates max = currencyStats.getMaxRateOf(allRates, Table.Rates::getBid);
+
+        return new Pair<>(min,max);
+    }
+
 }
 

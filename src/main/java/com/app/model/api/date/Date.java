@@ -55,10 +55,10 @@ public class Date {
 
         // If startDate is later than endDate we need to swap and multiply by -1
         if (startDate.isLaterThan(endDate))
-            return -1 * searchBinaryDayDifference
+            return searchBinaryDayDifference
                     (0, ((yearDifference + 1) * 365), endDate, startDate);
 
-        return searchBinaryDayDifference
+        return -1 * searchBinaryDayDifference
                 (0, ((yearDifference + 1) * 365), startDate, endDate);
 
     }
@@ -110,7 +110,7 @@ public class Date {
 
         //Firstly we check if number of chars is correct
         if (!input.matches("\\d{4}-\\d{1,2}-\\d{1,2}"))
-                throw new IllegalArgumentException("This date: " + input + " is impossible!");
+            throw new IllegalArgumentException("This date: " + input + " is impossible!");
 
         String[] temp = input.split("-", 3);
         int year = Integer.parseInt(temp[0]);
