@@ -9,7 +9,7 @@ import javax.validation.constraints.Size;
 public class UserRegisterRequest {
 
     @NotNull
-    @Size(min = 1, max = 20)
+    @Size(min = 1, max =    20)
     private String username;
 
     @NotNull
