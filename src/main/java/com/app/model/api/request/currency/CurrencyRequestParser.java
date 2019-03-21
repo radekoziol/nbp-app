@@ -4,8 +4,6 @@ import com.app.model.api.date.Date;
 import com.app.model.api.request.Request;
 import com.app.model.api.request.RequestParser;
 
-import java.util.List;
-
 public class CurrencyRequestParser extends RequestParser {
 
     /**

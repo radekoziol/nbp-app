@@ -3,7 +3,6 @@ package com.app.model.api.request.ore;
 import com.app.model.api.date.Date;
 import com.app.model.api.request.Request;
 import com.app.model.api.request.RequestParser;
-import com.app.model.api.request.currency.CurrencyRequest;
 
 public class GoldRequestParser extends RequestParser {
 

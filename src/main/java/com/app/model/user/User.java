@@ -1,5 +1,7 @@
 package com.app.model.user;
 
+import com.app.api.user.request.UserRegisterRequest;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +17,9 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
+@Getter
 public class User implements UserDetails {
+
     public final static String emailRegex = "[a-zA-z0-9.]+@[a-zA-Z0-9]+.[a-zA-Z]+";
 
     private final String ROLE_PREFIX = "ROLE_";
@@ -29,6 +33,7 @@ public class User implements UserDetails {
     private String password;
     @Pattern(regexp = emailRegex)
     private String email;
+
     private GrantedAuthority authority;
 
     public User(String username, String email, String password) {
@@ -40,6 +45,11 @@ public class User implements UserDetails {
 
     public User() {
     }
+
+    public User(UserRegisterRequest request) {
+        new User(request.getUsername(), request.getEmail(),request.getPassword());
+    }
+
 
     public static String getEmailRegex() {
         return emailRegex;

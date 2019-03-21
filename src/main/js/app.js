@@ -6,6 +6,7 @@ const ReactDOM = require('react-dom');
 const client = require('./client');
 // end::vars[]
 
+
 // tag::app[]
 class App extends React.Component {
 
@@ -15,7 +16,7 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        client({method: 'GET', path: 'api/users'}).done(response => {
+        client({method: 'GET', path: root + '/users'}).done(response => {
             this.setState({users: response.entity});
         });
     }

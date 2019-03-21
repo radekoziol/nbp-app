@@ -1,6 +1,6 @@
 package com.app.service;
 
-import com.app.exceptions.UserAlreadyExistsException;
+import com.app.api.user.exceptions.UserAlreadyExistsException;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,18 +1,27 @@
 package com.app.api.user.controller;
 
+import com.app.api.user.exceptions.UserNotFoundException;
 import com.app.api.user.request.UserRegisterRequest;
+import com.app.api.user.resource.UserResource;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import com.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping(value = "/api/user")
 public class UserController {
 
     private UserService userService;
@@ -25,37 +34,53 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-
-    @PostMapping(path = "/users")
+    @PostMapping
     public @ResponseBody
-    ResponseEntity<String> register(@RequestBody @Valid UserRegisterRequest request) {
-        User user = request.extractUser();
-
-        userService.addUser(user);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(user.toString());
+    ResponseEntity<UserResource> post(@RequestBody @Valid UserRegisterRequest request) {
+        final User user = new User(request);
+        userRepository.save(user);
+        final URI uri =
+                MvcUriComponentsBuilder.fromController(getClass())
+                        .path("/{id}")
+                        .buildAndExpand(user.getId())
+                        .toUri();
+        return ResponseEntity.created(uri).body(new UserResource(user));
     }
 
-    @GetMapping(path = "/api/users")
-    public ResponseEntity<Iterable<User>> getUsers() {
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(userRepository.findAll());
-
-
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<UserResource> get(@PathVariable final long id) {
+        return userRepository
+                .findById(id)
+                .map(p -> ResponseEntity.ok(new UserResource(p)))
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @DeleteMapping("/users")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(Authentication authentication) {
-        User user = (User) authentication.getCredentials();
+    @GetMapping()
+    public ResponseEntity<Resources<UserResource>> all() {
 
-        userRepository.delete(user);
+        final List<UserResource> collection =
+                userRepository.findAll().stream().map(UserResource::new).collect(Collectors.toList());
+        final Resources<UserResource> resources = new Resources<>(collection);
+
+        final String uriString = ServletUriComponentsBuilder.fromCurrentRequest().build().toUriString();
+        resources.add(new Link(uriString, "self"));
+        return ResponseEntity.ok(resources);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable("id") final long id) {
+        return userRepository
+                .findById(id)
+                .map(
+                        p -> {
+                            userRepository.deleteById(id);
+                            return ResponseEntity.noContent().build();
+                        })
+                .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping("/users/generate")
+    @RequestMapping("generate")
     public ResponseEntity<User> generate() {
 
         User user = new User("radekoziol", "example@com.pl", "admin123");

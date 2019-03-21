@@ -21,7 +21,11 @@ public class DataLoader implements ApplicationRunner {
         User user = new User("radekoziol2", "admin@adm.pl", "admin123");
         user.setRole("ADMIN");
 
+        User user2 = new User("radekoziol3", "notadmin@adm.pl", "notadmin123");
+        user.setRole("USER");
+
         userRepository.save(user);
+        userRepository.save(user2);
     }
 
 }
