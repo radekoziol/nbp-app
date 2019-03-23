@@ -18,11 +18,11 @@ public class DataLoader implements ApplicationRunner {
 
     public void run(ApplicationArguments args) {
 
-        User user = new User("radekoziol2", "admin@adm.pl", "admin123");
-        user.setRole("ADMIN");
-
-        User user2 = new User("radekoziol3", "notadmin@adm.pl", "notadmin123");
+        User user = new User("user", "admin@adm.pl", "{noop}admin123");
         user.setRole("USER");
+
+        User user2 = new User("admin", "notadmin@adm.pl", "{noop}notadmin123");
+        user.setRole("ADMIN");
 
         userRepository.save(user);
         userRepository.save(user2);

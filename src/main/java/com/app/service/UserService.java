@@ -18,7 +18,6 @@ public class UserService {
 
     public void addUser(User user) {
         checkForDuplicates(user);
-
         userRepository.save(user);
     }
 

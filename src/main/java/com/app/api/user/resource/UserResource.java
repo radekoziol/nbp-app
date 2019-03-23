@@ -5,10 +5,13 @@ import com.app.model.user.User;
 import lombok.Getter;
 import org.springframework.hateoas.ResourceSupport;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @Getter
+@XmlRootElement
 public class UserResource extends ResourceSupport {
 
     private final User user;

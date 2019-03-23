@@ -47,7 +47,10 @@ public class User implements UserDetails {
     }
 
     public User(UserRegisterRequest request) {
-        new User(request.getUsername(), request.getEmail(),request.getPassword());
+        this.username = request.getUsername();
+        this.email = request.getEmail();
+        this.password = "{noop}" + request.getPassword();
+        role = "USER";
     }
 
 
@@ -100,7 +103,7 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = "{noop}" + password;
     }
 
     @Override
