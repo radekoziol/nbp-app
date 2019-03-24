@@ -1,5 +1,7 @@
 package com.app.security;
 
+import com.app.api.user.exceptions.UserNotFoundException;
+import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -24,11 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/api/**")
-                .authenticated()
+                .antMatchers( "/home", "/register").authenticated()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/home", true)
+                .defaultSuccessUrl("/", true)
+//                .failureForwardUrl("/register")
                 .permitAll()
                 .and()
                 .csrf()
@@ -39,8 +41,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userRepository::findByUsername);
+            auth
+                    .userDetailsService(username -> userRepository
+                            .findByUsername(username)
+                            .orElse(User.getUnauthorizedUser())
+                    );
     }
 
 

@@ -1,21 +1,18 @@
 # nbp-app
-Simple spring application for http://api.nbp.pl
+Spring-boot application for http://api.nbp.pl
 ## Getting Started 
 
-Enables to register user to database, who may later login
+Go to _localhost:8080/_ to create user account:
+
+![alt text](images/register.png)
+
+Go to _localhost:8080/login_ to create login:
 
 ![alt text](images/login.png)
 
-Then he may use 'interface' or standard endpoints
+Then you may use an 'interface'
 
 ![alt text](images/home.png)
-####
 
-~~~
-[     ] More fabolous home page
-[     ] Tips for input format
-[||   ] More options
-[     ] Testing
-~~~
 
 

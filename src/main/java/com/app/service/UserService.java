@@ -1,13 +1,19 @@
 package com.app.service;
 
 import com.app.api.user.exceptions.UserAlreadyExistsException;
+import com.app.api.user.exceptions.UserNotFoundException;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
 
@@ -30,6 +36,16 @@ public class UserService {
         }
     }
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Objects.requireNonNull(username);
+        User user = userRepository.findByUsername(username).get();
+
+        if (user == null)
+            throw new UserNotFoundException(username);
+        return user;
+    }
 
 }
 

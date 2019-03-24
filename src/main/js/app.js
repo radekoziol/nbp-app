@@ -13,12 +13,11 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.onCreate = this.onCreate.bind(this);
-        this.state = {users: [], attributes: []};
-        this.loadFromServer();
+        this.state = {users: [], attributes: User.getRequiredAttributes()};
     }
 
     componentDidMount() {
-        client({method: 'GET', path: root + '/user'}).done(response => {
+        client({method: 'GET', path: root + '/user', registry: "" }).done(response => {
             this.setState({users: response.entity.content});
         });
     }
@@ -38,17 +37,11 @@ class App extends React.Component {
         return (
             <div>
                 <CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
+                <br />
                 <UserList users={this.state.users}/>
             </div>
 
         )
-    }
-
-    loadFromServer(pageSize) {
-
-        client({method: 'GET', path: root + '/user'}).done(response => {
-            this.setState({attributes: User.getRequiredAttributes()});
-        });
     }
 
 }
@@ -58,6 +51,9 @@ class App extends React.Component {
 // tag::user-list[]
 class UserList extends React.Component {
     render() {
+
+        console.log(this);
+        console.log(this.props);
 
         const users = this.props.users.map(user =>
             <User key={user.links[1].href} user={user.user}/>);
@@ -70,7 +66,6 @@ class UserList extends React.Component {
                         <th>Username</th>
                         <th>Password</th>
                         <th>Email</th>
-                        <th></th>
                     </tr>
                     {users}
                     </tbody>
@@ -129,12 +124,6 @@ class CreateDialog extends React.Component {
 
     render() {
 
-        // console.log(this);
-        //
-        console.log(this.props);
-
-        // console.log(this.props.attributes.item(0));
-
         const inputs = this.props.attributes.map(attribute =>
             <p key={attribute}>
                 <input type="text" placeholder={attribute} ref={attribute} className="field"/>
@@ -145,10 +134,11 @@ class CreateDialog extends React.Component {
             <div>
                 <div id="createUser" className="modalDialog">
                     <div>
-                        <h2>Create new user</h2>
+                        <h2>Create new user </h2>
 
                         <form>
                             {inputs}
+                            <br/>
                             <button onClick={this.handleSubmit}>Create</button>
                         </form>
                     </div>

@@ -34,6 +34,7 @@ public class User implements UserDetails {
     @Pattern(regexp = emailRegex)
     private String email;
 
+    private boolean isAccountLocked;
     private GrantedAuthority authority;
 
     public User(String username, String email, String password) {
@@ -56,6 +57,12 @@ public class User implements UserDetails {
 
     public static String getEmailRegex() {
         return emailRegex;
+    }
+
+    public static User getUnauthorizedUser() {
+        User user = new User();
+        user.isAccountLocked = true;
+        return user;
     }
 
     public String getRole() {
@@ -106,6 +113,7 @@ public class User implements UserDetails {
         this.password = "{noop}" + password;
     }
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> list = new ArrayList<GrantedAuthority>();
@@ -122,7 +130,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isAccountLocked;
     }
 
     @Override
@@ -138,7 +146,8 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "role='" + role + '\'' +
+                ", id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
