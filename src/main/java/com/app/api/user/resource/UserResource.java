@@ -14,7 +14,10 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @XmlRootElement
 public class UserResource extends ResourceSupport {
 
-    private final User user;
+    private User user;
+
+    public UserResource() {
+    }
 
     public UserResource(User user) {
         this.user = user;

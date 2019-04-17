@@ -5,12 +5,28 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 @Controller
 public class ApplicationController {
 
+    @RequestMapping({ "/user", "/me" })
+    public Map<String, String> user(Principal principal) {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("name", principal.getName());
+        return map;
+    }
+
     @RequestMapping(value = "/register")
-    public String index() {
-        return "index";
+    public String register() {
+        return "register";
+    }
+
+    @RequestMapping(value = "/users")
+    public String users() {
+        return "users";
     }
 
     protected ResponseEntity<String> getStandardExternalErrorResponse(IllegalArgumentException e) {

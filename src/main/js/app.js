@@ -7,20 +7,14 @@ const follow = require('./follow'); // function to hop multiple links by "rel"
 
 var root = "/api";
 
-// tag::app[]
-class App extends React.Component {
+class Register extends React.Component {
 
     constructor(props) {
         super(props);
         this.onCreate = this.onCreate.bind(this);
-        this.state = {users: [], attributes: User.getRequiredAttributes()};
+        this.state = {attributes: User.getRequiredAttributes()};
     }
 
-    componentDidMount() {
-        client({method: 'GET', path: root + '/user', registry: "" }).done(response => {
-            this.setState({users: response.entity.content});
-        });
-    }
 
     onCreate(newUser) {
         client({
@@ -37,8 +31,6 @@ class App extends React.Component {
         return (
             <div>
                 <CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
-                <br />
-                <UserList users={this.state.users}/>
             </div>
 
         )
@@ -46,10 +38,31 @@ class App extends React.Component {
 
 }
 
-// end::app[]
+class Users extends React.Component {
 
-// tag::user-list[]
+    constructor(props) {
+        super(props);
+        this.state = {users: []};
+    }
+
+    componentDidMount() {
+        client({method: 'GET', path: root + '/user', registry: ""}).done(response => {
+            console.log(JSON.stringify(response, null, 2))
+            this.setState({users: response.entity.content});
+        });
+    }
+
+    render() {
+        return (
+            <div>
+                <UserList users={this.state.users}/>
+            </div>
+        )
+    }
+}
+
 class UserList extends React.Component {
+
     render() {
 
         console.log(this);
@@ -101,6 +114,7 @@ class CreateDialog extends React.Component {
     constructor(props) {
         super(props);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleFacebookLogin = this.handleFacebookLogin.bind(this)
     }
 
     handleSubmit(e) {
@@ -119,6 +133,18 @@ class CreateDialog extends React.Component {
 
         // Navigate away from the dialog to hide it.
         window.location = "#";
+    }
+
+
+    handleFacebookLogin(e) {
+        e.preventDefault();
+        const newUser = {};
+
+        client({method: 'GET', path: root + '/facebookRegister', registry: ""}).done(response => {
+            console.log(JSON.stringify(response, null, 2))
+            this.setState({users: response.entity.content});
+        });
+
     }
 
 
@@ -143,17 +169,24 @@ class CreateDialog extends React.Component {
                         </form>
                     </div>
                 </div>
+                <br/>
+                <div className="container unauthenticated">
+                    <button onClick={this.handleFacebookLogin}>Login with Facebook</button>
+                </div>
             </div>
         )
     }
 
 }
 
-// end::users[]
-
-// tag::render[]
-ReactDOM.render(
-    <App/>,
-    document.getElementById('react')
-);
-// end::render[]
+if (document.getElementById('register')) {
+    ReactDOM.render(
+        <Register/>,
+        document.getElementById('register')
+    );
+} else if (document.getElementById('users')) {
+    ReactDOM.render(
+        <Users/>,
+        document.getElementById('users')
+    );
+}

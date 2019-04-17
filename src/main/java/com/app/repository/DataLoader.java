@@ -1,6 +1,7 @@
 package com.app.repository;
 
 import com.app.model.user.User;
+import com.app.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -9,11 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DataLoader implements ApplicationRunner {
 
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    public DataLoader(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public DataLoader(UserService userService) {
+        this.userService = userService;
     }
 
     public void run(ApplicationArguments args) {
@@ -21,7 +22,7 @@ public class DataLoader implements ApplicationRunner {
         User user = new User("admin", "notadmin@adm.pl", "{noop}admin123");
         user.setRole("ADMIN");
 
-        userRepository.save(user);
+        userService.addUser(user);
     }
 
 }

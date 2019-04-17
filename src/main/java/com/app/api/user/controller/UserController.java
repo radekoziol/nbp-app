@@ -38,7 +38,7 @@ public class UserController {
     public @ResponseBody
     ResponseEntity<UserResource> post(@RequestBody @Valid UserRegisterRequest request) {
         final User user = new User(request);
-        userRepository.save(user);
+        userService.addUser(user);
         final URI uri =
                 MvcUriComponentsBuilder.fromController(getClass())
                         .path("/{id}")
@@ -84,6 +84,7 @@ public class UserController {
     public ResponseEntity<User> generate() {
 
         User user = new User("radekoziol", "example@com.pl", "admin123");
+        // Allowing for duplicates actually
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK)

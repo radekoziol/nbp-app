@@ -5,6 +5,7 @@ import com.app.api.user.exceptions.UserNotFoundException;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,6 +45,7 @@ public class UserService implements UserDetailsService {
 
         if (user == null)
             throw new UserNotFoundException(username);
+
         return user;
     }
 

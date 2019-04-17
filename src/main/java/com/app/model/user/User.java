@@ -6,18 +6,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 @Entity
 @Getter
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class User implements UserDetails {
 
     public final static String emailRegex = "[a-zA-z0-9.]+@[a-zA-Z0-9]+.[a-zA-Z]+";
@@ -122,6 +121,20 @@ public class User implements UserDetails {
 
         return list;
     }
+
+    public static String getRandomPassword() {
+
+        Random random = new Random();
+        StringBuilder output = new StringBuilder();
+
+        String alphabet = "abc123";
+        for (int i = 0; i < 10; i++) {
+            output.append(alphabet.charAt(random.nextInt(alphabet.length())));
+        }
+
+        return output.toString();
+    }
+
 
     @Override
     public boolean isAccountNonExpired() {
