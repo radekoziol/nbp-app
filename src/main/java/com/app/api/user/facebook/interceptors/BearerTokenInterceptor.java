@@ -1,4 +1,4 @@
-package com.app.api.user.facebook.api.interceptors;
+package com.app.api.user.facebook.interceptors;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;

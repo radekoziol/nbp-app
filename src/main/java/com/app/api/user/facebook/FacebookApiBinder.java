@@ -1,15 +1,10 @@
-package com.app.api.user.facebook.api;
+package com.app.api.user.facebook;
 
-import com.app.api.user.facebook.api.interceptors.BearerTokenInterceptor;
-import com.app.api.user.facebook.api.interceptors.NoTokenInterceptor;
-import com.app.api.user.facebook.api.oauth.FacebookOAuthClient;
-import com.app.api.user.facebook.api.oauth.FacebookTokenResponse;
-import org.springframework.http.*;
+import com.app.api.user.facebook.interceptors.BearerTokenInterceptor;
+import com.app.api.user.facebook.interceptors.NoTokenInterceptor;
+import com.app.api.user.facebook.oauth.FacebookOAuthClient;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Objects;
 
 public abstract class FacebookApiBinder {
 

@@ -1,4 +1,4 @@
-package com.app.api.user.exceptions;
+package com.app.service.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

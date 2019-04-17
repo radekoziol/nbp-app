@@ -1,4 +1,4 @@
-package com.app.api.user.facebook.api.oauth;
+package com.app.api.user.facebook.oauth;
 
 public class FacebookTokenResponse {
     public String access_token;

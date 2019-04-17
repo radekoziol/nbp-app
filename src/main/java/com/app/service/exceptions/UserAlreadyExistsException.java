@@ -1,4 +1,4 @@
-package com.app.api.user.exceptions;
+package com.app.service.exceptions;
 
 public class UserAlreadyExistsException extends RuntimeException {
     public UserAlreadyExistsException(String message) {

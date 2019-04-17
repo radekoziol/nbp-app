@@ -1,6 +1,6 @@
 package com.app.api.user.controller;
 
-import com.app.api.user.exceptions.UserNotFoundException;
+import com.app.service.exceptions.UserNotFoundException;
 import com.app.api.user.request.UserRegisterRequest;
 import com.app.api.user.resource.UserResource;
 import com.app.model.user.User;
@@ -84,7 +84,7 @@ public class UserController {
     public ResponseEntity<User> generate() {
 
         User user = new User("radekoziol", "example@com.pl", "admin123");
-        // Allowing for duplicates actually
+        // Allowing for duplicates
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.OK)

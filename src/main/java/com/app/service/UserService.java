@@ -1,11 +1,10 @@
 package com.app.service;
 
-import com.app.api.user.exceptions.UserAlreadyExistsException;
-import com.app.api.user.exceptions.UserNotFoundException;
+import com.app.service.exceptions.UserAlreadyExistsException;
+import com.app.service.exceptions.UserNotFoundException;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

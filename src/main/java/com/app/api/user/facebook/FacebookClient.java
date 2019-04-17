@@ -1,6 +1,5 @@
 package com.app.api.user.facebook;
 
-import com.app.api.user.facebook.api.FacebookApiBinder;
 import com.app.model.user.User;
 
 public class FacebookClient extends FacebookApiBinder {
