@@ -1,5 +1,6 @@
 package com.app.service;
 
+import com.app.model.user.FacebookUser;
 import com.app.service.exceptions.UserAlreadyExistsException;
 import com.app.service.exceptions.UserNotFoundException;
 import com.app.model.user.User;
@@ -29,6 +30,9 @@ public class UserService implements UserDetailsService {
 
 
     private void checkForDuplicates(User user) {
+        if(user instanceof FacebookUser){
+            return;
+        }
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new UserAlreadyExistsException("User with given email already exists");
         } else if (userRepository.existsByUsername(user.getUsername())) {

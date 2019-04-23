@@ -1,6 +1,9 @@
 package com.app.api.user.facebook;
 
+import com.app.model.user.FacebookUser;
 import com.app.model.user.User;
+
+import java.util.Objects;
 
 public class FacebookClient extends FacebookApiBinder {
 
@@ -11,17 +14,17 @@ public class FacebookClient extends FacebookApiBinder {
     }
 
     public User createUserFromFacebookProfile() {
-        Profile profile = askForUserProfile();
-        return createUser(profile);
+        long id = askForUserId();
+        return createUser(id);
     }
 
-    private User createUser(Profile profile) {
-        return new User(profile.getUsername(), profile.getEmail(), User.getRandomPassword());
+    private User createUser(long id) {
+        return new FacebookUser("Facebook", id);
     }
 
-    private Profile askForUserProfile() {
-        return restTemplate.getForObject(GRAPH_API_BASE_URI + "/me", Profile.class);
+    private long askForUserId() {
+        Profile profile = restTemplate.getForObject(GRAPH_API_BASE_URI + "/me", Profile.class);
+        return Long.parseLong(Objects.requireNonNull(profile).getId());
     }
-
 
 }

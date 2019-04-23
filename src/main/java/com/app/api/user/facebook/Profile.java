@@ -5,14 +5,14 @@ import lombok.Data;
 @Data
 public class Profile {
 
-    private String name;
-    private String email;
+    private transient String username;
+    private String id;
 
-    public String getUsername() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public String getEmail() {
-        return email;
+    public void setId(String id) {
+        this.id = id;
     }
 }
