@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,6 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.userRepository = userRepository;
     }
 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.requiresChannel().anyRequest().requiresSecure();
+    }
+
+
     @Autowired
     public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -50,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .orElse(User.getUnauthorizedUser())
                 );
     }
+
 
     @Configuration
     @Order(1)
@@ -75,9 +83,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+
             http
                     .authorizeRequests()
                     .antMatchers("/home").authenticated()
+                    .antMatchers("/api/facebookRegister").permitAll()
                     .antMatchers("/api/**").authenticated()
                     .and()
                     .formLogin()
@@ -86,6 +96,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .failureForwardUrl("/register")
                     .and()
                     .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+
         }
 
 
