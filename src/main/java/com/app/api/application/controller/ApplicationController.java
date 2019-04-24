@@ -24,6 +24,11 @@ public class ApplicationController {
         return "register";
     }
 
+    @RequestMapping(value = "/login")
+    public String login() {
+        return "login";
+    }
+
     @RequestMapping(value = "/users")
     public String users() {
         return "users";

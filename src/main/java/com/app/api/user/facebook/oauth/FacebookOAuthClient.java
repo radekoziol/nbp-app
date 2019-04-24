@@ -16,8 +16,8 @@ import java.util.Objects;
 public class FacebookOAuthClient {
 
     private static final String GRANT_TYPE = "authorization_code";
-    private static final String GRAPH_API_BASE_URI = "https://graph.facebook.com/v2.11/oauth/access_token";
-    private static final String REDIRECT_URI = "https://localhost:8080/api/facebookRegister";
+    private static final String GRAPH_API_BASE_URI = "https://graph.facebook.com/v3.2/oauth/access_token";
+    private static final String REDIRECT_URI = "https://localhost/api/facebookRegister";
     private static String clientId;
     private static String clientSecret;
     private RestTemplate restTemplate = new RestTemplate();
@@ -77,8 +77,8 @@ public class FacebookOAuthClient {
                 .queryParam("code", authorizationCode)
                 .queryParam("client_id", clientId)
                 .queryParam("client_secret", clientSecret)
-                .queryParam("grant_type", GRANT_TYPE)
                 .queryParam("redirect_uri", REDIRECT_URI)
+                .queryParam("grant_type", GRANT_TYPE)
                 .toUriString();
     }
 

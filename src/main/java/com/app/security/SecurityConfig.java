@@ -11,6 +11,8 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -25,6 +27,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
@@ -48,15 +51,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.requiresChannel().anyRequest().requiresSecure();
     }
 
-
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(username -> userRepository
-                        .findByUsername(username)
-                        .orElse(User.getUnauthorizedUser())
-                );
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
+
+//    @Autowired
+//    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
+//        auth
+//                .userDetailsService(username -> userRepository
+//                        .findByUsername(username)
+//                        .orElse(User.getUnauthorizedUser())
+//                );
+//    }
 
 
     @Configuration
@@ -83,20 +91,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-
             http
                     .authorizeRequests()
-                    .antMatchers("/home").authenticated()
-                    .antMatchers("/api/facebookRegister").permitAll()
-                    .antMatchers("/api/**").authenticated()
+                        .antMatchers("/api/facebookRegister").permitAll()
+                        .antMatchers("/api/user/**").permitAll()
+                        .antMatchers("/home").authenticated()
+                        .antMatchers("/api/**").authenticated()
                     .and()
                     .formLogin()
-                    .permitAll()
-                    .defaultSuccessUrl("/home", true)
-                    .failureForwardUrl("/register")
+                        .loginPage("/login")
+                        .permitAll()
+                        .defaultSuccessUrl("/home", true)
+                        .failureForwardUrl("/register")
                     .and()
-                    .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-
+                    .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+                    .csrf()
+                        .disable();
         }
 
 
@@ -148,7 +158,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .authorizeRequests()
                     .antMatchers(FACEBOOK_LOGIN_URI)
-                    .authenticated();
+                    .authenticated()
+                    .and()
+                    .csrf().disable();
         }
 
 

@@ -17,16 +17,22 @@ public class CustomAuthenticationProvider
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
 
-//
+        String name = "";
+        String password = "";
 
-        String name = authentication.getName();
-        String password = authentication.getCredentials().toString();
-
+        if(!isFacebookUserLogged(authentication)){
+            name = authentication.getName();
+            password = authentication.getCredentials().toString();
+        }
 
             // use the credentials
             // and authenticate against the third-party system
             return new UsernamePasswordAuthenticationToken(
                     name, password, new ArrayList<>());
+    }
+
+    private boolean isFacebookUserLogged(Authentication authentication) {
+        return authentication.getCredentials() == null;
     }
 
     @Override

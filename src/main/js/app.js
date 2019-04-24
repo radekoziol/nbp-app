@@ -138,11 +138,9 @@ class CreateDialog extends React.Component {
 
     handleFacebookLogin(e) {
         e.preventDefault();
-        const newUser = {};
 
-        client({method: 'GET', path: root + '/facebookRegister', registry: ""}).done(response => {
+        client({method: 'GET', path: '/register/facebook', registry: ""}).done(response => {
             console.log(JSON.stringify(response, null, 2))
-            this.setState({users: response.entity.content});
         });
 
     }
@@ -171,7 +169,9 @@ class CreateDialog extends React.Component {
                 </div>
                 <br/>
                 <div className="container unauthenticated">
-                    <button onClick={this.handleFacebookLogin}>Login with Facebook</button>
+                    <form action="https://localhost/login/facebook">
+                        <input type="submit" value="Login With Facebook" />
+                    </form>
                 </div>
             </div>
         )

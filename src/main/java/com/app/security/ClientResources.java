@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 
 class ClientResources {
 
-    private static final String REDIRECT_URI = "https://localhost:8080/api/facebookRegister";
+    private static final String REDIRECT_URI = "https://localhost/api/facebookRegister";
 
     @NestedConfigurationProperty
     private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
