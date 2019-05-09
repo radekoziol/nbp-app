@@ -8,7 +8,6 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-//@EnableWebMvc
 @ComponentScan
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
@@ -16,7 +15,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/login").setViewName("login");
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        registry.addViewController("/home").setViewName("home.html");
+        registry.addViewController("/home").setViewName("home");
     }
 
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {

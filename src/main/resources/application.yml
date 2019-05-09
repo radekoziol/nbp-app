@@ -1,21 +1,11 @@
-security:
-  oauth2:
-    client:
-      client-id: acme
-      client-secret: acmesecret
-      scope: read,write
-      auto-approve-scopes: '.*'
-      pre-established-redirect-uri: https://localhost:8080/callback
-      use-current-uri: true
-
 facebook:
   client:
     clientId:
-    clientSecret: 
+    clientSecret:
     accessTokenUri: https://graph.facebook.com/oauth/access_token
-    userAuthorizationUri: https://www.facebook.com/dialog/oauth?redirect_uri=https%3A%2F%2Flocalhost%3A8080%2Fhome
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
     tokenName: oauth_token
-    redirect-uri-template: http://localhost:8080/login/oauth2/code/custom
+    redirect-uri: http://localhost:8080/home
     authenticationScheme: query
     clientAuthenticationScheme: form
   resource:

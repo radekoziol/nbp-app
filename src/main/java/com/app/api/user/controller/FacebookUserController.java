@@ -52,6 +52,7 @@ public class FacebookUserController {
 
 
     private void authenticateUserAndSetSession(User user, HttpServletRequest request) {
+
         String username = user.getUsername();
         String password = user.getPassword();
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
