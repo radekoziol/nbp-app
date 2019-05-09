@@ -2,12 +2,37 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>nbp-app</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
-</head>
+    <style type="text/css">
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        text{
+            margin-left: 2px;
+            margin-bottom: 5px;
+            margin-top: 5px;
+            /*margin-left: 2px;*/
+        }
+        form{
+            margin-left: 2px;
+            margin-bottom: 2px;
+        }
+    </style></head>
 <body>
 <h1>
     Welcome to nbp-app
 </h1>
+
+
+<text>
+    Gold Prize
+    <form method="get" th:action="@{/api/ore/getGoldPrize}">
+        <div><label> Date <input name="date" type="text"/> </label>
+            <input type="submit"/>
+        </div>
+    </form>
+    <br/>
+</text>
+
 
 <text>
     Gold Prize
@@ -70,7 +95,7 @@
 </text>
 
 <text>
-    Dates (With Values) When Currency Was The Most And The Lest Expensive
+    Dates (With Values) When Currency Was The Most And The Least Expensive
     <form method="get" th:action="@{/api/currency/getDatesWhenCurrencyWasMostAndLeastExpensive}">
         <div>
             <label> Currency <input name="currency" type="text"/> </label>

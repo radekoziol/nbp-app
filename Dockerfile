@@ -1,5 +1,16 @@
-FROM openjdk:8-jdk-alpine
-VOLUME /tmp
-ARG JAR_FILE
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+FROM maven:3.6.0-jdk-8-slim
+
+RUN mkdir /app
+WORKDIR /app
+
+# copy the project files
+COPY ./pom.xml ./pom.xml
+
+# build all dependencies for offline use
+RUN mvn dependency:go-offline -B
+
+COPY ./ .
+
+USER root
+
+RUN mvn spring-boot:run
