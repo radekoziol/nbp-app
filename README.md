@@ -2,11 +2,13 @@
 Spring-boot application for http://api.nbp.pl
 ## Getting Started 
 
-Go to _localhost:8080/_ to create user account:
+Run with _docker-compose up_
+
+Go to _localhost/register_ to create user account:
 
 ![alt text](images/register.png)
 
-Go to _localhost:8080/login_ to create login:
+Go to _localhost/login_ to create login:
 
 ![alt text](images/login.png)
 
