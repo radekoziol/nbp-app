@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**", "resources/static/**");
     }
 
@@ -80,10 +80,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         protected void configure(HttpSecurity http) throws Exception {
 
             http
-                    .portMapper()
-                    .http(8443).mapsTo(443);
-
-            http
                     .authorizeRequests()
                     .antMatchers("/api/facebookRegister").permitAll()
                     .antMatchers("/api/user/**").permitAll()
@@ -96,6 +92,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .defaultSuccessUrl("/home", true)
                     .failureForwardUrl("/register")
                     .and()
+                    .logout()
+                    .logoutSuccessUrl("/register")
+                    .and()
                     .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
                     .csrf()
                     .disable();
@@ -104,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Bean
         public FilterRegistrationBean<OAuth2ClientContextFilter> oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-            FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<OAuth2ClientContextFilter>();
+            FilterRegistrationBean<OAuth2ClientContextFilter> registration = new FilterRegistrationBean<>();
             registration.setFilter(filter);
             registration.setOrder(-100);
             return registration;
