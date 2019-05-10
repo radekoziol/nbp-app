@@ -12,7 +12,6 @@ import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 @Entity
 @Getter
@@ -122,19 +121,17 @@ public class User implements UserDetails {
         return list;
     }
 
-    public static String getRandomPassword() {
-
-        Random random = new Random();
-        StringBuilder output = new StringBuilder();
-
-        String alphabet = "abc123";
-        for (int i = 0; i < 10; i++) {
-            output.append(alphabet.charAt(random.nextInt(alphabet.length())));
-        }
-
-        return output.toString();
+    public String getROLE_PREFIX() {
+        return ROLE_PREFIX;
     }
 
+    public boolean isAccountLocked() {
+        return isAccountLocked;
+    }
+
+    public void setAccountLocked(boolean accountLocked) {
+        isAccountLocked = accountLocked;
+    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -159,11 +156,13 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "role='" + role + '\'' +
+                "ROLE_PREFIX='" + ROLE_PREFIX + '\'' +
                 ", id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", isAccountLocked=" + isAccountLocked +
+                ", authority=" + authority +
                 '}';
     }
 }

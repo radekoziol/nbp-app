@@ -33,8 +33,8 @@
 </h2>
 
 <text>
-    Gold Prize
-    <form method="get" th:action="@{/api/ore/getGoldPrize}">
+    Gold Price
+    <form method="get" th:action="@{/api/ore/getGoldPrice}">
         <div><label> Date <input name="date" type="text"/> </label>
             <input type="submit"/>
         </div>
@@ -44,8 +44,8 @@
 
 
 <text>
-    Gold Prize
-    <form method="get" th:action="@{/api/ore/getGoldPrize}">
+    Gold Price
+    <form method="get" th:action="@{/api/ore/getGoldPrice}">
         <div><label> Date <input name="date" type="text"/> </label>
             <input type="submit"/>
         </div>
@@ -54,8 +54,8 @@
 </text>
 
 <text>
-    Average Gold Prize
-    <form method="get" th:action="@{/api/ore/getAverageGoldPrize}">
+    Average Gold Price
+    <form method="get" th:action="@{/api/ore/getAverageGoldPrice}">
         <div>
             <label> Start date <input name="from" type="text"/> </label>
             <label> End date <input name="to" type="text"/> </label>
@@ -67,8 +67,8 @@
 
 
 <text>
-    Currency Prize
-    <form method="get" th:action="@{/api/currency/getCurrencyPrize}">
+    Currency Price
+    <form method="get" th:action="@{/api/currency/getCurrencyPrice}">
         <div>
             <label> Currency <input name="currency" type="text"/> </label>
             <label> Date <input name="date" type="text"/> </label>
@@ -115,10 +115,10 @@
 </text>
 
 <text>
-    Sorted List Of Bid Prize For a Day
+    Sorted List Of Bid Price For a Day
     <form method="get" th:action="@{/api/currency/getSortedListOfBidPrice}">
         <div>
-            <label> Date <input name="date" type="text"/> </label>
+            <label> Date <input name="date" typ0e="text"/> </label>
             <input type="submit"/>
         </div>
     </form>

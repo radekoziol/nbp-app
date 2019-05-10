@@ -27,7 +27,6 @@ public class UserController {
     private UserService userService;
     private UserRepository userRepository;
 
-
     @Autowired
     public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
@@ -46,6 +45,7 @@ public class UserController {
                         .toUri();
         return ResponseEntity.created(uri).body(new UserResource(user));
     }
+
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<UserResource> get(@PathVariable final long id) {

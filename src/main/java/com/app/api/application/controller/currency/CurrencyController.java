@@ -3,15 +3,19 @@ package com.app.api.application.controller.currency;
 import com.app.api.application.controller.ApplicationController;
 import com.app.model.api.date.Date;
 import com.app.model.currency.statistics.CurrencyStats;
+import com.app.service.UserRequestService;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 
 @RestController()
@@ -19,20 +23,28 @@ import java.util.Map;
 public class CurrencyController extends ApplicationController {
 
 
-    @RequestMapping(path = "/getCurrencyPrize")
+    public CurrencyController(UserRequestService userRequestService) {
+        super(userRequestService);
+    }
+
+
+    @RequestMapping(path = "/getCurrencyPrice")
     public @ResponseBody
-    ResponseEntity<String> getCurrencyPrize(@RequestParam String currency, @RequestParam String date) {
+    ResponseEntity<String> getCurrencyPrice(@AuthenticationPrincipal String user, @RequestParam String currency, @RequestParam String date) {
         try {
             CurrencyStats currencyStats = new CurrencyStats();
 
             double price = currencyStats.getCurrencyPrice(new Date(date), currency);
+            userRequestService.addRequestToUser(user, "getCurrencyPrice", Arrays.asList(date, currency), Double.toString(price));
 
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(String.valueOf(price));
         } catch (IOException | InterruptedException e) {
+            userRequestService.addRequestToUser(user, "getCurrencyPrice", Arrays.asList(date, currency), e.getLocalizedMessage());
             return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
+            userRequestService.addRequestToUser(user, "getCurrencyPrice", Arrays.asList(date, currency), e.getLocalizedMessage());
             return getStandardExternalErrorResponse(e);
         }
 
@@ -44,18 +56,21 @@ public class CurrencyController extends ApplicationController {
      */
     @RequestMapping(path = "/getMostVolatileCurrency")
     public @ResponseBody
-    ResponseEntity<String> getMostVolatileCurrency(@RequestParam String from, @RequestParam String to) {
+    ResponseEntity<String> getMostVolatileCurrency(@AuthenticationPrincipal String user, @RequestParam String from, @RequestParam String to) {
         try {
             CurrencyStats currencyStats = new CurrencyStats();
             String currency = currencyStats.getMostVolatileCurrency(new Date(from), new Date(to));
+            userRequestService.addRequestToUser(user, "getCurrencyPrice", Arrays.asList(from, to), currency);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(currency);
 
         } catch (IOException | InterruptedException e) {
+            userRequestService.addRequestToUser(user, "getCurrencyPrice", Arrays.asList(from, to), e.getLocalizedMessage());
             return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
+            userRequestService.addRequestToUser(user, "getCurrencyPrice", Arrays.asList(from, to), e.getLocalizedMessage());
             return getStandardExternalErrorResponse(e);
         }
 
@@ -64,18 +79,22 @@ public class CurrencyController extends ApplicationController {
 
     @RequestMapping(path = "/getMinBidPrice")
     public @ResponseBody
-    ResponseEntity<String> getMinBidPrice(@RequestParam String date) {
+    ResponseEntity<String> getMinBidPrice(@AuthenticationPrincipal String user, @RequestParam String date) {
 
         try {
             CurrencyStats currencyStats = new CurrencyStats();
             Pair<String, Double> currencyAndPrice = currencyStats.getMinBidPrice(new Date(date));
+            String output = currencyAndPrice.getFirst() + " " + currencyAndPrice.getSecond();
+            userRequestService.addRequestToUser(user, "getMinBidPrice", Collections.singletonList(date), output);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(currencyAndPrice.getFirst() + " " + currencyAndPrice.getSecond());
+                    .body(output);
         } catch (IOException | InterruptedException e) {
+            userRequestService.addRequestToUser(user, "getMinBidPrice", Collections.singletonList(date), e.getLocalizedMessage());
             return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
+            userRequestService.addRequestToUser(user, "getMinBidPrice", Collections.singletonList(date), e.getLocalizedMessage());
             return getStandardExternalErrorResponse(e);
         }
 
@@ -85,18 +104,21 @@ public class CurrencyController extends ApplicationController {
 
     @RequestMapping(path = "/getDatesWhenCurrencyWasMostAndLeastExpensive")
     public @ResponseBody
-    ResponseEntity<String> getDatesWhenCurrencyWasMostAndLeastExpensive(@RequestParam String currency) {
+    ResponseEntity<String> getDatesWhenCurrencyWasMostAndLeastExpensive(@AuthenticationPrincipal String user, @RequestParam String currency) {
         try {
             CurrencyStats currencyStats = new CurrencyStats();
             Pair<Pair<Date, Double>, Pair<Date, Double>> mostAndLeastExpensive = currencyStats.getDatesWhenCurrencyWasMostAndLeastExpensive(currency);
 
             String output = buildOutputStringForDatesWhenCurrencyWasMostAndLeastExpensive(mostAndLeastExpensive);
+            userRequestService.addRequestToUser(user, "getDatesWhenCurrencyWasMostAndLeastExpensive", Collections.singletonList(currency), output);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(output);
         } catch (IOException | InterruptedException e) {
+            userRequestService.addRequestToUser(user, "getDatesWhenCurrencyWasMostAndLeastExpensive", Collections.singletonList(currency), e.getLocalizedMessage());
             return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
+            userRequestService.addRequestToUser(user, "getDatesWhenCurrencyWasMostAndLeastExpensive", Collections.singletonList(currency), e.getLocalizedMessage());
             return getStandardExternalErrorResponse(e);
         }
 
@@ -116,20 +138,23 @@ public class CurrencyController extends ApplicationController {
 
     @RequestMapping(path = "/getSortedListOfBidPrice")
     public @ResponseBody
-    ResponseEntity<String> getSortedListOfBidPrice(@RequestParam String date) {
+    ResponseEntity<String> getSortedListOfBidPrice(@AuthenticationPrincipal String user, @RequestParam String date) {
 
         try {
             CurrencyStats currencyStats = new CurrencyStats();
             Map<String, Double> currencyBidPrice = currencyStats.getSortedListOfBidPrice(new Date(date));
 
             String output = buildOutputStringForSortedListOfBidPrice(currencyBidPrice);
+            userRequestService.addRequestToUser(user, "getSortedListOfBidPrice", Collections.singletonList(date), output);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(output);
         } catch (IOException | InterruptedException e) {
+            userRequestService.addRequestToUser(user, "getSortedListOfBidPrice", Collections.singletonList(date), e.getLocalizedMessage());
             return getStandardInternalErrorResponse(e);
         } catch (IllegalArgumentException e) {
+            userRequestService.addRequestToUser(user, "getSortedListOfBidPrice", Collections.singletonList(date), e.getLocalizedMessage());
             return getStandardExternalErrorResponse(e);
         }
 
