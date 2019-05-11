@@ -45,6 +45,11 @@ public class ApplicationController {
         return "users";
     }
 
+    @RequestMapping(value = "/userRequests")
+    public String userRequests() {
+        return "userRequests";
+    }
+
     protected ResponseEntity<String> getStandardExternalErrorResponse(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Invalid arguments: " + e.getMessage());

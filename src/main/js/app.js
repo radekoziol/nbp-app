@@ -3,20 +3,18 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const client = require('./client');
-const follow = require('./follow'); // function to hop multiple links by "rel"
-
 var root = "/api";
 
 class Register extends React.Component {
 
     constructor(props) {
         super(props);
-        this.onCreate = this.onCreate.bind(this);
+        Register.onCreate = Register.onCreate.bind(this);
         this.state = {attributes: User.getRequiredAttributes()};
     }
 
 
-    onCreate(newUser) {
+    static onCreate(newUser) {
         client({
             method: 'POST',
             path: root + '/user',
@@ -30,12 +28,29 @@ class Register extends React.Component {
     render() {
         return (
             <div>
-                <CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
+                <CreateDialog attributes={this.state.attributes} onCreate={Register.onCreate}/>
             </div>
 
         )
     }
 
+}
+
+
+class User extends React.Component {
+    render() {
+        return (
+            <tr>
+                <td>{this.props.user.username}</td>
+                <td>{this.props.user.password}</td>
+                <td>{this.props.user.email}</td>
+            </tr>
+        )
+    }
+
+    static getRequiredAttributes() {
+        return ['username', 'password', 'email']
+    }
 }
 
 class Users extends React.Component {
@@ -47,7 +62,6 @@ class Users extends React.Component {
 
     componentDidMount() {
         client({method: 'GET', path: root + '/user', registry: ""}).done(response => {
-            console.log(JSON.stringify(response, null, 2))
             this.setState({users: response.entity.content});
         });
     }
@@ -64,9 +78,6 @@ class Users extends React.Component {
 class UserList extends React.Component {
 
     render() {
-
-        console.log(this);
-        console.log(this.props);
 
         const users = this.props.users.map(user =>
             <User key={user.links[1].href} user={user.user}/>);
@@ -85,29 +96,56 @@ class UserList extends React.Component {
                 </table>
             </div>
         )
-
     }
 }
 
-// end::user-list[]
-
-// tag::users[]
-class User extends React.Component {
+class UserRequest extends React.Component {
     render() {
         return (
             <tr>
-                <td>{this.props.user.username}</td>
-                <td>{this.props.user.password}</td>
-                <td>{this.props.user.email}</td>
+                <td>{this.props.userRequest.name}</td>
+                <td>{this.props.userRequest.input}</td>
+                <td>{this.props.userRequest.output}</td>
             </tr>
+        )
+    }
+
+}
+
+class UserRequests extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {userRequests: []};
+    }
+
+    componentDidMount() {
+        client({method: 'GET', path: root + '/userRequest/byUsername', registry: ""}).done(response => {
+            this.setState({userRequests: response.entity});
+        });
+    }
+
+    render() {
+
+        const userRequests = this.state.userRequests.map(userRequest =>
+            <UserRequest  userRequest={userRequest}/>);
+        return (
+            <div>
+                <table>
+                    <tbody>
+                    <tr>
+                        <th>Request Name</th>
+                        <th>Input</th>
+                        <th>Output</th>
+                    </tr>
+                    {userRequests}
+                    </tbody>
+                </table>
+            </div>
         )
 
     }
-
-    static getRequiredAttributes() {
-        return ['username', 'password', 'email']
-    }
 }
+
 
 class CreateDialog extends React.Component {
 
@@ -123,7 +161,7 @@ class CreateDialog extends React.Component {
         this.props.attributes.forEach(attribute => {
             newUser[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
         });
-        this.props.onCreate(newUser);
+        Register.onCreate(newUser);
 
 
         // clear out the dialog's inputs
@@ -140,7 +178,6 @@ class CreateDialog extends React.Component {
         e.preventDefault();
 
         client({method: 'GET', path: '/register/facebook', registry: ""}).done(response => {
-            console.log(JSON.stringify(response, null, 2))
         });
 
     }
@@ -188,5 +225,10 @@ if (document.getElementById('register')) {
     ReactDOM.render(
         <Users/>,
         document.getElementById('users')
+    );
+} else if (document.getElementById('userRequests')) {
+    ReactDOM.render(
+        <UserRequests/>,
+        document.getElementById('userRequests')
     );
 }

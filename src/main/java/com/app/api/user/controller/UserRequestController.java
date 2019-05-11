@@ -2,6 +2,7 @@ package com.app.api.user.controller;
 
 import com.app.model.user.UserRequest;
 import com.app.repository.UserRequestRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +20,7 @@ public class UserRequestController {
     }
 
     @GetMapping("/byUsername")
-    public List<UserRequest> get(String username) {
+    public List<UserRequest> get(@AuthenticationPrincipal String username) {
         return userRequestRepository
                 .findAllByUsername(username);
     }

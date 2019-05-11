@@ -1,6 +1,5 @@
 package com.app.security;
 
-import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
@@ -26,6 +25,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
@@ -82,8 +82,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             http
                     .authorizeRequests()
                     .antMatchers("/api/facebookRegister").permitAll()
-                    .antMatchers("/api/user/**").permitAll()
-                    .antMatchers("/home").fullyAuthenticated()
+                    .antMatchers("/api/**").permitAll()
+                    .antMatchers("/home", "/users", "/userRequests").fullyAuthenticated()
                     .antMatchers("/api/**").fullyAuthenticated()
                     .and()
                     .formLogin()
@@ -93,7 +93,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .failureForwardUrl("/register")
                     .and()
                     .logout()
-                    .logoutSuccessUrl("/register")
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logoutSuccessUrl("/login")
                     .and()
                     .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
                     .csrf()

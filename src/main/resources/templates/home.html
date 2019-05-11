@@ -3,34 +3,37 @@
 <head>
     <title>nbp-app</title>
     <style type="text/css">
-        body{
+        body {
             font-family: Arial, Helvetica, sans-serif;
         }
-        text{
+
+        text {
             margin-left: 2px;
             margin-bottom: 5px;
             margin-top: 5px;
             /*margin-left: 2px;*/
         }
-        form{
+
+        form {
+            clear: left;
             margin-left: 2px;
             margin-bottom: 2px;
         }
+        div2{
+            float: right;
+        }
     </style>
 </head>
-<body>
 
-<form align="right" name="form1" method="post" th:action="@{/logout}">
-    <label class="logoutLblPos">
-        <input name="submit2" type="submit" id="submit2" value="Logout">
-    </label>
-</form>
-<h1>
+<div2 align="right" >
+    <form th:action="@{/logout}" method="get">
+        <input type="submit" value="Logout"  />
+    </form>
+    <form method="get" th:action="@{/userRequests}" >
+        <input type="submit" value="History"/>
+    </form>
+</div2>
 
-</h1>
-
-<h2>
-</h2>
 
 <text>
     Gold Price
@@ -42,16 +45,6 @@
     <br/>
 </text>
 
-
-<text>
-    Gold Price
-    <form method="get" th:action="@{/api/ore/getGoldPrice}">
-        <div><label> Date <input name="date" type="text"/> </label>
-            <input type="submit"/>
-        </div>
-    </form>
-    <br/>
-</text>
 
 <text>
     Average Gold Price
