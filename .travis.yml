@@ -1,0 +1,11 @@
+language: java
+
+services:
+  - docker
+
+script:
+  - docker-compose build
+
+after_script:
+  - docker-compose stop
+  - docker-compose rm -f
