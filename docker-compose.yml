@@ -8,13 +8,19 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
 
-  man:
-    build: .
-    image: test
+  app :
+    restart: always
+    image: app
+    command: mvn spring-boot:run
+    build:
+      context: ./
+      dockerfile: Dockerfile
     ports:
       - "443:443"
       - "8443:8443"
+    depends_on:
+      - "mysql"
     links:
-      - mysql
+      - "mysql"
     environment:
       SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/db_example?serverTimezone=UTC&createDatabaseIfNotExist=true:

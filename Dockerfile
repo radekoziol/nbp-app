@@ -10,7 +10,3 @@ COPY ./pom.xml ./pom.xml
 RUN mvn dependency:go-offline -B
 
 COPY ./ .
-
-USER root
-
-RUN mvn spring-boot:run
