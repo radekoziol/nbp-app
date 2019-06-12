@@ -81,10 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
             http
                     .authorizeRequests()
-                    .antMatchers("/api/facebookRegister").permitAll()
-                    .antMatchers("/api/**").permitAll()
-                    .antMatchers("/home", "/users", "/userRequests").fullyAuthenticated()
+                    .antMatchers("/api/facebookRegister", "user").permitAll()
                     .antMatchers("/api/**").fullyAuthenticated()
+                    .antMatchers("/home", "/users", "/userRequests").fullyAuthenticated()
                     .and()
                     .formLogin()
                     .loginPage("/login")

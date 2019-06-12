@@ -1,5 +1,6 @@
 package com.app.api.user.controller;
 
+import com.app.model.user.UserRequest;
 import com.app.service.exceptions.UserNotFoundException;
 import com.app.api.user.request.UserRegisterRequest;
 import com.app.api.user.resource.UserResource;
@@ -11,6 +12,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,7 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/api/user")
+@RequestMapping(value = "/user")
 public class UserController {
 
     private UserService userService;
@@ -35,7 +37,12 @@ public class UserController {
 
     @PostMapping
     public @ResponseBody
-    ResponseEntity<UserResource> post(@RequestBody @Valid UserRegisterRequest request) {
+    ResponseEntity<UserResource> post(@RequestBody @Valid UserRegisterRequest request, BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().header("error", bindingResult.getAllErrors().toString()).build();
+        }
+
         final User user = new User(request);
         userService.addUser(user);
         final URI uri =

@@ -17,7 +17,7 @@ class Register extends React.Component {
     static onCreate(newUser) {
         client({
             method: 'POST',
-            path: root + '/user',
+            path: '/user',
             entity: newUser,
             headers: {'Content-Type': 'application/json'}
         });
@@ -61,7 +61,7 @@ class Users extends React.Component {
     }
 
     componentDidMount() {
-        client({method: 'GET', path: root + '/user', registry: ""}).done(response => {
+        client({method: 'GET', path: '/user', registry: ""}).done(response => {
             this.setState({users: response.entity.content});
         });
     }
