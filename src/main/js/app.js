@@ -206,7 +206,7 @@ class CreateDialog extends React.Component {
                 </div>
                 <br/>
                 <div className="container unauthenticated">
-                    <form action="https://localhost/login/facebook">
+                    <form action={'https://' + window.location.host + '/login/facebook'}>
                         <input type="submit" value="Login With Facebook" />
                     </form>
                 </div>

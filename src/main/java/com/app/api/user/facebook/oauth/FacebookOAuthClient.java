@@ -17,7 +17,7 @@ public class FacebookOAuthClient {
 
     private static final String GRANT_TYPE = "authorization_code";
     private static final String GRAPH_API_BASE_URI = "https://graph.facebook.com/v3.2/oauth/access_token";
-    private static final String REDIRECT_URI = "https://localhost/api/facebookRegister";
+    private static final String REDIRECT_URI = "https://ec2-34-227-158-110.compute-1.amazonaws.com/api/facebookRegister";
     private static String clientId;
     private static String clientSecret;
     private RestTemplate restTemplate = new RestTemplate();

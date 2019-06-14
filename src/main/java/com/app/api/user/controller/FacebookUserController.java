@@ -47,7 +47,7 @@ public class FacebookUserController {
         userService.addUser(user);
         authenticateUserAndSetSession(user, request);
 
-        return new RedirectView("https://localhost/home");
+        return new RedirectView("/home");
     }
 
 
