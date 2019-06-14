@@ -4,10 +4,8 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.function.Supplier;
-
 @Getter
-@ResponseStatus(value= HttpStatus.NOT_FOUND, reason="Person could not be found")  // 404
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Person could not be found")  // 404
 public class UserNotFoundException extends RuntimeException {
 
     private Long id;

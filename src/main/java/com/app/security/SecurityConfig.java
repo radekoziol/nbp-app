@@ -86,8 +86,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/home", "/users", "/userRequests").fullyAuthenticated()
                     .and()
                     .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
                     .defaultSuccessUrl("/home", true)
                     .failureForwardUrl("/register")
                     .and()

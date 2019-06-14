@@ -2,7 +2,6 @@ package com.app.service;
 
 import com.app.model.user.FacebookUser;
 import com.app.model.user.User;
-import com.app.model.user.UserRequest;
 import com.app.repository.UserRepository;
 import com.app.repository.UserRequestRepository;
 import com.app.service.exceptions.UserAlreadyExistsException;
@@ -13,8 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -46,13 +44,12 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Objects.requireNonNull(username);
-        User user = userRepository.findByUsername(username).get();
+        Optional<User> user = userRepository.findByUsername(username);
 
-        if (user == null)
+        if (!user.isPresent())
             throw new UserNotFoundException(username);
 
-        return user;
+        return user.get();
     }
 
 }

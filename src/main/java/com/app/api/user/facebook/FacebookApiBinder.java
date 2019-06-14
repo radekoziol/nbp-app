@@ -16,7 +16,7 @@ public abstract class FacebookApiBinder {
         configureRestTemplate(accessToken);
     }
 
-    private void configureRestTemplate(String accessToken){
+    private void configureRestTemplate(String accessToken) {
         if (accessToken != null) {
             this.restTemplate.getInterceptors().add(getBearerTokenInterceptor(accessToken));
         } else {

@@ -1,12 +1,11 @@
 package com.app.api.user.controller;
 
-import com.app.model.user.UserRequest;
-import com.app.service.exceptions.UserNotFoundException;
 import com.app.api.user.request.UserRegisterRequest;
 import com.app.api.user.resource.UserResource;
 import com.app.model.user.User;
 import com.app.repository.UserRepository;
 import com.app.service.UserService;
+import com.app.service.exceptions.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;

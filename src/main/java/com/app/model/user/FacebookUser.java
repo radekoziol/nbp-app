@@ -1,8 +1,6 @@
 package com.app.model.user;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 
 @Entity
 public class FacebookUser extends User {

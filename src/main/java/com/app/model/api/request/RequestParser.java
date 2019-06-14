@@ -18,7 +18,7 @@ public abstract class RequestParser<T> {
         this.request = request;
     }
 
-    public void validateAndParseRequest(Request request) throws IllegalArgumentException{
+    public void validateAndParseRequest(Request request) throws IllegalArgumentException {
 
         requestValidator.validateRequestContent(request);
 

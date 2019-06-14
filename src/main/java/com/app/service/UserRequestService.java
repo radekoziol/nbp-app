@@ -2,7 +2,6 @@ package com.app.service;
 
 import com.app.model.user.UserRequest;
 import com.app.repository.UserRequestRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
