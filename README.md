@@ -1,6 +1,9 @@
 # nbp-app
+
+![Build Status](https://travis-ci.com/radekoziol/nbp-app.svg?branch=rest-webservice)
+
 Spring-boot application for http://api.nbp.pl
-## Getting Started 
+## Run 
 
 Run with _docker-compose up_
 
